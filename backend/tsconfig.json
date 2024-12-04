@@ -3,6 +3,9 @@
         "module": "NodeNext",
         "moduleResolution": "nodenext",
         "baseUrl": "src",
+        "paths": {
+            "@app/*": ["*"]
+        },
         "outDir": "dist",
         "sourceMap": true,
         "noImplicitAny": true,
