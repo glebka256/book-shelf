@@ -25,12 +25,10 @@ const PORT = process.env.PORT;
 const HOST = process.env.HOST;
 const MONGO_URI = process.env.MONGO_URI;
 
-console.log(MONGO_URI)
-
 server.listen(PORT, () => {
     console.log(`Server running on ${HOST}`);
 });
 
 mongoose.Promise = Promise;
 mongoose.connect(MONGO_URI);
-mongoose.connection.on('error', (error: Error) => console.log('Error'));
+mongoose.connection.on('error', (error: Error) => console.log('Error: ', error));
