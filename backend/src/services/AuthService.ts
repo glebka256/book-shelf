@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-import { UserModel, getUserByEmail, updateUserById } from "@app/models/user";
+import { UserModel, getUserByEmail, getUserCreditentialsByEmail, updateUserById } from "@app/models/user";
 
 export class AuthService {
     private static saltRounds = 12;
@@ -34,7 +34,12 @@ export class AuthService {
         }
     }
 
-    static async register(username: String, email: string, password: string): Promise<any> {
+    static async register(username: String, email: string, password: string): Promise<any> {      
+        const existingUser = await getUserByEmail(email);
+        if (existingUser) {
+            throw new Error('User already exists.');
+        }
+        
         const hashedPassword = await this.hashPassword(password);
         const newUser = new UserModel({
             username,
@@ -51,7 +56,7 @@ export class AuthService {
     }
 
     static async login(email: string, password: string): Promise<any> {
-        const user = await getUserByEmail(email);
+        const user = await getUserCreditentialsByEmail(email);
         if (!user) {
             throw new Error('User not found.');
         }
