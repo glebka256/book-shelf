@@ -72,7 +72,7 @@ export class AuthService {
         }
         
         const token = this.generateAuthToken(user.id, user.username);
-        updateUserById(user.id, { 'authentication.sessionToken': token });
+        await updateUserById(user.id, { 'authentication.sessionToken': token });
 
         return user;
     }

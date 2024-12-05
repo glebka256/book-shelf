@@ -26,8 +26,21 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
     try {
         const user = await AuthService.login(email, password);
+        const token = user.authentication.sessionToken;
+
+        res.cookie("accessToken", token, {
+            httpOnly: true,
+            sameSite: 'strict',
+            maxAge: 15 * 60 * 1000 // 15 minutes
+        });
+
         res.status(200).json({ message: "Logged in with email", user: user.email });
     } catch (error) {
         res.sendStatus(401);
     }
+}
+
+export const logout = (reg: Request, res: Response): void => {
+    res.clearCookie('authToken');
+    res.sendStatus(200);
 }
