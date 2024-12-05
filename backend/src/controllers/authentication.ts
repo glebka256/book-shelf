@@ -30,24 +30,27 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
     try {
         const user = await AuthService.login(email, password);
-        const token = user.authentication.sessionToken;
 
-        res.cookie("accessToken", token, {
-            httpOnly: true,
-            sameSite: 'strict',
-            maxAge: 15 * 60 * 1000 // 15 minutes
-        });
+        res.cookie(
+            process.env.COOKIE_HOST, 
+            user.authentication.sessionToken, 
+            { 
+                domain: 'localhost', 
+                path: '/',
+                maxAge: 15 * 60 * 1000
+            },
+        );
 
         res.status(200).json({ message: "Logged in with email", user: user.email });
         return;
     } catch (error) {
-        res.sendStatus(401);
+        res.status(400).json({ message: "Could not login with provided credentials." });
         return;
     }
 }
 
 export const logout = (reg: Request, res: Response): void => {
-    res.clearCookie('authToken');
+    res.clearCookie(process.env.COOKIE_HOST);
     res.sendStatus(200);
     return;
 }
