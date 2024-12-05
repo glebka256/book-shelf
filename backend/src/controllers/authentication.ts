@@ -7,13 +7,16 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     if (!username || !email || !password) {
         res.status(400).json({ message: "User creditentials required." });
+        return;
     }
 
     try {
         const newUser = await AuthService.register(username, email, password);
         res.status(201).json({ message: "User registered successfully." });
+        return;
     } catch (error) {
         res.status(400).json({ message: "Error registering user:", error: error.message });
+        return;
     }
 }
 
@@ -22,6 +25,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
     if (!email || !password) {
         res.status(400).json({ message: "Email and password are required" });
+        return;
     }
 
     try {
@@ -35,12 +39,15 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         });
 
         res.status(200).json({ message: "Logged in with email", user: user.email });
+        return;
     } catch (error) {
         res.sendStatus(401);
+        return;
     }
 }
 
 export const logout = (reg: Request, res: Response): void => {
     res.clearCookie('authToken');
     res.sendStatus(200);
+    return;
 }
