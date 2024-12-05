@@ -1,7 +1,12 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-import { UserModel, getUserByEmail, getUserCreditentialsByEmail, updateUserById } from "@app/models/user";
+import { 
+    UserModel, 
+    getUserByEmail, 
+    getUserCreditentialsByEmail, 
+    updateUserById 
+} from "@app/models/user";
 
 export class AuthService {
     private static saltRounds = 12;
