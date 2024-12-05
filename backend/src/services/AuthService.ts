@@ -72,8 +72,10 @@ export class AuthService {
         }
         
         const token = this.generateAuthToken(user.id, user.username);
-        await updateUserById(user.id, { 'authentication.sessionToken': token });
 
-        return user;
+        await updateUserById(user.id, { 'authentication.sessionToken': token });
+        const newUser = await getUserCreditentialsByEmail(email);
+
+        return newUser;
     }
 }
