@@ -26,7 +26,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
     try {
         const user = await AuthService.login(email, password);
-        res.status(200).json({ message: "Created user with email", user: user.email });
+        res.status(200).json({ message: "Logged in with email", user: user.email });
     } catch (error) {
         res.sendStatus(401);
     }
