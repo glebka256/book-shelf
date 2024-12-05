@@ -5,9 +5,9 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
 import cors from 'cors';
-import mongoose from 'mongoose';
 
-import router from './router'
+import { connectDB } from '@app/db';
+import router from '@app/router';
 
 const app = express();
 
@@ -23,16 +23,13 @@ const server = https.createServer(app);
 
 dotenv.config();
 
-const PORT = process.env.PORT;
-const HOST = process.env.HOST;
-const MONGO_URI = process.env.MONGO_URI;
+connectDB();
 
-mongoose.Promise = Promise;
-mongoose.connect(MONGO_URI);
-mongoose.connection.on('error', (error: Error) => console.log('Error: ', error));
+const port = process.env.PORT;
+const host = process.env.HOST;
 
-server.listen(PORT, () => {
-    console.log(`Server running on ${HOST}`);
+server.listen(port, () => {
+    console.log(`Server running on ${host}`);
 });
 
 app.use('/', router())
