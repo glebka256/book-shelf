@@ -1,10 +1,15 @@
 import { Request, Response } from "express";
 
-import { goodreadsApiClient } from "@app/services/apiClient";
-import { GoodreadsBooksData } from '@app/interfaces/Goodreads'
-import { validGoodreadsResponseData, mapGoodreadsBooks } from "@app/services/bookService";
+import { annasArchiveClient, goodreadsApiClient } from "@app/services/apiClient";
+import { AnnasArchiveQuery, BooksData } from '@app/interfaces/Goodreads'
+import {
+    validFetchResponseData,
+    mapGoodreadsBooks, 
+    getAnnasArchiveParams, 
+    mapAnnasArchiveBooks
+} from "@app/services/bookService";
 
-const fetchBooksGoodreads = async (searchQuery: string, pageNumber: number): Promise<GoodreadsBooksData> => {  
+const fetchBooksGoodreads = async (searchQuery: string, pageNumber: number): Promise<BooksData> => {  
     const options = {
         method: 'GET',
         url: `/searchBooks`,
@@ -16,7 +21,7 @@ const fetchBooksGoodreads = async (searchQuery: string, pageNumber: number): Pro
 
     const response = await goodreadsApiClient.request(options);
 
-    if (!validGoodreadsResponseData(response)) {
+    if (!validFetchResponseData(response)) {
         throw new Error('Invalid Goodreads API response');
     }
 
@@ -44,5 +49,28 @@ export const getGoodreadsBooks = async (req: Request, res: Response): Promise<vo
     } catch (error) {
         res.status(400).json({ message: "Could not fetch books from Goodreads." });
         return;
+    }
+}
+
+export const fetchBooksAnnasArchive = async (query: AnnasArchiveQuery) => {
+    const params = getAnnasArchiveParams(query);
+
+    const options = {
+        method: 'GET',
+        url: `/search`,
+        params: params
+    };
+
+    const response = await annasArchiveClient.request(options);
+    if (!validFetchResponseData(response)) {
+        throw new Error('Invalid Anna\'s Archive API response');
+    }
+
+    const totalResults = response.data.totalResults
+
+    return {
+        books: mapAnnasArchiveBooks(response.data),
+        totalResults: totalResults || response.data.length,
+        currentPage: totalResults / 10
     }
 }

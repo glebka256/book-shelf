@@ -15,7 +15,28 @@ export interface GoodreadsBook {
     publishedYear: string
 };
 
-export interface GoodreadsBooksData {
+export interface AnnasArchiveBook {
+    title: string,
+    author: string,
+    imgUrl: string,
+    size: string,
+    genre: string,
+    format: string,
+    year: string
+}
+
+export interface AnnasArchiveQuery {
+    query: string,
+    author?: string,
+    category?: string,
+    skip?: number,
+    limit?: number,
+    fileExtension?: string,
+    language?: string,
+    source?: string
+}
+
+export interface BooksData {
     books: GoodreadsBook[],
     totalResults: number,
     currentPage: number,
