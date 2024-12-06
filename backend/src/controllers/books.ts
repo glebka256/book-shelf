@@ -27,7 +27,7 @@ const fetchBooksGoodreads = async (searchQuery: string, pageNumber: number): Pro
     }
 }
 
-export const getBooks = async (req: Request, res: Response): Promise<void> => {
+export const getGoodreadsBooks = async (req: Request, res: Response): Promise<void> => {
     const searchQuery = req.params.query;
     const pageNumber = parseInt(req.params.page);
 
