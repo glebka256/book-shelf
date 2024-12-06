@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import { annasArchiveClient, goodreadsApiClient } from "@app/services/apiClient";
-import { AnnasArchiveQuery, BooksData } from '@app/interfaces/Goodreads'
+import { AnnasArchiveQuery, BooksData } from '@app/interfaces/Books'
 import {
     validFetchResponseData,
     mapGoodreadsBooks, 

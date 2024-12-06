@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import { AnnasArchiveBook, AnnasArchiveQuery, GoodreadsAuthor, GoodreadsBook } from "@app/interfaces/Goodreads";
+import { AnnasArchiveBook, AnnasArchiveQuery, GoodreadsAuthor, GoodreadsBook } from "@app/interfaces/Books";
 
 export const mapGoodReadsAuthor = (authorData: any[]): GoodreadsAuthor[] => {
     return authorData.map((author) => ({
