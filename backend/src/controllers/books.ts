@@ -3,7 +3,8 @@ import { Request, Response } from "express";
 import { annasArchiveClient, goodreadsApiClient } from "@app/services/apiClient";
 import { AnnasArchiveQuery, BooksData } from '@app/interfaces/Books'
 import {
-    validFetchResponseData,
+    validGoodreadsResponseData,
+    validAnnasResponseData,
     mapGoodreadsBooks, 
     getAnnasArchiveParams, 
     mapAnnasArchiveBooks
@@ -21,7 +22,7 @@ const fetchBooksGoodreads = async (searchQuery: string, pageNumber: number): Pro
 
     const response = await goodreadsApiClient.request(options);
 
-    if (!validFetchResponseData(response)) {
+    if (!validGoodreadsResponseData(response)) {
         throw new Error('Invalid Goodreads API response');
     }
 
@@ -52,7 +53,7 @@ export const getGoodreadsBooks = async (req: Request, res: Response): Promise<vo
     }
 }
 
-export const fetchBooksAnnasArchive = async (query: AnnasArchiveQuery) => {
+export const fetchBooksAnnasArchive = async (query: AnnasArchiveQuery): Promise<BooksData> => {
     const params = getAnnasArchiveParams(query);
 
     const options = {
@@ -62,15 +63,41 @@ export const fetchBooksAnnasArchive = async (query: AnnasArchiveQuery) => {
     };
 
     const response = await annasArchiveClient.request(options);
-    if (!validFetchResponseData(response)) {
+
+    if (!validAnnasResponseData(response)) {
         throw new Error('Invalid Anna\'s Archive API response');
     }
 
-    const totalResults = response.data.totalResults
+    const totalResults = response.data.total
 
     return {
-        books: mapAnnasArchiveBooks(response.data),
+        books: mapAnnasArchiveBooks(response.data.books),
         totalResults: totalResults || response.data.length,
         currentPage: totalResults / 10
+    }
+}
+
+export const getAnnasArchiveBooks = async (req: Request, res: Response): Promise<void> => {
+    const searchQuery = req.params.query;
+    const author = req.params.author;
+    const categories = req.params.cat;
+
+    if (!searchQuery) {
+        res.status(400).json({ message: "Search query is required for Anna's Archive search." });
+        return;
+    }
+
+    const query: AnnasArchiveQuery = {
+        query: searchQuery,
+        author: author,
+        category: categories
+    }
+
+    try {
+        const result = await fetchBooksAnnasArchive(query);
+        res.status(200).json(result.books);
+    } catch (error) {
+        res.status(400).json({ message: "Could not fetch books from Anna's Archive."})
+        return;
     }
 }

@@ -22,15 +22,19 @@ export const mapGoodreadsBooks = (rawData: any[]): GoodreadsBook[] => {
     }));
 }
 
-export const validFetchResponseData = (response: AxiosResponse): boolean => {
+export const validGoodreadsResponseData = (response: AxiosResponse): boolean => {
     return response.data && Array.isArray(response.data);
+}
+
+export const validAnnasResponseData = (response: AxiosResponse): boolean => {
+    return response.data.books && Array.isArray(response.data.books);
 }
 
 const getQueryLimit = (expectedResultsNumber: number): number => {
     const min = 10;
     const max = 200;
 
-    if (!expectedResultsNumber || expectedResultsNumber > max) {
+    if (typeof expectedResultsNumber !== 'number' || expectedResultsNumber > max) {
         return max
     }
     if (expectedResultsNumber < min) {

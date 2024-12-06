@@ -37,7 +37,7 @@ export interface AnnasArchiveQuery {
 }
 
 export interface BooksData {
-    books: GoodreadsBook[],
+    books: GoodreadsBook[] | AnnasArchiveBook[],
     totalResults: number,
     currentPage: number,
 }
