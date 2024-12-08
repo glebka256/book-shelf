@@ -1,7 +1,7 @@
 import { AxiosInstance, AxiosResponse } from "axios";
 import { IBookServiceAdapter } from "./IBookServiceAdapter";
 import { annasArchiveClient } from "../apiClients";
-import { BooksData } from "@app/interfaces/Books";
+import { BooksData, BookSources, AnnasArchiveBook } from "@app/interfaces/Books";
 
 export class AnnasArchiveAdapter implements IBookServiceAdapter {
     apiClient: AxiosInstance;
@@ -28,6 +28,7 @@ export class AnnasArchiveAdapter implements IBookServiceAdapter {
         const totalResults = response.data.total
 
         return {
+            src: BookSources.AnnasArchive,
             books: this.mapData(response.data.books),
             totalResults: totalResults || response.data.length,
             currentPage: totalResults / 10
@@ -93,14 +94,4 @@ interface AnnasArchiveQuery {
     fileExtension?: string,
     language?: string,
     source?: string
-}
-
-interface AnnasArchiveBook {
-    title: string,
-    author: string,
-    imgUrl: string,
-    size: string,
-    genre: string,
-    format: string,
-    year: string
 }

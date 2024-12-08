@@ -1,6 +1,6 @@
 import { AxiosInstance, AxiosResponse } from "axios";
 import { goodreadsApiClient } from "../apiClients";
-import { BooksData } from "@app/interfaces/Books";
+import { BooksData, BookSources, GoodreadsBook, GoodreadsAuthor } from "@app/interfaces/Books";
 import { IBookServiceAdapter } from "./IBookServiceAdapter";
 
 export class GoodreadsAdapter implements IBookServiceAdapter {
@@ -27,6 +27,7 @@ export class GoodreadsAdapter implements IBookServiceAdapter {
         }
 
         return {
+            src: BookSources.Goodreads,
             books: this.mapData(response.data),
             totalResults: response.data.totalResults || response.data.length,
             currentPage: page
@@ -58,20 +59,3 @@ export class GoodreadsAdapter implements IBookServiceAdapter {
         }));
     }
 }
-
-interface GoodreadsAuthor {
-    id: string,
-    name: string
-};
-
-interface GoodreadsBook {
-    bookId: string,
-    title: string,
-    workID: string,
-    imageUrl: string,
-    bookUrl: string,
-    author: GoodreadsAuthor[],
-    rank: number,
-    rating: number,
-    publishedYear: string
-};
