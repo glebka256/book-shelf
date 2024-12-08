@@ -25,19 +25,36 @@ export interface AnnasArchiveBook {
     year: string
 }
 
-export interface AnnasArchiveQuery {
-    query: string,
-    author?: string,
-    category?: string,
-    skip?: number,
-    limit?: number,
-    fileExtension?: string,
-    language?: string,
-    source?: string
+export interface Book {
+    id: string,
+    title: string,
+    author: string,
+    genre: string,
+    rating: number,
+    publishedYear: number,
+    language: string,
+    links: {
+        coverUrl: string,
+        readUrl: string,
+        download: {
+            downloadUrl: string,
+            format: string,
+            size: string
+        }
+        buyUrl: string,
+    }
+}
+
+export enum BookSources {
+    Native = "Book Shelf",
+    AnnasArchive = "Anna's Archive",
+    Goodreads = "Goodreads",
+    GoodreadsBooks = "Goodreads Books"
 }
 
 export interface BooksData {
-    books: GoodreadsBook[] | AnnasArchiveBook[],
+    src: string,
+    books: Book[] | AnnasArchiveBook[] | GoodreadsBook[],
     totalResults: number,
     currentPage: number,
 }
