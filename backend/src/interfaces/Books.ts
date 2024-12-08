@@ -29,7 +29,8 @@ export interface BestBook {
     rating: number,
     imageUrl: number,
     genres: string[],
-    amazonLink: string
+    amazonLink: string,
+    author: string
 }
 
 export interface Book {
@@ -61,7 +62,7 @@ export enum BookSources {
 
 export interface BooksData {
     src: string,
-    books: Book[] | AnnasArchiveBook[] | GoodreadsBook[],
+    books: Book[] | AnnasArchiveBook[] | GoodreadsBook[] | BestBook[],
     totalResults: number,
     currentPage: number,
 }

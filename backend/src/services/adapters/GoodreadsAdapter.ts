@@ -20,7 +20,7 @@ export class GoodreadsAdapter implements IBookServiceAdapter {
             }
         };
 
-        const response = await goodreadsApiClient.request(options);
+        const response = await this.apiClient.request(options);
 
         if (!this.validFetchResponse(response)) {
             throw new Error("Invalid Goodreads API response");
@@ -30,7 +30,7 @@ export class GoodreadsAdapter implements IBookServiceAdapter {
             src: BookSources.Goodreads,
             books: this.mapData(response.data),
             totalResults: response.data.totalResults || response.data.length,
-            currentPage: page
+            currentPage: page || 1
         }
     }
 

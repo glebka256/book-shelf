@@ -19,3 +19,11 @@ export const annasArchiveClient = axios.create({
         'x-rapidapi-host': process.env.ANNAS_ARCHIVE_API_HOST
     }
 })
+
+export const booksClient = axios.create({
+    baseURL: process.env.BOOKS_API_BASE_URL,
+    headers: {
+        'x-rapidapi-key': process.env.BOOKS_API_KEY,
+        'x-rapidapi-host': process.env.BOOKS_API_HOST
+    }
+})
