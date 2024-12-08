@@ -3,7 +3,7 @@ import { booksClient } from "../apiClients";
 import { BestBook, BooksData, BookSources} from "@app/interfaces/Books";
 import { IBookServiceAdapter } from "./IBookServiceAdapter";
 
-export class GoodBooksAdapter implements IBookServiceAdapter {
+export class BestBooksAdapter implements IBookServiceAdapter {
     apiClient: AxiosInstance;
 
     constructor() {

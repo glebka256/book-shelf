@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { AnnasArchiveAdapter } from "@app/services/adapters/AnnasArchiveAdapter";
 import { GoodreadsAdapter } from "@app/services/adapters/GoodreadsAdapter";
+import { BestBooksAdapter } from "@app/services/adapters/BestBooksAdapter";
 
 export const getGoodreadsBooks = async (req: Request, res: Response): Promise<void> => {
     const searchQuery = req.params.query;
@@ -41,6 +42,25 @@ export const getAnnasArchiveBooks = async (req: Request, res: Response): Promise
         res.status(200).json(result.books);
     } catch (error) {
         res.status(400).json({ message: "Could not fetch books from Anna's Archive."})
+        return;
+    }
+}
+
+export const getBestBooksByGenre = async (req: Request, res: Response): Promise<void> => {
+    const genre = req.params.genre;
+
+    if (!genre) {
+        res.status(400).json({ message: "Genre to get best books by must be provided." });
+        return;
+    }
+
+    try {
+        const adapter = new BestBooksAdapter();
+        const bestBooksData = await adapter.fetchBooks(genre);
+        res.status(200).json(bestBooksData.books);
+        return;
+    } catch (error) {
+        res.status(400).json({ message: "Could not fetch best books by genre." });
         return;
     }
 }
