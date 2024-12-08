@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { annasArchiveClient, goodreadsApiClient } from "@app/services/apiClient";
+import { annasArchiveClient, goodreadsApiClient } from "@app/services/apiClients";
 import { AnnasArchiveQuery, BooksData } from '@app/interfaces/Books'
 import {
     validGoodreadsResponseData,
@@ -53,7 +53,7 @@ export const getGoodreadsBooks = async (req: Request, res: Response): Promise<vo
     }
 }
 
-export const fetchBooksAnnasArchive = async (query: AnnasArchiveQuery): Promise<BooksData> => {
+const fetchBooksAnnasArchive = async (query: AnnasArchiveQuery): Promise<BooksData> => {
     const params = getAnnasArchiveParams(query);
 
     const options = {
