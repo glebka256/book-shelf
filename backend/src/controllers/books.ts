@@ -64,3 +64,22 @@ export const getBestBooksByGenre = async (req: Request, res: Response): Promise<
         return;
     }
 }
+
+export const searchBestBookById = async (req: Request, res: Response): Promise<void> => {
+    const id = req.params.id;
+
+    if (!id) {
+        res.status(400).json({ message: "Id to search by was not recieved." });
+        return;
+    }
+
+    try {
+        const adapter = new BestBooksAdapter();
+        const bestBookdata = await adapter.searchBook(id);
+        res.status(200).json(bestBookdata);
+        return;
+    } catch (error) {
+        res.status(400).json({ message: `Could not find best book by specified id: ${id}.` });
+        return;
+    }
+}
