@@ -1,6 +1,6 @@
 import { AxiosInstance, AxiosResponse } from "axios";
 import { goodreadsApiClient } from "../apiClients";
-import { BooksData, BookSources, GoodreadsBook, GoodreadsAuthor } from "@app/interfaces/Books";
+import { BooksData, BookSources, GoodreadsBook } from "@app/interfaces/Books";
 import { IBookServiceAdapter } from "./IBookServiceAdapter";
 
 export class GoodreadsAdapter implements IBookServiceAdapter {
@@ -52,10 +52,7 @@ export class GoodreadsAdapter implements IBookServiceAdapter {
         }));
     }
 
-    mapAuthor(authorData: any[]): GoodreadsAuthor[] {
-        return authorData.map((author) => ({
-            id: author.id,
-            name: author.name
-        }));
+    mapAuthor(authorData: any[]): string {
+        return authorData.map((author) => author.name).join(', ');
     }
 }

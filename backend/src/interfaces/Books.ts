@@ -1,15 +1,10 @@
-export interface GoodreadsAuthor {
-    id: string,
-    name: string
-};
-
 export interface GoodreadsBook {
     bookId: string,
     title: string,
     workID: string,
     imageUrl: string,
     bookUrl: string,
-    author: GoodreadsAuthor[],
+    author: string,
     rank: number,
     rating: number,
     publishedYear: string
@@ -23,6 +18,18 @@ export interface AnnasArchiveBook {
     genre: string,
     format: string,
     year: string
+}
+
+export interface BestBook {
+    id: string,
+    title: string,
+    description: string,
+    publicationDate: string,
+    language: string,
+    rating: number,
+    imageUrl: number,
+    genres: string[],
+    amazonLink: string
 }
 
 export interface Book {
