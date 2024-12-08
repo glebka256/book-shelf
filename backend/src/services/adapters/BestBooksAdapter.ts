@@ -23,7 +23,7 @@ export class BestBooksAdapter implements IBookServiceAdapter {
         }
 
         return {
-            src: BookSources.Goodreads,
+            src: BookSources.GoodreadsBooks,
             books: this.mapData(response.data.books),
             totalResults: response.data.totalResults || response.data.books.length,
             currentPage: page || 1
