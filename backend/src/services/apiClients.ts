@@ -27,3 +27,10 @@ export const booksClient = axios.create({
         'x-rapidapi-host': process.env.BOOKS_API_HOST
     }
 })
+
+export const openLibaryClient = axios.create({
+    baseURL: process.env.OPEN_LIBRARY_BASE_URL,
+    headers: {
+        'User-Agent': process.env.OPEN_LIBRARY_USER_AGENT
+    }
+});

@@ -33,6 +33,24 @@ export interface BestBook {
     author: string
 }
 
+export interface OpenLibraryBook {
+    isbn: string,
+    title: string,
+    idGutenberg: string[],
+    idGoodreads: string[],
+    idAmazon: string[],
+    language: string[],
+    publishYear: string,
+    subject: string[],
+    subjectKey: {
+        key: string
+    },
+    ratingAverage: number,
+    ratingSortable: number,
+    author: string,
+    ebookAcess: boolean,
+}
+
 export interface Book {
     id: string,
     title: string,
