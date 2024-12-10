@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { AnnasArchiveAdapter } from "@app/services/adapters/AnnasArchiveAdapter";
 import { GoodreadsAdapter } from "@app/services/adapters/GoodreadsAdapter";
 import { BestBooksAdapter } from "@app/services/adapters/BestBooksAdapter";
+import { Languages } from "@app/interfaces/Books";
+import { OpenLibraryAdapter } from "@app/services/adapters/OpenLibraryAdapter";
 
 export const getGoodreadsBooks = async (req: Request, res: Response): Promise<void> => {
     const searchQuery = req.params.query;
@@ -80,6 +82,27 @@ export const searchBestBookById = async (req: Request, res: Response): Promise<v
         return;
     } catch (error) {
         res.status(400).json({ message: `Could not find best book by specified id: ${id}.` });
+        return;
+    }
+}
+
+export const getOpenLibraryBooks = async (req: Request, res: Response): Promise<void> => {
+    const params = {
+        q: req.params.q !== 'none' ? req.params.q : undefined,
+        author: req.params.author !== 'none' ? req.params.author : undefined,
+        subject: req.params.cat !== 'none' ? req.params.cat : undefined,
+        ebook_access: req.params.access === "public" ? true : false,
+        language: req.params.lang !== 'none' ? req.params.lang as Languages : undefined
+    }
+
+    try {
+        const adapter = new OpenLibraryAdapter();
+        const bookData = await adapter.fetchBooks(params);
+
+        res.status(200).json(bookData);
+        return;
+    } catch (error) {
+        res.status(400).json({ message: `Could not fetch books from Open Library with specified params.` });
         return;
     }
 }
