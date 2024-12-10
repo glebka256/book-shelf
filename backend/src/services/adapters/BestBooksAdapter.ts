@@ -63,7 +63,7 @@ export class BestBooksAdapter implements IBookServiceAdapter {
             rating: book.rating,
             imageUrl: book.imageUrl,
             genres: book.genres,
-            amazonLink: book.string,
+            amazonLink: book.amazonLink,
             author: book.author.name
         }
     }
