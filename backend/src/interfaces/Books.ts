@@ -70,6 +70,13 @@ export interface ClientBook {
 
 export interface StorageBook {
     id: string,
+    meta: {
+        isbn: string,
+        idGutenberg: string[],
+        idGoodreads: string[],
+        idAnnasArchive: string[],
+        idAmazon: string[]
+    },
     title: string,
     author: [],
     subject: string[],
