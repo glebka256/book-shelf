@@ -42,12 +42,9 @@ export interface OpenLibraryBook {
     language: string[],
     publishYear: string,
     subject: string[],
-    subjectKey: {
-        key: string
-    },
     ratingAverage: number,
     ratingSortable: number,
-    author: string,
+    author: string[],
     ebookAcess: boolean,
 }
 
@@ -75,12 +72,20 @@ export enum BookSources {
     Native = "Book Shelf",
     AnnasArchive = "Anna's Archive",
     Goodreads = "Goodreads",
-    GoodreadsBooks = "Goodreads Books"
+    GoodreadsBooks = "Goodreads Books",
+    OpenLibrary = "Open Library"
+}
+
+export enum Languages {
+    English = "eng",
+    French = "fre",
+    Spanish = "spa",
+    Gereman = "ger"
 }
 
 export interface BooksData {
     src: string,
-    books: Book[] | AnnasArchiveBook[] | GoodreadsBook[] | BestBook[],
+    books: Book[] | AnnasArchiveBook[] | GoodreadsBook[] | BestBook[] | OpenLibraryBook[],
     totalResults: number,
     currentPage: number,
 }
