@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { BookSources, Languages } from "@app/interfaces/Books";
-import { configureBookManager } from "@app/config";
+import { configureBookManager } from "@app/config/book-manager";
 
 const bookManager = configureBookManager();
 
