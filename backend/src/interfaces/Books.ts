@@ -48,7 +48,7 @@ export interface OpenLibraryBook {
     ebookAcess: boolean,
 }
 
-export interface Book {
+export interface ClientBook {
     id: string,
     title: string,
     author: string,
@@ -68,6 +68,17 @@ export interface Book {
     }
 }
 
+export interface StorageBook {
+    id: string,
+    title: string,
+    author: [],
+    subject: string[],
+    rating: number,
+    publishedYear: number,
+    language: string[],
+    ebookAccess: boolean
+}
+
 export enum BookSources {
     Native = "Book Shelf",
     AnnasArchive = "Anna's Archive",
@@ -85,7 +96,7 @@ export enum Languages {
 
 export interface BooksData {
     src: string,
-    books: Book[] | AnnasArchiveBook[] | GoodreadsBook[] | BestBook[] | OpenLibraryBook[],
+    books: AnnasArchiveBook[] | GoodreadsBook[] | BestBook[] | OpenLibraryBook[],
     totalResults: number,
     currentPage: number,
 }

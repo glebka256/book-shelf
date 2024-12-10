@@ -2,7 +2,7 @@ import { AxiosInstance, AxiosResponse } from "axios";
 import { openLibaryClient } from "../apiClients";
 import { IBookServiceAdapter } from "./IBookServiceAdapter";
 import { Languages, OpenLibraryBook, BookSources, BooksData } from "@app/interfaces/Books";
-import { convertObjectToArray, getUrlSearchParams } from "@app/utils";
+import { convertObjectToArray } from "@app/utils";
 
 export class OpenLibraryAdapter implements IBookServiceAdapter {
     apiClient: AxiosInstance;
