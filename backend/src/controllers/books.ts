@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
-import { AnnasArchiveAdapter } from "@app/services/adapters/AnnasArchiveAdapter";
-import { GoodreadsAdapter } from "@app/services/adapters/GoodreadsAdapter";
-import { BestBooksAdapter } from "@app/services/adapters/BestBooksAdapter";
-import { Languages } from "@app/interfaces/Books";
-import { OpenLibraryAdapter } from "@app/services/adapters/OpenLibraryAdapter";
+import { BookSources, Languages } from "@app/interfaces/Books";
+import { configureBookManager } from "@app/config";
+
+const bookManager = configureBookManager();
 
 export const getGoodreadsBooks = async (req: Request, res: Response): Promise<void> => {
     const searchQuery = req.params.query;
@@ -15,8 +14,7 @@ export const getGoodreadsBooks = async (req: Request, res: Response): Promise<vo
     }
 
     try {
-        const adapter = new GoodreadsAdapter();
-        const goodreadsBookData = await adapter.fetchBooks(searchQuery, pageNumber);
+        const goodreadsBookData = await bookManager.fetchBooks(BookSources.Goodreads, searchQuery, pageNumber);
         
         res.status(200).json(goodreadsBookData.books);
         return;
@@ -39,8 +37,7 @@ export const getAnnasArchiveBooks = async (req: Request, res: Response): Promise
     }
 
     try {
-        const adapter = new AnnasArchiveAdapter();
-        const result = await adapter.fetchBooks(params);
+        const result = await bookManager.fetchBooks(BookSources.AnnasArchive, params);
         res.status(200).json(result.books);
     } catch (error) {
         res.status(400).json({ message: "Could not fetch books from Anna's Archive."})
@@ -57,8 +54,7 @@ export const getBestBooksByGenre = async (req: Request, res: Response): Promise<
     }
 
     try {
-        const adapter = new BestBooksAdapter();
-        const bestBooksData = await adapter.fetchBooks(genre);
+        const bestBooksData = await bookManager.fetchBooks(BookSources.GoodreadsBooks, genre);
         res.status(200).json(bestBooksData.books);
         return;
     } catch (error) {
@@ -76,8 +72,7 @@ export const searchBestBookById = async (req: Request, res: Response): Promise<v
     }
 
     try {
-        const adapter = new BestBooksAdapter();
-        const bestBookdata = await adapter.searchBook(id);
+        const bestBookdata = await bookManager.searchBookById(BookSources.GoodreadsBooks, id);
         res.status(200).json(bestBookdata);
         return;
     } catch (error) {
@@ -96,8 +91,7 @@ export const getOpenLibraryBooks = async (req: Request, res: Response): Promise<
     }
 
     try {
-        const adapter = new OpenLibraryAdapter();
-        const bookData = await adapter.fetchBooks(params);
+        const bookData = await bookManager.fetchBooks(BookSources.OpenLibrary, params);
 
         res.status(200).json(bookData);
         return;

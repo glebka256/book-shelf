@@ -30,7 +30,7 @@ export class BestBooksAdapter implements IBookServiceAdapter {
         }
     }
 
-    async searchBook(id: string): Promise<BestBook> {
+    async searchBookById(id: string): Promise<BestBook> {
         const options = {
             method: 'GET',
             url: `/books/${id}`,
