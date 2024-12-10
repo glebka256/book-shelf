@@ -12,8 +12,10 @@ export class OpenLibraryAdapter implements IBookServiceAdapter {
     }
 
     async fetchBooks(query: Object, page?: number): Promise<BooksData> {
+        const formattedQuery: OpenLibraryQuery = this.formQuery(query);
+
         const response = await openLibaryClient.get('/search.json', {
-            params: { q: this.formQuery(query) }
+            params: { ...formattedQuery }
         });
 
         if (!this.validFetchResponse(response)) {
@@ -28,16 +30,16 @@ export class OpenLibraryAdapter implements IBookServiceAdapter {
         }
     }
 
-    formQuery(query: any): string {
-        const queryParams: openLibraryQuery = {
-            q: query.q || '',
-            author: query.author || '',
-            subject: query.subject || '',
-            ebook_access: query.freeEbook === true ? 'public' : '',
-            language: query.language
+    formQuery(query: any): OpenLibraryQuery {
+        const queryParams: OpenLibraryQuery = {
+            q: query.q || undefined,
+            author: query.author || undefined,
+            subject: query.subject || undefined,
+            ebook_access: query.freeEbook === true ? 'public' : undefined,
+            language: query.language || undefined
         }
 
-        return getUrlSearchParams(queryParams);
+        return queryParams;
     }
 
     validFetchResponse(response: AxiosResponse): boolean {
@@ -62,7 +64,7 @@ export class OpenLibraryAdapter implements IBookServiceAdapter {
     }
 }
 
-interface openLibraryQuery {
+interface OpenLibraryQuery {
     q?: string,
     author?: string,
     subject?: string,
