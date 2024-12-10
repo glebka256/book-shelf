@@ -7,9 +7,14 @@ import { BookSources } from '@app/interfaces/Books';
 
 export const configureBookManager = (): BookManager => {
     const bookManager = new BookManager();
+
     bookManager.registerAdapter(BookSources.AnnasArchive ,new AnnasArchiveAdapter());
     bookManager.registerAdapter(BookSources.Goodreads, new GoodreadsAdapter());
     bookManager.registerAdapter(BookSources.GoodreadsBooks, new BestBooksAdapter());
     bookManager.registerAdapter(BookSources.OpenLibrary, new OpenLibraryAdapter());
+    
     return bookManager;
 };
+
+const bookManager = configureBookManager();
+export default bookManager;

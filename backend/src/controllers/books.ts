@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { BookSources, Languages } from "@app/interfaces/Books";
-import { configureBookManager } from "@app/config/book-manager";
+import bookManager from "@app/config/book-manager";
 import { 
     createBook, 
     deleteBookById, 
@@ -8,8 +8,6 @@ import {
     getBooks, 
     updateBookById 
 } from "@app/models/book";
-
-const bookManager = configureBookManager();
 
 export const getBook = async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id;
