@@ -27,7 +27,7 @@ export const getBooksByLanguages = (languages: [String]) => {
     return BookModel.find({ language: { $in: languages } });
 }
 
-export const getBooksByCritiria = (
+export const getBooksByCriteria = (
     genres: string[], 
     authors: string[], 
     languages: string[]
@@ -50,6 +50,6 @@ export const createBook = (values: Record<string, any>) => {
     new BookModel(values).save().then((user) => user.toObject());
 }
 export const deleteBookById = (id: string) => BookModel.findOneAndDelete({ _id: id });
-export const updateBookById = (id: string, values: Record<string, any>) => {
-    BookModel.findByIdAndUpdate(id, values, { new: true }).exec();
+export const updateBookById = async (id: string, values: Record<string, any>) => {
+    return await BookModel.findByIdAndUpdate(id, values, { new: true }).exec();
 }
