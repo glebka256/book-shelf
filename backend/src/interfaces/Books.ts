@@ -69,7 +69,6 @@ export interface ClientBook {
 }
 
 export interface StorageBook {
-    id: string,
     meta: {
         isbn: string,
         idGutenberg: string[],
@@ -78,7 +77,7 @@ export interface StorageBook {
         idAmazon: string[]
     },
     title: string,
-    author: [],
+    author: string[],
     subject: string[],
     rating: number,
     publishedYear: number,
