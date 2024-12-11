@@ -13,3 +13,18 @@ export const getUrlSearchParams = (query: Object):string  => {
 
     return params.toString();
 }
+
+export const dynamicLoader = (message: string, delay: number = 100) => {
+    const spinnerFrames = ['|', '/', '-', '\\'];
+    let currenFrame = 0;
+
+    const interval = setInterval(() => {
+        process.stdout.write(`\r${message} ${spinnerFrames[currenFrame]}`);
+        currenFrame = (currenFrame + 1) % spinnerFrames.length;
+    }, delay);
+
+    return () => {
+        clearInterval(interval);
+        process.stdout.write('r');
+    }
+}
