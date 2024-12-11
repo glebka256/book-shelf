@@ -6,6 +6,7 @@
   "scripts": {
     "start": "nodemon",
     "dev": "nodemon",
+    "scraper": "ts-node -r tsconfig-paths/register src/services/scraper/scraperHandler.ts",
     "test": "jest"
   },
   "jest": {
