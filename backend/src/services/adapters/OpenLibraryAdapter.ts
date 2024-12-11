@@ -2,7 +2,6 @@ import { AxiosInstance, AxiosResponse } from "axios";
 import { openLibaryClient } from "../apiClients";
 import { IBookServiceAdapter } from "./IBookServiceAdapter";
 import { Languages, OpenLibraryBook, BookSources, BooksData } from "@app/interfaces/Books";
-import { convertObjectToArray } from "@app/utils";
 
 export class OpenLibraryAdapter implements IBookServiceAdapter {
     apiClient: AxiosInstance;
@@ -47,20 +46,51 @@ export class OpenLibraryAdapter implements IBookServiceAdapter {
     }
 
     mapData(rawData: any[]): OpenLibraryBook[] {
-        return rawData.map((book) => ({
+        const filteredBooks = rawData.filter((book) => {
+            return (
+                book.isbn &&
+                book.title &&
+                book.subject &&
+                book.author_name &&
+                book.ebook_access
+            );
+        })
+
+        const resultBooks: OpenLibraryBook[] = [];
+
+        for (const book of filteredBooks) {
+            try {
+                resultBooks.push(this.mapBook(book));
+            } catch (error) {
+                // skipping book
+            }
+        }
+
+        return resultBooks;
+    }
+
+    mapBook(book: any): OpenLibraryBook {
+        return {
             isbn: book.isbn[0],
             title: book.title,
-            idGutenberg: book.id_project_gutenberg,
-            idGoodreads: book.id_goodreads,
-            idAmazon: book.id_amazon,
-            language: Object.values(book.language),
-            publishYear: book.publish_year[0],
+            idGutenberg: book.id_project_gutenberg || [],
+            idGoodreads: book.id_goodreads || [],
+            idAmazon: book.id_amazon || [],
+            language: Object.values(book.language) || [book.language] || ['eng'],
+            publishYear: book.publish_year[0] || new Date().getFullYear(), // current year
             subject: Object.values(book.subject),
-            ratingAverage: book.ratings_average,
-            ratingSortable: book.ratings_sortable,
+            ratingAverage: book.ratings_average || 0,
+            ratingSortable: book.ratings_sortable || book.ratings_average || 0,
             author: Object.values(book.author_name),
-            ebookAcess: book.ebook_access == "public" ? true : false,
-        }));
+            ebookAcess: this.getEbookAcessStatus(book.ebook_access)
+        }
+    }
+
+    getEbookAcessStatus(status: string): boolean {
+        if (status === 'public' || 'borrowable') {
+            return true;
+        }
+        return false;
     }
 }
 

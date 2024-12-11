@@ -1,4 +1,4 @@
-export const convertObjectToArray = (obj: any):Array<any> => {
+export const convertObjectToArrayWithIndices = (obj: any):Array<any> => {
     return Object.keys(obj).map((key) => [key, obj[key]]);
 }
 
