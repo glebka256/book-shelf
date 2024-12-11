@@ -27,6 +27,7 @@ export class BookScraper {
         return totalSaved;
         } catch (error) {
             console.error("Could not populate database with data from Open Library.");
+            console.error(`Query: ${searchQuery} Error: `, error);
             return totalSaved;
         }
     }
