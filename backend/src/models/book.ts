@@ -1,6 +1,13 @@
 import mongoose from "mongoose";
 
 const BookSchema = new mongoose.Schema({
+    meta: {
+        isbn: { type: String, required: true },
+        idGutenberg: { type: [String], required: true },
+        idGoodreads: { type: [String], required: true },
+        idAnnasArchive: { type: [String], required: true },
+        idAmazon: { type: [String], required: true }
+    },
     type: { type: String, requried: true },
     title: { type: String, reuqired: true },
     author: { type: [String], required: true },
@@ -47,7 +54,7 @@ export const getBooksByCriteria = (
 }
 
 export const createBook = (values: Record<string, any>) => {
-    new BookModel(values).save().then((user) => user.toObject());
+    new BookModel(values).save().then((book) => book.toObject());
 }
 export const deleteBookById = (id: string) => BookModel.findOneAndDelete({ _id: id });
 export const updateBookById = async (id: string, values: Record<string, any>) => {
