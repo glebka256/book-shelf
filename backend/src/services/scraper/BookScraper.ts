@@ -2,10 +2,10 @@ import bookManager from "@app/config/book-manager";
 import { BooksData, BookSources, StorageBook } from "@app/interfaces/Books";
 import { getBookByTitle, createBook } from "@app/models/book";
 
-const desiredGenres = ["fantasy"];
-
 export class BookScraper {
-    async populateWithTopOfGenre(genres: string[]): Promise<void> {
+    async populateWithTopOfGenre(genres: string[]): Promise<number> {
+        let totalSaved: number = 0;
+
         const searchQuery = {
             subject: genres.join('&')
         }
@@ -17,26 +17,29 @@ export class BookScraper {
                 console.error(`No data returned from Open Library with this query: ${searchQuery}`);
             }
 
+            const books = this.mapAsStorageBooks(bookData.books);
 
-        const books = this.mapAsStorageBooks(bookData.books);
+            for (const book of books) {
+                const bookSaved = await this.saveBookIfNotExists(book);
+                totalSaved += bookSaved;
+            }
 
-        for (const book of books) {
-            this.saveBookIfNotExists(book);
-        }
-
+        return totalSaved;
         } catch (error) {
-            console.error("Could not populate with data from Open Library.");
+            console.error("Could not populate database with data from Open Library.");
+            return totalSaved;
         }
     }
 
-    async saveBookIfNotExists(book: StorageBook) {
+    async saveBookIfNotExists(book: StorageBook): Promise<number> {
         const existingBook = await getBookByTitle(book.title);
 
         if (existingBook) {
-            return;
+            return 0;
         }
 
         createBook(book);
+        return 1;
     }
 
     mapAsStorageBooks(rawBooks: any[]): StorageBook[] {
