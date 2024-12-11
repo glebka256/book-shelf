@@ -53,12 +53,12 @@ export class OpenLibraryAdapter implements IBookServiceAdapter {
             idGutenberg: book.id_project_gutenberg,
             idGoodreads: book.id_goodreads,
             idAmazon: book.id_amazon,
-            language: convertObjectToArray(book.language),
+            language: Object.values(book.language),
             publishYear: book.publish_year[0],
-            subject: convertObjectToArray(book.subject),
+            subject: Object.values(book.subject),
             ratingAverage: book.ratings_average,
             ratingSortable: book.ratings_sortable,
-            author: convertObjectToArray(book.author_name),
+            author: Object.values(book.author_name),
             ebookAcess: book.ebook_access == "public" ? true : false,
         }));
     }
