@@ -73,6 +73,7 @@ export class OpenLibraryAdapter implements IBookServiceAdapter {
         return {
             isbn: book.isbn[0],
             title: book.title,
+            coverId: book.cover_i,
             idGutenberg: book.id_project_gutenberg || [],
             idGoodreads: book.id_goodreads || [],
             idAmazon: book.id_amazon || [],

@@ -36,6 +36,7 @@ export interface BestBook {
 export interface OpenLibraryBook {
     isbn: string,
     title: string,
+    coverId: string,
     idGutenberg: string[],
     idGoodreads: string[],
     idAmazon: string[],
@@ -98,7 +99,7 @@ export enum Languages {
     English = "eng",
     French = "fre",
     Spanish = "spa",
-    Gereman = "ger"
+    German = "ger"
 }
 
 export interface BooksData {
