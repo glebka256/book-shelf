@@ -48,7 +48,7 @@ const desiredSubjects = [
     "mythology"
 ];
 
-const REQUEST_DELAY = 30000 // ms
+const REQUEST_DELAY = 3000 // ms
 
 function setupScraper(): void {
     dotenv.config();
