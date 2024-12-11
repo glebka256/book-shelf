@@ -3,16 +3,66 @@ import { BookScraper } from "./BookScraper";
 import { connectDB } from '@app/config/db';
 import { dynamicLoader } from "@app/utils";
 
-const desiredGenres = ["fiction", "non-fiction", "science"];
+const desiredSubjects = [
+    "fiction", 
+    "non-fiction", 
+    "science", 
+    "fantasy", 
+    "mystery", 
+    "romance", 
+    "thriller", 
+    "horror", 
+    "historical fiction", 
+    "science fiction", 
+    "literary fiction", 
+    "young adult", 
+    "children's books", 
+    "classics", 
+    "adventure", 
+    "crime", 
+    "paranormal", 
+    "dystopian", 
+    "biography", 
+    "self-help", 
+    "philosophy", 
+    "psychology", 
+    "sociology", 
+    "politics", 
+    "economics", 
+    "business", 
+    "arts", 
+    "travel", 
+    "health", 
+    "cookbooks", 
+    "poetry", 
+    "religion", 
+    "spirituality", 
+    "parenting", 
+    "sports", 
+    "music", 
+    "humor", 
+    "true crime", 
+    "urban fantasy", 
+    "graphic novels", 
+    "magical realism", 
+    "mythology"
+];
+
+const REQUEST_DELAY = 30000 // ms
 
 function setupScraper(): void {
     dotenv.config();
     connectDB();
 }
 
+function delay(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 async function main(): Promise<void> {
     console.log("Setting up scraper environment...");
     setupScraper();
+    console.log(`Request timeout set to: ${REQUEST_DELAY}ms.`);
 
     console.log("Starting book scraper...");
 
@@ -22,8 +72,9 @@ async function main(): Promise<void> {
 
     const stopLoader = dynamicLoader("Scraping books");
 
-    for (const genre of desiredGenres) {
-        booksSaved += await scraper.populateWithTopOfGenre([genre]);
+    for (const subject of desiredSubjects) {
+        booksSaved += await scraper.populateWithTopOfGenre([subject]);
+        await delay(REQUEST_DELAY);
     }
 
     stopLoader();
