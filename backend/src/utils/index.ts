@@ -1,3 +1,5 @@
+import * as readline from 'readline';
+
 export const convertObjectToArrayWithIndices = (obj: any):Array<any> => {
     return Object.keys(obj).map((key) => [key, obj[key]]);
 }
@@ -29,7 +31,16 @@ export const dynamicLoader = (message: string, delay: number = 100) => {
     }
 }
 
-export const dynamicLog = (staticMessage: string, dynamicMessage: string): void => {
-    console.clear();
-    console.log(staticMessage, dynamicMessage)
-}
+// Displays message with static and dynamic parts
+export const dynamicLog = (() => {
+    let lastLines: number = 0;
+
+    return (staticMessage: string, dynamicMessage: string): void => {
+        readline.cursorTo(process.stdout, 0);
+        readline.clearLine(process.stdout, 0);
+
+        process.stdout.write(`${staticMessage}${dynamicMessage}\n`);
+
+        lastLines++;
+    };
+})();
