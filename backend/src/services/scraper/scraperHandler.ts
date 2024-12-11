@@ -77,7 +77,10 @@ async function main(): Promise<void> {
     for (const subject of desiredSubjects) {
         dynamicLog("Currently processed subject: ", subject);
 
-        booksSaved += await scraper.populateWithTopOfGenre([subject]);
+        const booksOfGenre = await scraper.populateWithTopOfGenre([subject]);
+        console.log(`Proccesed ${booksOfGenre} books of subject ${subject}`);
+
+        booksSaved +=  booksOfGenre;
         await delay(REQUEST_DELAY);
     }
 
