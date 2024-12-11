@@ -28,3 +28,8 @@ export const dynamicLoader = (message: string, delay: number = 100) => {
         process.stdout.write('r');
     }
 }
+
+export const dynamicLog = (staticMessage: string, dynamicMessage: string): void => {
+    console.clear();
+    console.log(staticMessage, dynamicMessage)
+}

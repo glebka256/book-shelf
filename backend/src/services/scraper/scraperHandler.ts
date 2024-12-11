@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import { BookScraper } from "./BookScraper";
 import { connectDB } from '@app/config/db';
-import { dynamicLoader } from "@app/utils";
+import { dynamicLoader, dynamicLog } from "@app/utils";
 
 const desiredSubjects = [
     "fiction", 
@@ -73,6 +73,8 @@ async function main(): Promise<void> {
     const stopLoader = dynamicLoader("Scraping books");
 
     for (const subject of desiredSubjects) {
+        dynamicLog("Currently processed subject: ", subject);
+
         booksSaved += await scraper.populateWithTopOfGenre([subject]);
         await delay(REQUEST_DELAY);
     }
