@@ -8,7 +8,7 @@ const BookSchema = new mongoose.Schema({
         idAnnasArchive: { type: [String], required: true },
         idAmazon: { type: [String], required: true }
     },
-    type: { type: String, requried: true },
+    coverUrl: { type: String, requried: true },
     title: { type: String, reuqired: true },
     author: { type: [String], required: true },
     subject: { type: [String], required: true },

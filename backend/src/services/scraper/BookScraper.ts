@@ -52,6 +52,7 @@ export class BookScraper {
                 idAnnasArchive: ["unknown"],
                 idAmazon: book.idAmazon
             },
+            coverUrl: this.getCoverImageUrl(book.isbn),
             title: book.title,
             author: book.author,
             subject: book.subject,
@@ -60,5 +61,9 @@ export class BookScraper {
             language: book.language,
             ebookAccess: book.ebookAcess
         }));
+    }
+
+    getCoverImageUrl(isbn: string): string {
+        return `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg`;
     }
 }

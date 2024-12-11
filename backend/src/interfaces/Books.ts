@@ -76,6 +76,7 @@ export interface StorageBook {
         idAnnasArchive: string[],
         idAmazon: string[]
     },
+    coverUrl: string,
     title: string,
     author: string[],
     subject: string[],
