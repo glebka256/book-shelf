@@ -1,6 +1,6 @@
-import { BooksData, BookSources, ClientBook } from "@app/interfaces/Books";
+import { BooksData, BookSources, DownloadInfo } from "@app/interfaces/Books";
 import { IBookServiceAdapter } from "./adapters/IBookServiceAdapter";
-import { addBookClientProperty, getBookById } from "@app/models/book";
+import { AnnasArchiveAdapter } from "./adapters/AnnasArchiveAdapter";
 
 export class BookManager {
     private adapters: Map<BookSources, IBookServiceAdapter>;
@@ -33,19 +33,8 @@ export class BookManager {
         return adapter.searchBookById(id);
     }
 
-    async extendBookData(extendedBook: ClientBook): Promise<void>{
-        const existingBook = await getBookById(extendedBook.id);
-
-        if (!existingBook) {
-            console.error(`Book with id ${extendedBook.id} does not exist.`);
-            return;
-        }
-
-        const { id, ...extendedBookWithoutId } = extendedBook;
-        try {
-            await addBookClientProperty(existingBook.id, extendedBookWithoutId);
-        } catch (error) {
-            console.error(`Could not extend book with id: ${id}`);
-        }
+    async getDownloads(title: string): Promise<DownloadInfo> {
+        const adapter = new AnnasArchiveAdapter();
+        return adapter.getDownloadsForTitle(title);
     }
 }

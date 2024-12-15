@@ -14,6 +14,7 @@ export interface AnnasArchiveBook {
     title: string,
     author: string,
     imgUrl: string,
+    md5: string,
     size: string,
     genre: string,
     format: string,
@@ -47,6 +48,12 @@ export interface OpenLibraryBook {
     ratingSortable: number,
     author: string[],
     ebookAcess: boolean,
+}
+
+export interface DownloadInfo {
+    urls: string[],
+    format: string,
+    size: string
 }
 
 export interface ClientBook {
