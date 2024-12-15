@@ -1,4 +1,5 @@
 import * as readline from 'readline';
+import { StorageBook } from '@app/interfaces/Books';
 
 export const convertObjectToArrayWithIndices = (obj: any):Array<any> => {
     return Object.keys(obj).map((key) => [key, obj[key]]);
@@ -16,6 +17,9 @@ export const getUrlSearchParams = (query: Object):string  => {
     return params.toString();
 }
 
+/**
+ * Displays message with ascii loading animation next to it.
+ */
 export const dynamicLoader = (message: string, delay: number = 100) => {
     const spinnerFrames = ['|', '/', '-', '\\'];
     let currenFrame = 0;
@@ -31,7 +35,9 @@ export const dynamicLoader = (message: string, delay: number = 100) => {
     }
 }
 
-// Displays message with static and dynamic parts
+/**
+ * Displays message with static and dynamic parts.
+ */
 export const dynamicLog = (() => {
     let lastLines: number = 0;
 
@@ -44,3 +50,7 @@ export const dynamicLog = (() => {
         lastLines++;
     };
 })();
+
+export const extractBookFromDoc = (bookDoc: any[]): StorageBook[] => {
+    return bookDoc.map((book) => book._doc as StorageBook);
+}
