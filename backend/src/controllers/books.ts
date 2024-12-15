@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { BookSources, Languages } from "@app/interfaces/Books";
+import { RecommendService } from "@app/services/RecommendService";
 import bookManager from "@app/config/book-manager";
 import { 
     createBook, 
@@ -8,6 +9,7 @@ import {
     getBooks, 
     updateBookById 
 } from "@app/models/book";
+import { extractBookFromDoc } from "@app/utils";
 
 export const getBook = async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id;
@@ -69,6 +71,21 @@ export const deleteBook = async (req: Request, res: Response): Promise<void> => 
         res.status(201).json(deletedBook);
     } catch (error) {
         const errorMessage = "Could not update book with specified id";
+        console.error(`${errorMessage}: `, error);
+        res.status(400).json({ message: `${errorMessage}.` });
+    }
+}
+
+export const getGeneralPopular = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const page = parseInt(req.params.page);
+        const limit = req.params.limit ? parseInt(req.params.limit) : 50;
+
+        const defaultRecommend = new RecommendService(); 
+        const popularBooks = await defaultRecommend.getPopularBooks(page, limit);
+        res.status(200).json(extractBookFromDoc(popularBooks));
+    } catch (error) {
+        const errorMessage = "Could not get most popular books of all subjects.";
         console.error(`${errorMessage}: `, error);
         res.status(400).json({ message: `${errorMessage}.` });
     }
