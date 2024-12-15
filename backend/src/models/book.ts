@@ -8,15 +8,24 @@ const BookSchema = new mongoose.Schema({
         idAnnasArchive: { type: [String], required: true },
         idAmazon: { type: [String], required: true }
     },
-    coverUrl: { type: String, requried: true },
-    title: { type: String, reuqired: true },
+    coverUrl: { type: String, required: true },
+    title: { type: String, required: true },
     author: { type: [String], required: true },
     subject: { type: [String], required: true },
     rating: { type: Number, required: true },
     publishedYear: { type: Number, required: true },
     language: { type: [String], required: true },
     ebookAccess: { type: Boolean, required: true },
-    clientData: { type: [Object], required: false }
+    link: { type: {
+        complete: { type: Boolean, default: false },
+        readUrl: { type: String, required: false },
+        download: {
+            downloadUrl: { type: String, required: false },
+            format: { type: String, required: false },
+            size: { type: String, required: false }
+        },
+        buyUrl: { type: String, required: false }
+    }, required: false }
 });
 
 const BookModel = mongoose.model('Book', BookSchema);
@@ -72,10 +81,12 @@ export const addBookProperty = async (id: string, newProperty: Record<string, an
 export const addBookClientProperty = (id: string, clientData: any) => {
     return addBookProperty(id, { "clientData": clientData });
 }
-export const clientDataExists = async (id: string) => {
+export const linkExists = async (id: string) => {
     const book = await BookModel.findById(id).exec();
     if (!book) {
         return false;
     }
-    return book.clientData !== undefined && book.clientData !== null;
+    return book.link !== undefined 
+    && book.link !== null 
+    && Object.keys(book.link).length > 1;
 }
