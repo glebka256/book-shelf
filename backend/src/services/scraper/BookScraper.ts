@@ -49,7 +49,7 @@ export class BookScraper {
                 isbn: book.isbn,
                 idGutenberg: book.idGutenberg,
                 idGoodreads: book.idGoodreads,
-                idAnnasArchive: [],
+                idAnnasArchive: ["unknown"],
                 idAmazon: book.idAmazon
             },
             coverUrl: this.getCoverImageUrl(book.coverId),
