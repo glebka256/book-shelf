@@ -50,6 +50,53 @@ const desiredSubjects = [
     "mythology"
 ];
 
+const additionalSubjects = [
+    "steampunk", 
+    "cyberpunk", 
+    "post-apocalyptic", 
+    "historical_romance", 
+    "military_fiction", 
+    "western", 
+    "space_opera", 
+    "speculative_fiction", 
+    "satire", 
+    "drama", 
+    "folklore", 
+    "fairy_tales", 
+    "short_stories", 
+    "nature", 
+    "gardening", 
+    "environmental", 
+    "astronomy", 
+    "astrology", 
+    "physics", 
+    "mathematics", 
+    "engineering", 
+    "computers_and_technology", 
+    "art_history", 
+    "design", 
+    "architecture", 
+    "history", 
+    "military_history", 
+    "education", 
+    "linguistics", 
+    "law", 
+    "medicine", 
+    "anatomy", 
+    "nutrition", 
+    "fitness", 
+    "anthropology", 
+    "archaeology", 
+    "geography", 
+    "ethics", 
+    "fairy_fantasy", 
+    "pirate_fiction", 
+    "espionage", 
+    "medical_thriller", 
+    "political_thriller", 
+    "noir"
+];
+
 const REQUEST_DELAY = 3000 // ms
 
 function setupScraper(): void {
@@ -74,7 +121,7 @@ async function main(): Promise<void> {
 
     const stopLoader = dynamicLoader("Scraping books");
 
-    for (const subject of desiredSubjects) {
+    for (const subject of additionalSubjects) {
         dynamicLog("Currently processed subject: ", subject);
 
         const booksOfGenre = await scraper.populateWithTopOfGenre([subject]);
