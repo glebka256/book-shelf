@@ -15,7 +15,8 @@ const BookSchema = new mongoose.Schema({
     rating: { type: Number, required: true },
     publishedYear: { type: Number, required: true },
     language: { type: [String], required: true },
-    ebookAccess: { type: Boolean, required: true }
+    ebookAccess: { type: Boolean, required: true },
+    clientData: { type: [Object], required: false }
 });
 
 const BookModel = mongoose.model('Book', BookSchema);
@@ -59,4 +60,22 @@ export const createBook = (values: Record<string, any>) => {
 export const deleteBookById = (id: string) => BookModel.findOneAndDelete({ _id: id });
 export const updateBookById = async (id: string, values: Record<string, any>) => {
     return await BookModel.findByIdAndUpdate(id, values, { new: true }).exec();
+}
+
+export const addBookProperty = async (id: string, newProperty: Record<string, any>) => {
+    return await BookModel.findByIdAndUpdate(
+        id,
+        { $set: newProperty },
+        { new: true }
+    ).exec();
+}
+export const addBookClientProperty = (id: string, clientData: any) => {
+    return addBookProperty(id, { "clientData": clientData });
+}
+export const clientDataExists = async (id: string) => {
+    const book = await BookModel.findById(id).exec();
+    if (!book) {
+        return false;
+    }
+    return book.clientData !== undefined && book.clientData !== null;
 }
