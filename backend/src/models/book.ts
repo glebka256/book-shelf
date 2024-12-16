@@ -21,7 +21,10 @@ const BookSchema = new mongoose.Schema({
         readUrl: { type: String, required: false },
         downloadUrl: { type: String, required: false },
         format: { type: String, required: false },
-        size: { type: String, required: false },
+        size: {
+            value: { type: Number, required: false },
+            metric: { type: String, required: false }
+        },
         buyUrl: { type: String, required: false }
     }, required: false }
 });

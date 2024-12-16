@@ -1,5 +1,6 @@
 import * as readline from 'readline';
 import { StorageBook } from '@app/interfaces/Books';
+import { FileSizeMetric } from '@app/interfaces/Util';
 
 export const convertObjectToArrayWithIndices = (obj: any):Array<any> => {
     return Object.keys(obj).map((key) => [key, obj[key]]);
@@ -53,4 +54,22 @@ export const dynamicLog = (() => {
 
 export const extractBookFromDoc = (bookDoc: any[]): StorageBook[] => {
     return bookDoc.map((book) => book._doc as StorageBook);
+}
+
+/**
+ * Splits string fileSize into value and metric. Defaults to bytes if no metric provided.
+ * @param fileSize - combined string of value and metric
+ * @returns - numric size with it's metric as string 
+ */
+export const splitFileSize = (fileSize: string): { value: number, metric: FileSizeMetric } => {
+    for (const metric of Object.values(FileSizeMetric)) {
+        if (fileSize.endsWith(metric)) {
+            const valueString = fileSize.replace(metric, '').trim();
+            const value = parseFloat(valueString);
+            return { value, metric };
+        }
+    }
+
+    const value = parseFloat(fileSize.trim());
+    return { value, metric: FileSizeMetric.Bytes };
 }

@@ -2,6 +2,7 @@ import { AxiosInstance, AxiosResponse } from "axios";
 import { IBookServiceAdapter } from "./IBookServiceAdapter";
 import { annasArchiveClient } from "../apiClients";
 import { BooksData, BookSources, AnnasArchiveBook, DownloadInfo } from "@app/interfaces/Books";
+import { splitFileSize } from "@app/utils";
 
 export class AnnasArchiveAdapter implements IBookServiceAdapter {
     apiClient: AxiosInstance;
@@ -52,10 +53,15 @@ export class AnnasArchiveAdapter implements IBookServiceAdapter {
             downloadUrls.concat(result);
         }
 
+        const fileSize = splitFileSize(books[0].size);
+
         return {
             urls: downloadUrls,
             format: books[0].format,
-            size: books[0].size
+            size: {
+                value: fileSize.value,
+                metric: fileSize.metric
+            }
         };
     }
 

@@ -1,3 +1,5 @@
+import { FileSizeMetric } from "./Util"
+
 export interface GoodreadsBook {
     bookId: string,
     title: string,
@@ -53,7 +55,10 @@ export interface OpenLibraryBook {
 export interface DownloadInfo {
     urls: string[],
     format: string,
-    size: string
+    size: {
+        value: number,
+        metric: FileSizeMetric
+    }
 }
 
 export interface ClientBook {
@@ -64,13 +69,14 @@ export interface ClientBook {
     rating: number,
     publishedYear: number,
     language: string[],
-    links: {
+    link: {
         coverUrl: string,
         readUrl: string,
-        download: {
-            downloadUrl: string,
-            format: string,
-            size: string
+        downloadUrl: string,
+        format: string,
+        size: {
+            value: number,
+            metric: FileSizeMetric
         }
         buyUrl: string,
     }
@@ -98,7 +104,10 @@ export interface StorageBook {
         readUrl: string,
         downloadUrl: string,
         format: string,
-        size: string,
+        size: {
+            value: number,
+            metric: FileSizeMetric
+        }
         buyUrl: string,
     }
 }
