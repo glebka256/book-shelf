@@ -1,4 +1,4 @@
-import { BooksData, BookSources, DownloadInfo, ProjectGutenbergBook } from "@app/interfaces/Books";
+import { BookLink, BooksData, BookSources, DownloadInfo, ProjectGutenbergBook } from "@app/interfaces/Books";
 import { IBookServiceAdapter } from "./adapters/IBookServiceAdapter";
 import { AnnasArchiveAdapter } from "./adapters/AnnasArchiveAdapter";
 import { GutenbergAdapter } from "./adapters/GutenbergAdapter";
@@ -46,7 +46,7 @@ export class BookManager {
     async lookupBook(id: string): Promise<ClientBook> {
         const book = await getBookById(id);
 
-        if (linkExists(id) && book.link.complete) {
+        if (await linkExists(id)) {
             return this.mapBookforClient(book as StorageBook);
         }
 
@@ -60,15 +60,19 @@ export class BookManager {
         const book = (await getBookById(id)) as StorageBook;
         const desiredFormat = 'epub';
 
-        const download = await this.getGutenbergDownloads(book.title, desiredFormat);
+        const download = await this.getGutenbergDownloads(book.meta.idGutenberg[0], desiredFormat);
         if (download.urls.length !== 0) {
-            book.link.downloadUrl = download.urls[0],
-            book.link.format = download.format || desiredFormat,
-            book.link.size.value = download.size.value || 0,
-            book.link.size.metric = download.size.metric || FileSizeMetric.Bytes
-        }
+            const link = {
+                downloadUrl: download.urls[0],
+                format: download.format || desiredFormat,
+                size: {
+                    value: download.size.value || 0,
+                    metric: download.size.metric || FileSizeMetric.Bytes
+                },
+            }
 
-        book.link.complete = false;
+            book.link = this.mapBookLink(link);
+        }
 
         return this.mapBookforClient(book);
     }
@@ -81,7 +85,7 @@ export class BookManager {
             return;
         }
 
-        const linkData = this.mapBookForStorage(extendedBook);
+        const linkData = this.mapBookForStorage(extendedBook.link);
         try {
             await addBookLinkProperty(existingBook.id, linkData);
         } catch (error) {
@@ -90,39 +94,24 @@ export class BookManager {
     }
 
     private mapBookforClient(book: StorageBook): ClientBook {        
-        return {
-            id: book.id,
-            title: book.title,
-            author: book.author,
-            genre: book.subject,
-            rating: book.rating,
-            publishedYear: book.publishedYear,
-            language: book.language,
-            link: {
-                coverUrl: book.coverUrl,
-                readUrl: book.link.readUrl,
-                downloadUrl: book.link.downloadUrl,
-                format: book.link.format,
-                size: {
-                    value: book.link.size.value,
-                    metric: book.link.size.metric
-                },
-                buyUrl: book.link.buyUrl
-            }
-        };
+        return book as ClientBook;
     }
 
-    private mapBookForStorage(book: ClientBook): Partial<Record<string, any>> {
+    private mapBookForStorage(bookDetails: BookLink): Partial<Record<string, any>> {
+        return this.mapBookLink(bookDetails);
+    }
+
+    private mapBookLink(data: any): BookLink {
         return {
-            readUrl: book.link.readUrl,
-            downloadUrl: book.link.downloadUrl,
-            format: book.link.format,
+            readUrl: data.readUrl || 'undefined',
+            downloadUrl: data.downloadUrl || 'undefined',
+            format: data.format || 'undefined',
             size: {
-                value: book.link.size.value,
-                metric: book.link.size.metric
+                value: data.size.value || 0,
+                metric: data.size.metric || FileSizeMetric.Bytes
             },
-            buyUrl: book.link.buyUrl,
-        };
+            buyUrl: data.buyUrl || 'undefined',
+        }
     }
 
     async getAnnasDownloads(title: string): Promise<DownloadInfo> {

@@ -74,25 +74,28 @@ export interface DownloadInfo {
     }
 }
 
+export interface BookLink {
+    readUrl: string,
+    downloadUrl: string,
+    format: string,
+    size: {
+        value: number,
+        metric: FileSizeMetric
+    }
+    buyUrl: string,
+}
+
 export interface ClientBook {
     id: string,
     title: string,
+    coverUrl: string,
     author: string[],
-    genre: string[],
+    subject: string[],
     rating: number,
     publishedYear: number,
     language: string[],
-    link: {
-        coverUrl: string,
-        readUrl: string,
-        downloadUrl: string,
-        format: string,
-        size: {
-            value: number,
-            metric: FileSizeMetric
-        }
-        buyUrl: string,
-    }
+    ebookAccess: boolean,
+    link: BookLink
 }
 
 export interface StorageBook {
@@ -112,17 +115,8 @@ export interface StorageBook {
     publishedYear: number,
     language: string[],
     ebookAccess: boolean,
-    link?: {
-        complete: false,
-        readUrl: string,
-        downloadUrl: string,
-        format: string,
-        size: {
-            value: number,
-            metric: FileSizeMetric
-        }
-        buyUrl: string,
-    }
+    complete: boolean,
+    link?: BookLink
 }
 
 export enum BookSources {
