@@ -59,11 +59,11 @@ export interface DownloadInfo {
 export interface ClientBook {
     id: string,
     title: string,
-    author: string,
-    genre: string,
+    author: string[],
+    genre: string[],
     rating: number,
     publishedYear: number,
-    language: string,
+    language: string[],
     links: {
         coverUrl: string,
         readUrl: string,
@@ -77,6 +77,7 @@ export interface ClientBook {
 }
 
 export interface StorageBook {
+    id: string,
     meta: {
         isbn: string,
         idGutenberg: string[],
@@ -91,7 +92,15 @@ export interface StorageBook {
     rating: number,
     publishedYear: number,
     language: string[],
-    ebookAccess: boolean
+    ebookAccess: boolean,
+    link?: {
+        complete: false,
+        readUrl: string,
+        downloadUrl: string,
+        format: string,
+        size: string,
+        buyUrl: string,
+    }
 }
 
 export enum BookSources {

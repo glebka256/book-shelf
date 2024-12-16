@@ -19,11 +19,9 @@ const BookSchema = new mongoose.Schema({
     link: { type: {
         complete: { type: Boolean, default: false },
         readUrl: { type: String, required: false },
-        download: {
-            downloadUrl: { type: String, required: false },
-            format: { type: String, required: false },
-            size: { type: String, required: false }
-        },
+        downloadUrl: { type: String, required: false },
+        format: { type: String, required: false },
+        size: { type: String, required: false },
         buyUrl: { type: String, required: false }
     }, required: false }
 });
