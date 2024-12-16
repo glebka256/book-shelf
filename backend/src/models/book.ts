@@ -76,8 +76,8 @@ export const addBookProperty = async (id: string, newProperty: Record<string, an
         { new: true }
     ).exec();
 }
-export const addBookClientProperty = (id: string, clientData: any) => {
-    return addBookProperty(id, { "clientData": clientData });
+export const addBookLinkProperty = (id: string, linkData: any) => {
+    return addBookProperty(id, { "link": linkData });
 }
 export const linkExists = async (id: string) => {
     const book = await BookModel.findById(id).exec();
