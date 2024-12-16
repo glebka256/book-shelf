@@ -52,6 +52,19 @@ export interface OpenLibraryBook {
     ebookAcess: boolean,
 }
 
+export interface ProjectGutenbergBook {
+    id: number,
+    title: string,
+    description: string,
+    bookShelves: string[],
+    languages: string[],
+    resources: [{
+        id: number,
+        uri: string,
+        type: string
+    }],
+}
+
 export interface DownloadInfo {
     urls: string[],
     format: string,
@@ -117,7 +130,8 @@ export enum BookSources {
     AnnasArchive = "Anna's Archive",
     Goodreads = "Goodreads",
     GoodreadsBooks = "Goodreads Books",
-    OpenLibrary = "Open Library"
+    OpenLibrary = "Open Library",
+    ProjectGutenberg = "Project Gutenberg"
 }
 
 export enum Languages {

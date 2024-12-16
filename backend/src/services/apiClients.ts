@@ -34,3 +34,7 @@ export const openLibaryClient = axios.create({
         'User-Agent': process.env.OPEN_LIBRARY_USER_AGENT
     }
 });
+
+export const projectGutenbergClient = axios.create({
+    baseURL: process.env.GUTENBERG_API_BASE_URL
+});
