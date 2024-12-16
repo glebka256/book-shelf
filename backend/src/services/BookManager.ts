@@ -51,14 +51,23 @@ export class BookManager {
         }
 
         const resultBook = await this.formatBookDetails(id);
-        await this.extendBookData(resultBook);
 
-        return resultBook;
+        if (resultBook!=null) {
+            await this.extendBookData(resultBook);
+
+            return resultBook;
+        }
+
+        return book as ClientBook;
     }
 
     private async formatBookDetails(id: string): Promise<ClientBook> {
         const book = (await getBookById(id)) as StorageBook;
         const desiredFormat = 'epub';
+
+        if (book.meta.idGutenberg.length === 0) {
+            return null;
+        }
 
         const download = await this.getGutenbergDownloads(book.meta.idGutenberg[0], desiredFormat);
         if (download.urls.length !== 0) {
