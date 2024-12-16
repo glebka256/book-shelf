@@ -6,6 +6,7 @@ import {
     getAllBooks,
     getBook, 
     getGeneralPopular, 
+    lookupBookDetails, 
     updateBook
 } from '@app/controllers/books';
 
@@ -16,4 +17,5 @@ export default (router: Router): void => {
     router.put('/books/:id', updateBook);
     router.delete('/books/:id', deleteBook);
     router.get('/books/popular/:page/:limit?', getGeneralPopular);
+    router.get('/books/detailed/:id', lookupBookDetails);
 }

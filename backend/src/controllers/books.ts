@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { BookSources, Languages } from "@app/interfaces/Books";
+import { BookSources, Languages, ClientBook } from "@app/interfaces/Books";
 import { RecommendService } from "@app/services/RecommendService";
 import bookManager from "@app/config/book-manager";
 import { 
@@ -87,6 +87,19 @@ export const getGeneralPopular = async (req: Request, res: Response): Promise<vo
     } catch (error) {
         const errorMessage = "Could not get most popular books of all subjects.";
         console.error(`${errorMessage}: `, error);
+        res.status(400).json({ message: `${errorMessage}.` });
+    }
+}
+
+export const lookupBookDetails = async (req: Request, res: Response): Promise<void> => {
+    const id = req.params.id;
+
+    try {
+        const book: ClientBook = await bookManager.lookupBook(id);
+        res.status(200).json(book);
+    } catch (error) {
+        const errorMessage = `Could not lookup book details by: ${id}.`;
+        console.error(`${errorMessage} Error: `, error);
         res.status(400).json({ message: `${errorMessage}.` });
     }
 }
