@@ -38,10 +38,10 @@ export class BookManager {
     }
 
     /**
-     * Looksup book details in the database. If some are missing, retrieves them from other sources like Project Gutenberg API.
+     * Looks up book details in the database. If some are missing, retrieves them from other sources like Project Gutenberg API.
      * After retrieving from other sources saves them to database.
      * @param id - local database book id.
-     * @returns - book with all details needed for client.
+     * @returns book with all details needed for client.
      */
     async lookupBook(id: string): Promise<ClientBook> {
         const book = await getBookById(id);
