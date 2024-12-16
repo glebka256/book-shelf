@@ -1,31 +1,31 @@
-import { ClientBook } from "@app/interfaces/Books";
-import { addBookClientProperty, linkExists, getBookById } from "@app/models/book";
+import { ClientBook, StorageBook } from "@app/interfaces/Books";
+import { addBookLinkProperty, linkExists, getBookById } from "@app/models/book";
 import bookManager from "@app/config/book-manager";
+import { FileSizeMetric } from "@app/interfaces/Util";
 
 export class BookLookup {
     async lookupBook(id: string): Promise<ClientBook> {
         const book = await getBookById(id);
 
         if (linkExists(id) && book.link.complete) {
-            return this.mapBookforClient(book);
+            return this.mapBookforClient(book as StorageBook);
         }
 
-        const resultBook = this.formatBookDetails(id);
+        const resultBook = await this.formatBookDetails(id);
         await this.extendBookData(resultBook);
 
         return resultBook;
     }
 
     async formatBookDetails(id: string): Promise<ClientBook> {
-        const book = await getBookById(id);
+        const book = (await getBookById(id)) as StorageBook;
 
         const download = await bookManager.getDownloads(book.title);
         if (download.urls.length !== 0) {
-            book.link.download = {
-                downloadUrl: download.urls[0],
-                format: download.format,
-                size: download.size
-            };
+            book.link.downloadUrl = download.urls[0],
+            book.link.format = download.format || "undefined",
+            book.link.size.value = download.size.value || 0,
+            book.link.size.metric = download.size.metric || FileSizeMetric.Bytes
         }
 
         book.link.complete = false;
@@ -33,63 +33,55 @@ export class BookLookup {
         return this.mapBookforClient(book);
     }
 
-    async extendBookData(extendedBook: any): Promise<void>{
-        const existingBook = await getBookById(extendedBook.id);
+    async extendBookData(extendedBook: ClientBook): Promise<void>{
+        const existingBook = (await getBookById(extendedBook.id)) as StorageBook;
 
         if (!existingBook) {
             console.error(`Book with id ${extendedBook.id} does not exist.`);
             return;
         }
 
-        const clientData = this.mapBookForStorage(extendedBook, extendedBook.complete);
+        const linkData = this.mapBookForStorage(extendedBook);
         try {
-            await addBookClientProperty(existingBook.id, clientData);
+            await addBookLinkProperty(existingBook.id, linkData);
         } catch (error) {
             console.error(`Could not extend book with id: ${extendedBook.id}`);
         }
     }
 
-    mapBookforClient(book: any): ClientBook {
-        const link = book.link?.[0] || {};
-        
+    mapBookforClient(book: StorageBook): ClientBook {        
         return {
-            id: book._id.toString(),
+            id: book.id,
             title: book.title,
             author: book.author,
-            genre: book.genre,
+            genre: book.subject,
             rating: book.rating,
             publishedYear: book.publishedYear,
-            language: book.language || book.language[0],
-            links: {
-                coverUrl: link.coverUrl || book.coverUrl,
-                readUrl: link.readUrl || "undefined",
-                download: {
-                    downloadUrl: link.download.downloadUrl || "undefined",
-                    format: link.download.format || "undefined",
-                    size: link.download.size || 0
+            language: book.language,
+            link: {
+                coverUrl: book.coverUrl,
+                readUrl: book.link.readUrl,
+                downloadUrl: book.link.downloadUrl,
+                format: book.link.format,
+                size: {
+                    value: book.link.size.value,
+                    metric: book.link.size.metric
                 },
-                buyUrl: link.buyUrl || "undefined"
+                buyUrl: book.link.buyUrl
             }
         };
     }
 
-    mapBookForStorage(clientBook: ClientBook, complete: Boolean): Partial<any> {
+    mapBookForStorage(book: ClientBook): Partial<Record<string, any>> {
         return {
-            complete: complete,
-            title: clientBook.title,
-            author: clientBook.author,
-            genre: clientBook.genre,
-            rating: clientBook.rating,
-            publishedYear: clientBook.publishedYear,
-            language: clientBook.language,
-            coverUrl: clientBook.links.coverUrl,
-            readUrl: clientBook.links.readUrl,
-            download: {
-                downloadUrl: clientBook.links.download.downloadUrl,
-                format: clientBook.links.download.format,
-                size: clientBook.links.download.size,
+            readUrl: book.link.readUrl,
+            downloadUrl: book.link.downloadUrl,
+            format: book.link.format,
+            size: {
+                value: book.link.size.value,
+                metric: book.link.size.metric
             },
-            buyUrl: clientBook.links.buyUrl,
+            buyUrl: book.link.buyUrl,
         };
     }
 }
