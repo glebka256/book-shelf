@@ -19,11 +19,12 @@ export class BookLookup {
 
     async formatBookDetails(id: string): Promise<ClientBook> {
         const book = (await getBookById(id)) as StorageBook;
+        const desiredFormat = 'epub';
 
-        const download = await bookManager.getDownloads(book.title);
+        const download = await bookManager.getGutenbergDownloads(book.title, desiredFormat);
         if (download.urls.length !== 0) {
             book.link.downloadUrl = download.urls[0],
-            book.link.format = download.format || "undefined",
+            book.link.format = download.format || desiredFormat,
             book.link.size.value = download.size.value || 0,
             book.link.size.metric = download.size.metric || FileSizeMetric.Bytes
         }
