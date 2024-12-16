@@ -16,8 +16,8 @@ const BookSchema = new mongoose.Schema({
     publishedYear: { type: Number, required: true },
     language: { type: [String], required: true },
     ebookAccess: { type: Boolean, required: true },
+    complete: { type: Boolean, default: false },
     link: { type: {
-        complete: { type: Boolean, default: false },
         readUrl: { type: String, required: false },
         downloadUrl: { type: String, required: false },
         format: { type: String, required: false },
@@ -84,10 +84,18 @@ export const addBookLinkProperty = (id: string, linkData: any) => {
 }
 export const linkExists = async (id: string) => {
     const book = await BookModel.findById(id).exec();
+    
     if (!book) {
         return false;
     }
-    return book.link !== undefined 
-    && book.link !== null 
-    && Object.keys(book.link).length > 1;
+
+    if (!book.link || typeof book.link !== 'object') {
+        return false;
+    }
+
+    if (!(Object.keys(book.link).length > 1 || book.complete === true)) {
+        return false;
+    }
+
+    return true;
 }
