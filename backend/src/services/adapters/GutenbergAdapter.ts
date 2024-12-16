@@ -25,18 +25,36 @@ export class GutenbergAdapter implements IBookServiceAdapter {
         }
     }
 
+    async searchBookById(id: string): Promise<ProjectGutenbergBook> {
+        try {
+            const response = await this.apiClient.get(`/book/${id}`);
+
+            if (!response.data) {
+                throw new Error ("Invalid Project Gutenberg API response.");
+            }
+
+            return this.mapBook(response.data);
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
     validFetchResponse(response: AxiosResponse): boolean {
         return response.data.results;
     }
 
     mapData(rawData: any[]): any[] {
-        return rawData.map((book) => ({
+        return rawData.map((book) => (this.mapBook(book)));
+    }
+
+    mapBook(book: any): ProjectGutenbergBook {
+        return {
             id: book.id,
             title: book.title,
             description: book.description,
             bookShelves: book.bookshelves || [],
             languages: book.languages || ['en'],
             resources: book.resources || []
-        }));
+        }
     }
 }
