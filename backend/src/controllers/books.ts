@@ -187,3 +187,25 @@ export const getOpenLibraryBooks = async (req: Request, res: Response): Promise<
         return;
     }
 }
+
+export const getAllGutenbergBooks = async (req: Request, res: Response): Promise<void> => {
+    const params = { page: req.params.page || 1 }
+
+    try {
+        const bookData = await bookManager.fetchBooks(BookSources.ProjectGutenberg, params);
+        res.status(200).json(bookData);
+    } catch (error) {
+        res.status(400).json({ message: `Could not fetch books from Project Gutenberg.` });
+    }
+}
+
+export const getGutenbergBook = async (req: Request, res: Response): Promise<void> => {
+    const id = req.params.id;
+
+    try {
+        const book = await bookManager.searchBookById(BookSources.ProjectGutenberg, id);
+        res.status(200).json(book);
+    } catch (error) {
+        res.status(400).json({ message: `Could not get book from Project Gutenberg with specified id: ${id}` });
+    }
+}
