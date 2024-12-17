@@ -43,84 +43,68 @@ export class BookManager {
      * @param id - local database book id.
      * @returns book with all details needed for client.
      */
-    async lookupBook(id: string): Promise<ClientBook> {
-        const book = await getBookById(id);
+    async lookupBook(id: string, desiredFormat='epub'): Promise<ClientBook> {
+        const book = (await getBookById(id)) as StorageBook;
+        let detailedBook: StorageBook = book;
 
         if (await linkExists(id)) {
-            return this.mapBookforClient(book as StorageBook);
+            return book as ClientBook;
         }
 
-        const resultBook = await this.formatBookDetails(id);
+        detailedBook = await this.getBookDownloads(detailedBook, desiredFormat);
 
-        if (resultBook!=null) {
-            await this.extendBookData(resultBook);
-
-            return resultBook;
-        }
-
-        return book as ClientBook;
+        return detailedBook as ClientBook;
     }
 
-    private async formatBookDetails(id: string): Promise<ClientBook> {
-        const book = (await getBookById(id)) as StorageBook;
-        const desiredFormat = 'epub';
+    private async getBookDownloads(book: StorageBook, desiredFormat: string): Promise<StorageBook> {
+        // Gutenberg downloads are of higher priority then Anna's Archive.
+        if (book.meta.idGutenberg.length !== 0) {
+            const gutenbergDown = await this.getGutenbergDownloads(book.meta.idGutenberg[0], desiredFormat);
 
-        if (book.meta.idGutenberg.length === 0) {
-            return null;
-        }
-
-        const download = await this.getGutenbergDownloads(book.meta.idGutenberg[0], desiredFormat);
-        if (download.urls.length !== 0) {
-            const link = {
-                downloadUrl: download.urls[0],
-                format: download.format || desiredFormat,
-                size: {
-                    value: download.size.value || 0,
-                    metric: download.size.metric || FileSizeMetric.Bytes
-                },
+            if (gutenbergDown.urls.length !== 0) {
+                return this.updateBookDownloads(book, gutenbergDown);
             }
-
-            book.link = this.mapBookLink(link);
         }
 
-        return this.mapBookforClient(book);
+        const annasDown = await this.getAnnasDownloads(book.title);
+
+        if (annasDown.urls.length !== 0) {
+            return this.updateBookDownloads(book, annasDown);
+        }
+
+        return book;
     }
 
-    private async extendBookData(extendedBook: ClientBook): Promise<void>{
-        const existingBook = (await getBookById(extendedBook.id)) as StorageBook;
+    private async extendBookData(newBook: ClientBook): Promise<void>{
+        const existingBook = (await getBookById(newBook.id)) as StorageBook;
 
         if (!existingBook) {
-            console.error(`Book with id ${extendedBook.id} does not exist.`);
+            console.error(`Book with id ${newBook.id} does not exist in the DB.`);
             return;
         }
 
-        const linkData = this.mapBookForStorage(extendedBook.link);
         try {
-            await addBookLinkProperty(existingBook.id, linkData);
+            await addBookLinkProperty(existingBook.id, newBook.link);
         } catch (error) {
-            console.error(`Could not extend book with id: ${extendedBook.id}`);
+            console.error(`Could not extend book with id: ${existingBook.id}`);
         }
     }
 
-    private mapBookforClient(book: StorageBook): ClientBook {        
-        return book as ClientBook;
-    }
-
-    private mapBookForStorage(bookDetails: BookLink): Partial<Record<string, any>> {
-        return this.mapBookLink(bookDetails);
-    }
-
-    private mapBookLink(data: any): BookLink {
-        return {
-            readUrl: data.readUrl || 'undefined',
-            downloadUrl: data.downloadUrl || 'undefined',
-            format: data.format || 'undefined',
+    private updateBookDownloads(book: StorageBook, downloadInfo: DownloadInfo): StorageBook {
+        const newLink = {
+            downloadUrl: downloadInfo.urls[0],
+            format: downloadInfo.format || 'unknown',
             size: {
-                value: data.size.value || 0,
-                metric: data.size.metric || FileSizeMetric.Bytes
+                value: downloadInfo.size.value || 0,
+                metric: downloadInfo.size.metric || FileSizeMetric.Bytes
             },
-            buyUrl: data.buyUrl || 'undefined',
         }
+
+        book.link.downloadUrl = newLink.downloadUrl;
+        book.link.format = newLink.format;
+        book.link.size = newLink.size;
+
+        return book;
     }
 
     async getAnnasDownloads(title: string): Promise<DownloadInfo> {
