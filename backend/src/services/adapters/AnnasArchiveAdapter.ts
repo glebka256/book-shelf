@@ -3,6 +3,7 @@ import { IBookServiceAdapter } from "./IBookServiceAdapter";
 import { annasArchiveClient } from "../apiClients";
 import { BooksData, BookSources, AnnasArchiveBook, DownloadInfo } from "@app/interfaces/Books";
 import { splitFileSize } from "@app/utils";
+import { FileSizeMetric } from "@app/interfaces/Util";
 
 export class AnnasArchiveAdapter implements IBookServiceAdapter {
     apiClient: AxiosInstance;
@@ -20,19 +21,24 @@ export class AnnasArchiveAdapter implements IBookServiceAdapter {
             params: params
         };
 
-        const response = await this.apiClient.request(options);
+        try {
+            const response = await this.apiClient.request(options);
 
-        if (!this.validFetchResponse) {
-            throw new Error("Invalid Anna\'s Archive API response");
-        }
+            if (!this.validFetchResponse) {
+                throw new Error("Invalid Anna\'s Archive API response");
+            }
 
-        const totalResults = response.data.total
+            const totalResults = response.data.total
 
-        return {
-            src: BookSources.AnnasArchive,
-            books: this.mapData(response.data.books),
-            totalResults: totalResults || response.data.length,
-            currentPage: totalResults / 10
+            return {
+                src: BookSources.AnnasArchive,
+                books: this.mapData(response.data.books),
+                totalResults: totalResults || response.data.length,
+                currentPage: totalResults / 10
+            }
+        } catch (error) {
+            console.error("Could not fetch books from Anna's Archive: ", error);
+            return null;
         }
     }
 
@@ -45,12 +51,24 @@ export class AnnasArchiveAdapter implements IBookServiceAdapter {
 
         const searchResults = await this.fetchBooks(params);
 
+        if (searchResults === null || searchResults.books.length) {
+            return {
+                urls: [],
+                format: null,
+                size: {
+                    value: 0,
+                    metric: FileSizeMetric.Bytes
+                }
+            }
+        }
+
         const downloadUrls: string[] = [];
         const books = searchResults.books as AnnasArchiveBook[];
 
-        for (let i = 0; i < limit; i++ ) {
+        for (let i = 0; i < Math.min(limit, books.length); i++ ) {
             const result = await this.fetchDownloadURL(books[i].md5);
-            downloadUrls.concat(result);
+
+            downloadUrls.push(...result);
         }
 
         const fileSize = splitFileSize(books[0].size);

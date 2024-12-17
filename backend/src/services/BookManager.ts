@@ -61,14 +61,14 @@ export class BookManager {
         if (book.meta.idGutenberg.length !== 0) {
             const gutenbergDown = await this.getGutenbergDownloads(book.meta.idGutenberg[0], desiredFormat);
 
-            if (gutenbergDown.urls.length !== 0) {
+            if (gutenbergDown != null && gutenbergDown.urls.length !== 0) {
                 return this.updateBookDownloads(book, gutenbergDown);
             }
         }
 
         const annasDown = await this.getAnnasDownloads(book.title);
 
-        if (annasDown.urls.length !== 0) {
+        if (annasDown !== null && annasDown.urls.length !== 0) {
             return this.updateBookDownloads(book, annasDown);
         }
 
@@ -109,7 +109,19 @@ export class BookManager {
 
     async getAnnasDownloads(title: string): Promise<DownloadInfo> {
         const adapter = new AnnasArchiveAdapter();
-        return adapter.getDownloadsForTitle(title);
+
+        try {
+            const downloads = await adapter.getDownloadsForTitle(title);
+
+            if (!downloads || !downloads.urls || !downloads.urls.length) {
+                return null
+            }
+
+            return downloads;
+        } catch (error) {
+            console.error("Error in getting downloads by title from Annas's Archive: ", error);
+            return null;
+        }
     }
 
     /**
@@ -122,6 +134,11 @@ export class BookManager {
     async getGutenbergDownloads(id: string, type: string): Promise<DownloadInfo> {
         const adapter = new GutenbergAdapter();
         const bookData: ProjectGutenbergBook = await adapter.searchBookById(id);
+
+        if (bookData === null || !bookData.resources || !bookData.resources.length) {
+            return null;
+        }
+
         const resources = bookData.resources;
 
         // URI ending with 'images' means that it could be ebook download link, other URIs are not related to download.

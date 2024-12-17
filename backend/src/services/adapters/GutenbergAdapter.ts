@@ -33,9 +33,16 @@ export class GutenbergAdapter implements IBookServiceAdapter {
                 throw new Error ("Invalid Project Gutenberg API response.");
             }
 
-            return this.mapBook(response.data);
+            const bookData = this.mapBook(response.data);
+
+            if (!bookData.resources || bookData.resources.length) {
+                console.warn(`Book with ID: ${id} has no resources.`);
+            }
+
+            return bookData;
         } catch (error) {
-            throw new Error(error);
+            console.error("Error searching book by ID: ", error);
+            return null;
         }
     }
 
