@@ -52,6 +52,7 @@ export class BookManager {
         }
 
         detailedBook = await this.getBookDownloads(detailedBook, desiredFormat);
+        detailedBook = this.getReadUrl(detailedBook);
 
         return detailedBook as ClientBook;
     }
@@ -70,6 +71,15 @@ export class BookManager {
 
         if (annasDown !== null && annasDown.urls.length !== 0) {
             return this.updateBookDownloads(book, annasDown);
+        }
+
+        return book;
+    }
+
+    private getReadUrl(book: StorageBook): StorageBook {
+        if (book.link.readUrl !== 'undefined') {
+            const openLibraryUrl = `https://openlibrary.org/isbn/${book.meta.isbn}`;
+            book.link.readUrl = openLibraryUrl;
         }
 
         return book;
