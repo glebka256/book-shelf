@@ -3,7 +3,7 @@ import { IBookServiceAdapter } from "./adapters/IBookServiceAdapter";
 import { AnnasArchiveAdapter } from "./adapters/AnnasArchiveAdapter";
 import { GutenbergAdapter } from "./adapters/GutenbergAdapter";
 import { ClientBook, StorageBook } from "@app/interfaces/Books";
-import { linkExists, getBookById, addBookLinkProperty } from "@app/models/book";
+import { getBookById, addBookLinkProperty, updateBookCompleteStatus } from "@app/models/book";
 import { FileSizeMetric } from "@app/interfaces/Util";
 
 export class BookManager {
@@ -45,16 +45,79 @@ export class BookManager {
      */
     async lookupBook(id: string, desiredFormat='epub'): Promise<ClientBook> {
         const book = (await getBookById(id)) as StorageBook;
-        let detailedBook: StorageBook = book;
 
-        if (await linkExists(id)) {
+        if (!book) {
+            return null;
+        }
+
+        if (this.containsAllLinks(book)) {
+            book.complete = true;
+            updateBookCompleteStatus(id, true);
+
             return book as ClientBook;
         }
 
-        detailedBook = await this.getBookDownloads(detailedBook, desiredFormat);
-        detailedBook = this.getReadUrl(detailedBook);
+        let detailedBook: StorageBook = book;
+
+        const { link } = detailedBook;
+
+        if (!link) {
+            detailedBook.link = this.createEmptyLink();
+
+            detailedBook = await this.getBookDownloads(detailedBook, desiredFormat);
+            detailedBook = this.updateReadUrl(detailedBook);
+            detailedBook = this.updateBuyUrl(detailedBook);
+
+            await this.extendBookData(detailedBook);
+
+            return detailedBook as ClientBook;
+        }
+
+        // Load by segments to reduce number of any third party requests.
+        if (!link.downloadUrl) {
+            detailedBook = await this.getBookDownloads(detailedBook, desiredFormat);
+        }
+
+        if (!link.readUrl) {
+            detailedBook = this.updateReadUrl(detailedBook);
+        }
+
+        if (!link.buyUrl) {
+            detailedBook = this.updateBuyUrl(detailedBook);
+        }
+
+        await this.extendBookData(detailedBook);
 
         return detailedBook as ClientBook;
+    }
+
+    private containsAllLinks(book: StorageBook): boolean {
+        if (!book.link || typeof book.link !== 'object') {
+            return false;
+        }
+
+        const requiredKeys: Array<keyof BookLink> = ['readUrl', 'downloadUrl', 'buyUrl', 'format'];
+
+        for (const key of requiredKeys) {
+            if (!book.link[key]) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    private createEmptyLink(): BookLink {
+        return {
+            readUrl: '',
+            downloadUrl: '',
+            buyUrl: '',
+            format: '',
+            size: {
+                value: 0,
+                metric: FileSizeMetric.Bytes
+            }
+        }
     }
 
     private async getBookDownloads(book: StorageBook, desiredFormat: string): Promise<StorageBook> {
@@ -76,27 +139,30 @@ export class BookManager {
         return book;
     }
 
-    private getReadUrl(book: StorageBook): StorageBook {
-        if (book.link.readUrl !== 'undefined') {
-            const openLibraryUrl = `https://openlibrary.org/isbn/${book.meta.isbn}`;
-            book.link.readUrl = openLibraryUrl;
-        }
+    private updateReadUrl(book: StorageBook): StorageBook {
+        const openLibraryPageUrl = `https://openlibrary.org/isbn/${book.meta.isbn}`;
+        book.link.readUrl = openLibraryPageUrl;
 
         return book;
     }
 
-    private async extendBookData(newBook: ClientBook): Promise<void>{
-        const existingBook = (await getBookById(newBook.id)) as StorageBook;
+    private updateBuyUrl(book: StorageBook): StorageBook {
+        const amazonPageUrl = `https://www.amazon.com/dp/${book.meta.isbn}`;
+        book.link.buyUrl = amazonPageUrl;
 
-        if (!existingBook) {
-            console.error(`Book with id ${newBook.id} does not exist in the DB.`);
-            return;
-        }
+        return book;
+    }
 
+    private async extendBookData(book: StorageBook): Promise<void>{
         try {
-            await addBookLinkProperty(existingBook.id, newBook.link);
+            if (this.containsAllLinks(book)) {
+                book.complete = true;
+                await updateBookCompleteStatus(book.id, true);
+            }
+
+            await addBookLinkProperty(book.id, book.link);
         } catch (error) {
-            console.error(`Could not extend book with id: ${existingBook.id}`);
+            console.error(`Could not extend book with id: ${book.id}`);
         }
     }
 

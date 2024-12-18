@@ -82,20 +82,10 @@ export const addBookProperty = async (id: string, newProperty: Record<string, an
 export const addBookLinkProperty = (id: string, linkData: any) => {
     return addBookProperty(id, { "link": linkData });
 }
-export const linkExists = async (id: string) => {
-    const book = await BookModel.findById(id).exec();
-    
-    if (!book) {
-        return false;
-    }
-
-    if (!book.link || typeof book.link !== 'object') {
-        return false;
-    }
-
-    if (!(Object.keys(book.link).length > 1 || book.complete === true)) {
-        return false;
-    }
-
-    return true;
-}
+export const updateBookCompleteStatus = async (id: string, isComplete: boolean) => {
+    return await BookModel.findByIdAndUpdate(
+        id,
+        { $set: { complete: isComplete } },
+        { new: true }
+    ).exec();
+};
