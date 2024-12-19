@@ -10,6 +10,12 @@ import AppBar from './components/AppBar.vue';
 </template>
 
 <style lang="scss">
+html, body {
+  height: 100%;
+  margin: 0;
+  background-color: #dddaf8;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
