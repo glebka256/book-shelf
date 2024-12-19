@@ -30,16 +30,19 @@
   justify-content: start;
   padding: 1rem;
   border-radius: 0 10% 10% 0;
+  transition: width 0.4s ease, padding 0.4s ease, border-radius 0.4s ease;
 }
 
 nav ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
+  transition: all 0.4s ease;
 }
 
 nav li {
   margin-bottom: 0.5rem;
+  transition: margin 0.4s ease;
 }
 
 nav li a {
@@ -50,6 +53,15 @@ nav li a {
   flex-direction: column;
   padding: 0.5rem 1rem;
   border-radius: 4px;
+  transition: padding 0.4s ease, background-color 0.4s ease;
+}
+
+nav li a i {
+  transition: margin-right 0.4s ease, font-size 0.4s ease;
+}
+
+.logo {
+  transition: opacity 0.4s ease;
 }
 
 nav li a:hover {
@@ -68,6 +80,8 @@ nav li a:hover {
 
   nav li a .router-link-text {
     display: none;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
   }
 
   nav li a i {
