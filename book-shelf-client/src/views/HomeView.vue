@@ -1,5 +1,5 @@
 <script setup lang="ts">
-
+import HorizontalScroll from '@/components/HorizontalScroll.vue';
 </script>
 
 <template>
@@ -14,6 +14,7 @@
         <button id="see-all-button" class="">See All</button>
       </div>
     </div>
+    <horizontal-scroll></horizontal-scroll>
   </div>
   <div class="search-view"></div>
  </div>
