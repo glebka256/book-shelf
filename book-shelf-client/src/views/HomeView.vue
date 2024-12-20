@@ -1,6 +1,10 @@
 <script setup lang="ts">
-import HorizontalScroll from '@/components/HorizontalScroll.vue';
 import SearchBar from '@/components/SearchBar.vue';
+import CommonButton from '@/components/CommonButton.vue';
+import HorizontalScroll from '@/components/HorizontalScroll.vue';
+import InputSelector from '@/components/InputSelector.vue';
+
+const categories: Array<string> = ['Category1', 'Category2', 'Category3', 'Category4', 'Category5']
 </script>
 
 <template>
@@ -10,7 +14,7 @@ import SearchBar from '@/components/SearchBar.vue';
     <div class="view-heading">
       <h2 class="view-title">Recommended</h2>
       <div class="view-options">
-        <button id="see-all-button" class="">See All</button>
+        <common-button text="See All"></common-button>
       </div>
     </div>
     <horizontal-scroll></horizontal-scroll>
@@ -19,7 +23,7 @@ import SearchBar from '@/components/SearchBar.vue';
     <div class="view-heading">
       <h2 class="view-title">Discover new</h2>
       <div class="view-options">
-        <button id="see-all-button" class="">See All</button>
+        <input-selector label-text="Filter" :categories="categories"/>
       </div>
     </div>
   </div>
@@ -61,26 +65,5 @@ import SearchBar from '@/components/SearchBar.vue';
   display: flex;
   align-items: center;
   margin-right: 25px;
-}
-
-#see-all-button {
-  padding: 8px 16px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: white;
-  background-color: #7175d1;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-
-  &:hover {
-    background-color: #5c60c0;
-  }
-
-  &:active {
-    background-color: #4a4eaf;
-    transform: scale(0.95);
-  }
 }
 </style>
