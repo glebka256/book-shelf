@@ -3,6 +3,7 @@ import SearchBar from '@/components/SearchBar.vue';
 import CommonButton from '@/components/CommonButton.vue';
 import HorizontalScroll from '@/components/HorizontalScroll.vue';
 import InputSelector from '@/components/InputSelector.vue';
+import BookGrid from '@/components/BookGrid.vue';
 
 const categories: Array<string> = ['Category1', 'Category2', 'Category3', 'Category4', 'Category5']
 </script>
@@ -26,6 +27,7 @@ const categories: Array<string> = ['Category1', 'Category2', 'Category3', 'Categ
         <input-selector label-text="Filter" :categories="categories"/>
       </div>
     </div>
+    <book-grid />
   </div>
  </div>
 </template>
@@ -52,7 +54,11 @@ const categories: Array<string> = ['Category1', 'Category2', 'Category3', 'Categ
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background-color: #f5f6fa;
+  padding-left: 20px;
+  padding-right: 20px;
   margin: 20px 25px;
+  border-radius: 10px;
 }
 
 .view-title {
@@ -64,6 +70,5 @@ const categories: Array<string> = ['Category1', 'Category2', 'Category3', 'Categ
 .view-options {
   display: flex;
   align-items: center;
-  margin-right: 25px;
 }
 </style>

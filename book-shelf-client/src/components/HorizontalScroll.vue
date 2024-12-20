@@ -90,6 +90,9 @@ onBeforeUnmount(() => {
 .scroll-view {
   display: flex;
   flex-direction: row;
+  margin-left: 20px;
+  margin-right: 20px;
+  padding-bottom: 20px;
   transition: scroll-behavior 0.3s ease-in-out;
   scroll-snap-type: x mandatory;
   overflow-x: scroll;
