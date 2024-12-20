@@ -1,24 +1,38 @@
 <script setup lang="ts">
-import { defineProps, PropType } from 'vue';
+import { defineProps, PropType, defineEmits } from 'vue';
 
 defineProps({
   labelText: {
     type: String,
     required: true
   },
-  categories: {
+  options: {
     type: Array as PropType<string[]>,
     required: true
+  },
+  placeholder: {
+    type: String,
+    required: false,
+    default: "Select option"
   }
 });
+
+const emit = defineEmits(['select-option']);
+
+function handleSelection(event: Event) {
+  const target = event.target as HTMLSelectElement;
+  if (target.value) {
+    emit('select-option', target.value);
+  }
+}
 </script>
 
 <template>
   <div class="input-selector">
     <label for="selector" class="selector-label">{{ labelText }}</label>
-    <select id="selector" name="selector" class="selector">
-      <option class="placeholder">Select category</option>
-      <option v-for="category in categories" :key="category">{{ category }}</option>
+    <select id="selector" name="selector" class="selector" @change="handleSelection">
+      <option class="placeholder">{{ placeholder }}</option>
+      <option v-for="option in options" :key="option" :value="option">{{ option }}</option>
     </select>
   </div>
 </template>
