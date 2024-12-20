@@ -17,7 +17,7 @@ function handleDelete() {
 
 <template>
   <div class="book-filter">
-    <span id="filterValue">{{ props.filterValue }}</span>
+    <span class="filterValue">{{ props.filterValue }}</span>
     <button class="cross-button" aria-label="Remove filter" @click="handleDelete">
       <i class="fa-solid fa-xmark cross-icon"></i>
     </button>
@@ -26,7 +26,6 @@ function handleDelete() {
 
 <style scoped lang="scss">
 .book-filter {
-  font-weight: 600;
   display: flex;
   align-items: center;
   padding: 5px 15px;
@@ -35,12 +34,18 @@ function handleDelete() {
   gap: 10px;
 }
 
+.filter-value {
+  align-self: flex-start;
+}
+
 .cross-button {
   all: unset;
   cursor: pointer;
   display: flex;
+  align-self: flex-end;
   align-items: center;
   justify-content: center;
+  margin-left: auto;
 }
 
 .cross-icon {

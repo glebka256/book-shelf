@@ -1,21 +1,25 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted, watch, nextTick, onBeforeUnmount } from 'vue';
 import SearchBar from '@/components/SearchBar.vue';
 import CommonButton from '@/components/CommonButton.vue';
 import HorizontalScroll from '@/components/HorizontalScroll.vue';
 import InputSelector from '@/components/InputSelector.vue';
 import BookGrid from '@/components/BookGrid.vue';
 import BookFilter from '@/components/BookFilter.vue';
+import { calculateTextWidth } from '@/utils';
 
-const categories: Array<string> = [
-  'Category1', 'Category2', 'Category3', 'Category4', 'Category5', 
-  'Category6', 'Category7', 'Category8', 'Category9', 'Category10'
-]
+const categories = ref<string[]>(["fiction", "non-fiction", "science", "fantasy","epic_fantasy", "dark_fantasy", "mystery", "romance", "thriller", "horror", "historical_fiction", "science_fiction", "literary_fiction", "young_adult", "children's_books", "classics", "adventure", "crime", "paranormal", ]);
+
 const selectedCategories = ref<string[]>([]);
 
 function addCategory(category: string) {
   if (!selectedCategories.value.includes(category)) {
     selectedCategories.value.push(category);
+
+    const index = categories.value.indexOf(category);
+    if (index !== -1) {
+      categories.value.splice(index, 1);
+    }
   }
 }
 
@@ -25,8 +29,72 @@ function deleteCategory(category: string) {
     if (index !== -1) {
       selectedCategories.value.splice(index, 1);
     }
+
+    categories.value.push(category);
   }
 }
+
+const filterGrid = ref<HTMLDivElement | null>(null);
+
+// A big hack but seems to work for now
+const adjustFilterGrid = () => {
+  if (filterGrid.value) {
+    const grid = filterGrid.value as HTMLDivElement;
+
+    // Getting supposed width of each element to find out how many can fit
+    const fontFamily = "Avenir, Helvetica, Arial, sans-serif";
+    const elementsWidth = selectedCategories.value.map(category => {
+      const labelWidth = calculateTextWidth(category, 16, fontFamily);
+      const iconOffset = 45;  // Assuming an icon width/offset for each item
+      return labelWidth + iconOffset;
+    });
+
+    const containerWidth = grid.offsetWidth;
+    // Taking padding into consideration so that elements don't get smaller than they are
+    const columnElementPadding = 15;
+
+    const itemsPerRow = Math.max(1, Math.floor(containerWidth / (Math.max(...elementsWidth) + columnElementPadding)));
+
+    // Generate staggered offsets for odd rows
+    const rowOffsets: string[] = [];
+    for (let i = 0; i < selectedCategories.value.length; i++) {
+      const isOddRow = Math.floor(i / itemsPerRow) % 2 === 1;
+      rowOffsets.push(isOddRow ? '20px' : '0px');
+    }
+
+    // Set grid placement for each element
+    selectedCategories.value.forEach((category, index) => {
+      const row = Math.floor(index / itemsPerRow);
+      const column = index % itemsPerRow;
+      const item = grid.children[index] as HTMLElement;
+
+      if (item) {
+        item.style.gridRow = `${row + 1}`;
+        item.style.gridColumn = `${column + 1}`;
+        item.style.transform = `translateX(${rowOffsets[index]})`; // Apply staggered offset
+      }
+    });
+  }
+};
+
+onMounted(() => {
+  nextTick(() => {
+    adjustFilterGrid();
+  });
+
+  window.addEventListener('resize', adjustFilterGrid);
+});
+
+watch(selectedCategories, async () => {
+    await nextTick();
+    adjustFilterGrid();
+  },
+  { deep: true }
+);
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', adjustFilterGrid);
+});
 </script>
 
 <template>
@@ -57,7 +125,7 @@ function deleteCategory(category: string) {
         </div>
       </div>
       <div class="heading-row">
-        <div class="filters-view">
+        <div class="filters-view" ref="filterGrid">
           <book-filter 
             v-for="category in selectedCategories" v-bind:key="category"
             :filter-value="category"
@@ -115,8 +183,9 @@ function deleteCategory(category: string) {
 }
 
 .filters-view {
-  display: flex;
-  flex-direction: row;
+  width: 100%;
+  display: grid;
+  justify-content: start;
   gap: 15px;
   padding: 15px;
 }
