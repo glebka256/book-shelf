@@ -14,7 +14,7 @@ const categories: Array<string> = ['Category1', 'Category2', 'Category3', 'Categ
     <div class="view-heading">
       <h2 class="view-title">Recommended</h2>
       <div class="view-options">
-        <common-button text="See All"></common-button>
+        <common-button>See All</common-button>
       </div>
     </div>
     <horizontal-scroll></horizontal-scroll>
