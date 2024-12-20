@@ -16,7 +16,14 @@ import HorizontalScroll from '@/components/HorizontalScroll.vue';
     </div>
     <horizontal-scroll></horizontal-scroll>
   </div>
-  <div class="search-view"></div>
+  <div class="search-view">
+    <div class="view-heading">
+      <h2 class="view-title">Discover new</h2>
+      <div class="view-options">
+        <button id="see-all-button" class="">See All</button>
+      </div>
+    </div>
+  </div>
  </div>
 </template>
 
@@ -70,11 +77,15 @@ import HorizontalScroll from '@/components/HorizontalScroll.vue';
   }
 }
 
-.recommended-view {
+.recommended-view, .search-view {
   margin-top: -35px;
   background-color: white;
-  width: 95%;
+  width: 90%;
   border-radius: 13px;
+}
+
+.search-view {
+  margin-top: 20px;
 }
 
 .view-heading {
