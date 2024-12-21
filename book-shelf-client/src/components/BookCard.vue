@@ -1,15 +1,28 @@
 <script setup lang="ts">
+import { defineProps, PropType, computed } from 'vue';
+import { Book } from '@/types/Book';
+
+const props = defineProps({
+  book: {
+    type: Object as PropType<Book>,
+    required: true
+  }
+});
+
+const bookCover = computed(() => {
+  return props.book.coverUrl || '@/assets/cover_placeholder.png';
+});
 </script>
 
 <template>
  <div class="book-card">
   <div class="book-container">
     <div class="image-cover">
-      <img src="../assets/cover_placeholder.png">
+      <img :src="bookCover">
     </div>
     <div class="image-props">
-      <h3 class="title">Title</h3>
-      <h4 class="author">Author</h4>
+      <h3 class="title">{{ props.book.title }}</h3>
+      <h4 class="author">{{ props.book.author }}</h4>
     </div>
   </div>
  </div>

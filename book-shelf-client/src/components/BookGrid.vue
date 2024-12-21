@@ -1,11 +1,20 @@
 <script setup lang="ts">
 import BookCard from './BookCard.vue';
+import { defineProps, PropType } from 'vue';
+import { Book } from '@/types/Book';
+
+const props = defineProps({
+  books: {
+    type: Array as PropType<Book[]>,
+    required: true
+  }
+});
 </script>
 
 <template>
  <div class="grid-container">
-  <div class="grid-item" v-for="i in 10" :key="i">
-    <book-card />
+  <div class="grid-item" v-for="book in props.books" :key="book.id" :value="book">
+    <book-card :book="book"/>
   </div>
  </div>
 </template>

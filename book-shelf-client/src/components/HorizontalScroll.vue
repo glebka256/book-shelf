@@ -1,6 +1,14 @@
 <script setup lang="ts">
+import { ref, onMounted, onBeforeUnmount, defineProps, PropType } from 'vue';
 import BookCard from './BookCard.vue';
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { Book } from '@/types/Book';
+
+defineProps({
+  books: {
+    type: Array as PropType<Book[]>,
+    required: true
+  }
+});
 
 const scrollView = ref<HTMLElement>();
 const isScrolling = ref<boolean>(false);
@@ -53,20 +61,7 @@ onBeforeUnmount(() => {
   <button class="scroll-button right" @click="scroll('right')"><i class="fa-solid fa-chevron-right"></i></button>
   <div class="scroll-view-wrapper">
     <div class="scroll-view" ref="scrollView">
-      <book-card />
-      <book-card />
-      <book-card />
-      <book-card />
-      <book-card />
-      <book-card />
-      <book-card />
-      <book-card />
-      <book-card />
-      <book-card />
-      <book-card />
-      <book-card />
-      <book-card />
-      <book-card />
+      <book-card v-for="book in books" :key="book.id" :value="book" :book="book"/>
     </div>
   </div>
  </div>

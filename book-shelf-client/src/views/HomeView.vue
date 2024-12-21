@@ -7,10 +7,31 @@ import InputSelector from '@/components/InputSelector.vue';
 import BookGrid from '@/components/BookGrid.vue';
 import BookFilter from '@/components/BookFilter.vue';
 import { calculateTextWidth } from '@/utils';
+import { Book } from '@/types/Book';
+import baseInstance from '@/api/baseInstance';
+
+const popularBooks = ref<Book[]>([]);
+const isLoading = ref(false);
+const errorMessage = ref<string | null>(null);
 
 const categories = ref<string[]>(["fiction", "non-fiction", "science", "fantasy","epic_fantasy", "dark_fantasy", "mystery", "romance", "thriller", "horror", "historical_fiction", "science_fiction", "literary_fiction", "young_adult", "children's_books", "classics", "adventure", "crime", "paranormal", ]);
-
 const selectedCategories = ref<string[]>([]);
+
+async function fetchPopularBooks(page: number, limit: number): Promise<void> {
+  isLoading.value = true;
+  errorMessage.value = null;
+
+  try {
+    const response = await baseInstance.get<Book[]>(
+      `/books/popular/${page}/${limit}`
+    );
+    popularBooks.value = response.data;
+  } catch (error) {
+    errorMessage.value = `Could not fetch popular books. Error: ${error}`;
+  } finally {
+    isLoading.value = false;
+  }
+}
 
 function addCategory(category: string) {
   if (!selectedCategories.value.includes(category)) {
@@ -55,14 +76,12 @@ const adjustFilterGrid = () => {
 
     const itemsPerRow = Math.max(1, Math.floor(containerWidth / (Math.max(...elementsWidth) + columnElementPadding)));
 
-    // Generate staggered offsets for odd rows
     const rowOffsets: string[] = [];
     for (let i = 0; i < selectedCategories.value.length; i++) {
       const isOddRow = Math.floor(i / itemsPerRow) % 2 === 1;
       rowOffsets.push(isOddRow ? '20px' : '0px');
     }
 
-    // Set grid placement for each element
     selectedCategories.value.forEach((category, index) => {
       const row = Math.floor(index / itemsPerRow);
       const column = index % itemsPerRow;
@@ -71,13 +90,15 @@ const adjustFilterGrid = () => {
       if (item) {
         item.style.gridRow = `${row + 1}`;
         item.style.gridColumn = `${column + 1}`;
-        item.style.transform = `translateX(${rowOffsets[index]})`; // Apply staggered offset
+        item.style.transform = `translateX(${rowOffsets[index]})`; // Offset applied to make rows stand out
       }
     });
   }
 };
 
 onMounted(() => {
+  fetchPopularBooks(1, 10);
+
   nextTick(() => {
     adjustFilterGrid();
   });
@@ -109,7 +130,7 @@ onBeforeUnmount(() => {
         </div>
       </div>
     </div>
-    <horizontal-scroll></horizontal-scroll>
+    <horizontal-scroll :books="popularBooks"/>
   </div>
   <div class="search-view">
     <div class="view-heading">
@@ -134,7 +155,7 @@ onBeforeUnmount(() => {
         </div>
       </div>
     </div>
-    <book-grid />
+    <book-grid :books="popularBooks"/>
   </div>
  </div>
 </template>
