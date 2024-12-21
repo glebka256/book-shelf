@@ -10,6 +10,7 @@ import { calculateTextWidth } from '@/utils';
 import { Book } from '@/types/Book';
 import baseInstance from '@/api/baseInstance';
 
+const recommendedBooks = ref<Book[]>([]);
 const popularBooks = ref<Book[]>([]);
 const isLoading = ref(false);
 const errorMessage = ref<string | null>(null);
@@ -26,6 +27,7 @@ async function fetchPopularBooks(page: number, limit: number): Promise<void> {
       `/books/popular/${page}/${limit}`
     );
     popularBooks.value = response.data;
+    recommendedBooks.value = popularBooks.value;
   } catch (error) {
     errorMessage.value = `Could not fetch popular books. Error: ${error}`;
   } finally {
@@ -97,7 +99,7 @@ const adjustFilterGrid = () => {
 };
 
 onMounted(() => {
-  fetchPopularBooks(1, 10);
+  fetchPopularBooks(1, 50);
 
   nextTick(() => {
     adjustFilterGrid();
@@ -130,7 +132,7 @@ onBeforeUnmount(() => {
         </div>
       </div>
     </div>
-    <horizontal-scroll :books="popularBooks"/>
+    <horizontal-scroll :books="recommendedBooks"/>
   </div>
   <div class="search-view">
     <div class="view-heading">

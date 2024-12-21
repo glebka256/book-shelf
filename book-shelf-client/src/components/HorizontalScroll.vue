@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, defineProps, PropType } from 'vue';
+import { ref, onMounted, onBeforeUnmount, defineProps, PropType, onBeforeMount } from 'vue';
 import BookCard from './BookCard.vue';
 import { Book } from '@/types/Book';
 
@@ -43,6 +43,8 @@ const scroll = (direction: 'left' | 'right') => {
   setTimeout(() => {
     isScrolling.value = false;
   }, 300);
+
+  updateGap();
 }
 
 onMounted(() => {
