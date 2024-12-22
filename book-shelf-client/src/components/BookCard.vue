@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, PropType, computed } from 'vue';
+import { defineProps, PropType, computed, ref } from 'vue';
 import { Book } from '@/types/Book';
 
 const props = defineProps({
@@ -12,13 +12,24 @@ const props = defineProps({
 const bookCover = computed(() => {
   return props.book.coverUrl || '@/assets/cover_placeholder.png';
 });
+
+const isImageLoaded = ref(false);
+
+function handleImageLoad() {
+  isImageLoaded.value = true;
+}
 </script>
 
 <template>
  <div class="book-card">
   <div class="book-container">
+    <div v-if="!isImageLoaded" class="skeleton-loader"></div>
     <div class="image-cover">
-      <img :src="bookCover">
+      <img
+        v-show="isImageLoaded" 
+        :src="bookCover"
+        @load="handleImageLoad"
+        alt="Book Cover">
     </div>
     <div class="image-props">
       <h3 class="title">{{ props.book.title }}</h3>
@@ -38,7 +49,7 @@ const bookCover = computed(() => {
 .book-container {
   display: flex;
   flex-direction: column;
-  background-color: #ffffff;
+  background-color: #edf1ff;
   width: 200px;
   height: 420px;
   padding: 10px;
@@ -66,6 +77,32 @@ const bookCover = computed(() => {
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+
+  .skeleton-loader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      #e0e0e0 25%,
+      #f4f4f4 50%,
+      #e0e0e0 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 8px;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
   }
 }
 

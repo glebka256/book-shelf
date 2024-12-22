@@ -199,7 +199,7 @@ onBeforeUnmount(() => {
 }
 
 .view-heading {
-  background-color: #f5f6fa;
+  background-color: #edf1ff;
   padding-left: 20px;
   padding-right: 20px;
   margin: 20px 25px;
