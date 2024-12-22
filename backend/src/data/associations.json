@@ -1,0 +1,222 @@
+{
+    "fiction": {
+        "type": "fiction",
+        "associates": [
+            "fantasy",
+            "mystery", 
+            "romance", 
+            "thriller", 
+            "horror", 
+            "historical_fiction", 
+            "science_fiction", 
+            "literary_fiction", 
+            "young_adult", 
+            "children's_books", 
+            "classics", 
+            "adventure", 
+            "crime", 
+            "paranormal", 
+            "dystopian", 
+            "urban_fantasy", 
+            "graphic_novels", 
+            "magical_realism", 
+            "mythology", 
+            "steampunk", 
+            "cyberpunk", 
+            "post-apocalyptic", 
+            "historical_romance", 
+            "military_fiction", 
+            "western", 
+            "space_opera", 
+            "speculative_fiction", 
+            "satire", 
+            "drama", 
+            "folklore", 
+            "fairy_tales", 
+            "short_stories", 
+            "fairy_fantasy", 
+            "pirate_fiction", 
+            "espionage", 
+            "medical_thriller", 
+            "political_thriller", 
+            "noir"
+        ]
+    },
+    "fantasy": {
+        "type": "fiction",
+        "associates": [
+            "fantasy", 
+            "epic_fantasy", 
+            "dark_fantasy", 
+            "urban_fantasy", 
+            "magical_realism", 
+            "mythology", 
+            "fairy_fantasy", 
+            "steampunk", 
+            "cyberpunk", 
+            "speculative_fiction", 
+            "fairy_fantasy"
+        ]
+    },
+    "science_fiction": {
+        "type": "fiction",
+        "associates": [
+            "science-fiction", 
+            "steampunk", 
+            "space_opera", 
+            "cyberpunk", 
+            "post-apocalyptic", 
+            "speculative_fiction", 
+            "dystopian"
+        ]
+    },
+    "mystery": {
+        "type": "fiction",
+        "associates": [
+            "mystery",
+            "paranormal", 
+            "crime", 
+            "true_crime", 
+            "thriller", 
+            "noir", 
+            "medical_thriller",
+            "political_thriller"
+        ]
+    },
+    "romance": {
+        "type": "fiction",
+        "associates": [
+            "romance",
+            "historical_romance", 
+            "drama", 
+            "young_adult"
+        ]
+    },
+    "horror": {
+        "type": "fiction",
+        "associates": [
+            "horror",
+            "dark_fantasy", 
+            "paranormal", 
+            "medical_thriller"
+        ]
+    },
+    "adventure": {
+        "type": "fiction",
+        "associates": [
+            "adventure",
+            "fairy_tales",
+            "pirate_fiction", 
+            "western", 
+            "historical_fiction", 
+            "young_adult", 
+            "adventure"
+        ]
+    },
+    "non-fiction": {
+        "type": "non-fiction",
+        "associates": [
+            "science", 
+            "biography", 
+            "philosophy", 
+            "psychology", 
+            "sociology", 
+            "politics", 
+            "economics", 
+            "business", 
+            "arts", 
+            "travel", 
+            "health", 
+            "cookbooks", 
+            "poetry", 
+            "religion", 
+            "spirituality", 
+            "parenting", 
+            "sports", 
+            "music", 
+            "humor", 
+            "true_crime", 
+            "nature", 
+            "gardening", 
+            "environmental", 
+            "astronomy", 
+            "astrology", 
+            "physics", 
+            "mathematics", 
+            "engineering", 
+            "computers_and_technology", 
+            "art_history", 
+            "design", 
+            "architecture", 
+            "history", 
+            "military_history", 
+            "education", 
+            "linguistics", 
+            "law", 
+            "medicine", 
+            "anatomy", 
+            "nutrition", 
+            "fitness", 
+            "anthropology", 
+            "archaeology", 
+            "geography", 
+            "ethics"
+        ]
+    },
+    "science": {
+        "type": "non-fiction",
+        "associates": [
+            "science",
+            "physics", 
+            "mathematics", 
+            "astronomy", 
+            "engineering", 
+            "environmental", 
+            "computers_and_technology"
+        ]
+    },
+    "history": {
+        "type": "non-fiction",
+        "associates": [
+            "history",
+            "military_history", 
+            "art_history", 
+            "architecture"
+        ]
+    },
+    "health": {
+        "type": "non-fiction",
+        "associates": [
+            "health",
+            "nutrition", 
+            "fitness", 
+            "medicine", 
+            "anatomy", 
+            "parenting"
+        ]
+    },
+    "arts": {
+        "type": "non-fiction",
+        "associates": [
+            "arts",
+            "design", 
+            "music", 
+            "poetry", 
+            "humor"
+        ]
+    },
+    "self-help": {
+        "type": "self-help",
+        "associates": [
+            "self-help", 
+            "psychology", 
+            "spirituality", 
+            "parenting", 
+            "health", 
+            "fitness", 
+            "nutrition", 
+            "philosophy", 
+            "business"
+        ]
+    }
+}
