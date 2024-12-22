@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, nextTick, onBeforeUnmount } from 'vue';
 import SearchBar from '@/components/SearchBar.vue';
+import BookSkeleton from '@/components/BookSkeleton.vue';
 import CommonButton from '@/components/CommonButton.vue';
 import HorizontalScroll from '@/components/HorizontalScroll.vue';
 import InputSelector from '@/components/InputSelector.vue';
@@ -100,6 +101,9 @@ const adjustFilterGrid = () => {
 
 onMounted(() => {
   fetchPopularBooks(1, 50);
+  if (!isLoading.value) {
+    adjustFilterGrid();
+  }
 
   nextTick(() => {
     adjustFilterGrid();
@@ -123,7 +127,10 @@ onBeforeUnmount(() => {
 <template>
  <div class="home-view">
   <search-bar placeholder="Search book" />
-  <div class="recommended-view">
+  <div class="book-sceleton" v-if="isLoading">
+    <book-skeleton :skeleton-type="'horizontal'" />
+  </div>
+  <div v-else class="recommended-view">
     <div class="view-heading">
       <div class=heading-row>
         <h2 class="view-title">Recommended</h2>
@@ -134,7 +141,10 @@ onBeforeUnmount(() => {
     </div>
     <horizontal-scroll :books="recommendedBooks"/>
   </div>
-  <div class="search-view">
+  <div class="book-sceleton" v-if="isLoading">
+    <book-skeleton :skeleton-type="'vertical'" />
+  </div>
+  <div v-else class="search-view">
     <div class="view-heading">
       <div class="heading-row">
         <h2 class="view-title">Discover new</h2>
@@ -163,6 +173,14 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped lang="scss">
+.book-sceleton {
+  margin: 20px auto;
+  width: 90%;
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+}
+
 .home-view {
   display: flex;
   flex-direction: column;

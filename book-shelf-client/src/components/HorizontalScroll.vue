@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, defineProps, PropType, onBeforeMount } from 'vue';
+import { ref, onMounted, onBeforeUnmount, defineProps, PropType } from 'vue';
 import BookCard from './BookCard.vue';
 import { Book } from '@/types/Book';
 
