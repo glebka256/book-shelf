@@ -5,6 +5,7 @@ import BookSkeleton from '@/components/BookSkeleton.vue';
 import CommonButton from '@/components/CommonButton.vue';
 import HorizontalScroll from '@/components/HorizontalScroll.vue';
 import InputSelector from '@/components/InputSelector.vue';
+import IconButton from '@/components/IconButton.vue';
 import BookGrid from '@/components/BookGrid.vue';
 import BookFilter from '@/components/BookFilter.vue';
 import { calculateTextWidth } from '@/utils';
@@ -134,7 +135,10 @@ onBeforeUnmount(() => {
   <div v-else class="recommended-view">
     <div class="view-heading">
       <div class=heading-row>
-        <h2 class="view-title">Recommended</h2>
+        <div class="recommended-title-wrapper">
+          <h2 class="view-title">Recommended</h2>
+          <icon-button icon-type="reset" />
+        </div>
         <div class="view-options">
           <common-button>See All</common-button>
         </div>
@@ -149,13 +153,51 @@ onBeforeUnmount(() => {
     <div class="view-heading">
       <div class="heading-row">
         <h2 class="view-title">Discover new</h2>
-        <div class="view-options">
-          <input-selector 
-            label-text="Category" 
-            :options="categories"
-            placeholder="Choose category" 
-            @select-option="addCategory"
-          />
+        <div class="view-options filter-buttons">
+          <common-button>Reset Filter</common-button>
+          <common-button>Apply Filter</common-button>
+        </div>
+      </div>
+      <div class="filter-heading">
+        <div class="heading-row applied-margin applied-shrink">
+          <div class="heading-cell">
+            <input-selector 
+              label-text="Category" 
+              :options="categories"
+              placeholder="Choose category" 
+              @select-option="addCategory"
+            />
+            <icon-button icon-type="reset" />
+          </div>
+          <div class="heading-cell">
+            <input-selector 
+              label-text="Language" 
+              :options="categories"
+              placeholder="Choose language" 
+              @select-option="addCategory"
+            />
+            <icon-button icon-type="reset" />
+          </div>
+        </div>
+        <div class="heading-row applied-shrink">
+          <div class="heading-cell">
+            <input-selector 
+              label-text="Downloadable" 
+              :options="categories"
+              placeholder="Chose download type" 
+              @select-option="addCategory"
+            />
+            <icon-button icon-type="reset" />    
+          </div>
+          <div class="heading-cell">
+            <input-selector 
+              label-text="Read access" 
+              :options="categories"
+              placeholder="Choose accessability" 
+              @select-option="addCategory"
+            />
+            <icon-button icon-type="reset" />
+          </div>
         </div>
       </div>
       <div class="heading-row">
@@ -215,6 +257,29 @@ onBeforeUnmount(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  &.applied-margin {
+    margin-bottom: 14px;
+  }
+
+  .heading-cell {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+  }
+
+  .input-selector {
+    flex-shrink: 0;
+    width: auto;
+  }
+}
+
+.recommended-title-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
 }
 
 .view-title {
@@ -224,8 +289,11 @@ onBeforeUnmount(() => {
 }
 
 .view-options {
-  display: flex;
-  align-items: center;
+  &.filter-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+  }
 }
 
 .filters-view {
@@ -234,5 +302,23 @@ onBeforeUnmount(() => {
   justify-content: start;
   gap: 15px;
   padding: 15px;
+}
+
+@media (max-width: 1084px) {
+  .heading-row {
+
+    &.applied-shrink {
+      flex-direction: column;
+    }
+
+    &.applied-margin {
+      margin-bottom: 0;
+    }
+
+    .heading-cell {
+      margin-bottom: 14px;
+      margin-right: auto;
+    }
+  }
 }
 </style>
