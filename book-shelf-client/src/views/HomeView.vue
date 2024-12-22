@@ -126,6 +126,7 @@ onBeforeUnmount(() => {
 
 <template>
  <div class="home-view">
+  <div class="empty-top"></div>
   <search-bar placeholder="Search book" />
   <div class="book-sceleton" v-if="isLoading">
     <book-skeleton :skeleton-type="'horizontal'" />
@@ -173,18 +174,22 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped lang="scss">
+.home-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.empty-top {
+  height: 100px;
+}
+
 .book-sceleton {
   margin: 20px auto;
   width: 90%;
   background-color: white;
   border-radius: 10px;
   padding: 20px;
-}
-
-.home-view {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 .recommended-view, .search-view {

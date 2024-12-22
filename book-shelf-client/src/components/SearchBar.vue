@@ -11,52 +11,81 @@ defineProps({
 </script>
 
 <template>
- <div class="search-bar">
-  <i class="fas fa-search"></i> <input type="text" :placeholder=placeholder>
- </div>
+  <div class="search-bar" ref="searchBar">
+    <div class="input-container">
+      <input type="text" class="search-bar-input" :placeholder=placeholder>
+      <button id="search-button" class="search-bar-input">
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
+  </div>
 </template>
-
+ 
 <style scoped lang="scss">
 .search-bar {
-  width: 40%;
-  position: relative;
-  top: -55px;
+  position: fixed;
+  z-index: 1000;
+  top: -34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60%;
+  max-width: 720px;
   background-color: #9598d2;
   padding: 40px;
   border-radius: 0 0 60% 60%;
 
-  input {
-    width: 240px;
-    margin-top: 20px;
-    margin-bottom: -20px;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 15px;
-    font-size: 1rem;
+  .input-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 62%;
+    min-width: 240px;
+    max-width: 600px;
+    //margin-top: 22px;
+    margin-bottom: -28px;
     color: #2c3e50;
-    background-color: #f1f1f1;
-    outline: none;
-    transition: box-shadow 0.3s ease-in-out;
-  }
 
-  &::placeholder {
-      color: #b3b3b3;
+    .search-bar-input {
+      padding: 10px 15px;
     }
 
-    &:focus {
-      box-shadow: 0 0 10px #7175d1;
+    button {
+      border: none;
+      align-self: flex-end;
+      border-radius: 0 20px 20px 0;
+
+      i {
+        padding-top: 1px;
+        padding-right: 4px;
+        font-size: 1.1rem;
+      }
+    }
+
+    input {
+      align-self: flex-start;
+      border-radius: 20px 0 0 20px;
+
+      width: 100%;
+      font-size: 1rem;
+      outline: none;
+      border: none;
+      transition: box-shadow 0.3s ease-in-out;
+
+      &::placeholder {
+        color: #b3b3b3;
+      }
+
+      &:focus {
+        box-shadow: 0 0 10px #7175d1;
+      }
+    }
   }
 }
 
 @media (max-width: 1024px) {
   .search-bar {
     width: 80%;
-  }
-}
-
-@media (min-width: 1920px) {
-  .search-bar {
-    width: 50%;
   }
 }
 </style>
