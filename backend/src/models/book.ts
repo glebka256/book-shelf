@@ -32,6 +32,7 @@ const BookSchema = new mongoose.Schema({
 const BookModel = mongoose.model('Book', BookSchema);
 
 export const getBooks = () => BookModel.find();
+export const queryBooks = (query: Object) => BookModel.find(query);
 export const getBookById = (id: String) => BookModel.findById(id);
 export const getBookByTitle = (title: String) => BookModel.findOne({ title });
 
