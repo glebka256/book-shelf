@@ -45,6 +45,7 @@ export class BookScraper {
 
     mapAsStorageBooks(rawBooks: any[]): StorageBook[] {
         return rawBooks.map((book) => ({
+            id: '',
             meta: {
                 isbn: book.isbn,
                 idGutenberg: book.idGutenberg,
@@ -59,6 +60,7 @@ export class BookScraper {
             rating: book.ratingSortable,
             publishedYear: parseInt(book.publishYear),
             language: book.language,
+            complete: false,
             ebookAccess: book.ebookAcess
         }));
     }
