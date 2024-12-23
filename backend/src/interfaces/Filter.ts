@@ -1,4 +1,12 @@
 import { StorageBook } from "./Books"
+import { SubjectGenre } from "./Data"
+
+export interface FilterOptions {
+    genre: SubjectGenre[],
+    language: string[],
+    downloadable: string,
+    readable: string
+}
 
 export interface FilterQuery {
     subjects: string[],

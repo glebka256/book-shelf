@@ -7,8 +7,18 @@ export enum FileSizeMetric {
 }
 
 export enum Languages {
-    English = "eng",
-    French = "fre",
-    Spanish = "spa",
-    German = "ger"
+    English = 'eng',
+    German = 'ger',
+    French = 'fre',
+    Spanish = 'spa',
+    Russian = 'rus',
+    Italian = 'ita',
+    Chinease = 'chi',
+    Japanease = 'jpn',
+    Arabic = 'ara',
+    Portuguese = 'por',
+    Hebrew = 'heb',
+    Korean = 'kor',
+    Polish = 'pol',
+    Ukrainian = 'ukr'
 }
