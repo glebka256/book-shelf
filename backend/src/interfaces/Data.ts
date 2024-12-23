@@ -17,3 +17,8 @@ export enum ScrapingTypes {
     Additional = 'additional',
     All = 'all'
 }
+
+export interface SubjectGenre {
+    name: string,
+    subjects: string[]
+}
