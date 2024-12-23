@@ -2,100 +2,8 @@ import dotenv from "dotenv";
 import { BookScraper } from "./BookScraper";
 import { connectDB } from '@app/config/db';
 import { dynamicLoader, dynamicLog } from "@app/utils";
-
-const desiredSubjects = [
-    "fiction", 
-    "non-fiction", 
-    "science", 
-    "fantasy",
-    "epic_fantasy",
-    "dark_fantasy", 
-    "mystery", 
-    "romance", 
-    "thriller", 
-    "horror", 
-    "historical_fiction", 
-    "science_fiction", 
-    "literary_fiction", 
-    "young_adult", 
-    "children's_books", 
-    "classics", 
-    "adventure", 
-    "crime", 
-    "paranormal", 
-    "dystopian", 
-    "biography", 
-    "self-help", 
-    "philosophy", 
-    "psychology", 
-    "sociology", 
-    "politics", 
-    "economics", 
-    "business", 
-    "arts", 
-    "travel", 
-    "health", 
-    "cookbooks", 
-    "poetry", 
-    "religion", 
-    "spirituality", 
-    "parenting", 
-    "sports", 
-    "music", 
-    "humor", 
-    "true_crime", 
-    "urban_fantasy", 
-    "graphic_novels", 
-    "magical_realism", 
-    "mythology"
-];
-
-const additionalSubjects = [
-    "steampunk", 
-    "cyberpunk", 
-    "post-apocalyptic", 
-    "historical_romance", 
-    "military_fiction", 
-    "western", 
-    "space_opera", 
-    "speculative_fiction", 
-    "satire", 
-    "drama", 
-    "folklore", 
-    "fairy_tales", 
-    "short_stories", 
-    "nature", 
-    "gardening", 
-    "environmental", 
-    "astronomy", 
-    "astrology", 
-    "physics", 
-    "mathematics", 
-    "engineering", 
-    "computers_and_technology", 
-    "art_history", 
-    "design", 
-    "architecture", 
-    "history", 
-    "military_history", 
-    "education", 
-    "linguistics", 
-    "law", 
-    "medicine", 
-    "anatomy", 
-    "nutrition", 
-    "fitness", 
-    "anthropology", 
-    "archaeology", 
-    "geography", 
-    "ethics", 
-    "fairy_fantasy", 
-    "pirate_fiction", 
-    "espionage", 
-    "medical_thriller", 
-    "political_thriller", 
-    "noir"
-];
+import { DataSerializer } from "../DataSerializer";
+import { ScrapingTypes } from "@app/interfaces/Data";
 
 const REQUEST_DELAY = 3000 // ms
 
@@ -113,6 +21,8 @@ async function main(): Promise<void> {
     setupScraper();
     console.log(`Request timeout set to: ${REQUEST_DELAY}ms.`);
 
+    const desiredSubjects = DataSerializer.getParsingSubjects(ScrapingTypes.All);
+
     console.log("Starting book scraper...");
 
     const scraper = new BookScraper();
@@ -121,7 +31,7 @@ async function main(): Promise<void> {
 
     const stopLoader = dynamicLoader("Scraping books");
 
-    for (const subject of additionalSubjects) {
+    for (const subject of desiredSubjects) {
         dynamicLog("Currently processed subject: ", subject);
 
         const booksOfGenre = await scraper.populateWithTopOfGenre([subject]);
