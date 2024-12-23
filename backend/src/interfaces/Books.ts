@@ -128,13 +128,6 @@ export enum BookSources {
     ProjectGutenberg = "Project Gutenberg"
 }
 
-export enum Languages {
-    English = "eng",
-    French = "fre",
-    Spanish = "spa",
-    German = "ger"
-}
-
 export interface BooksData {
     src: string,
     books: AnnasArchiveBook[] | GoodreadsBook[] | BestBook[] | OpenLibraryBook[],

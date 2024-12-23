@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import { BookSources, Languages, ClientBook } from "@app/interfaces/Books";
+import { BookSources, ClientBook } from "@app/interfaces/Books";
+import { Languages } from "@app/interfaces/Util";
 import { RecommendService } from "@app/services/RecommendService";
 import bookManager from "@app/config/book-manager";
 import { 

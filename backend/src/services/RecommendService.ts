@@ -1,4 +1,5 @@
-import { Languages, StorageBook } from "@app/interfaces/Books";
+import { StorageBook } from "@app/interfaces/Books";
+import { Languages } from "@app/interfaces/Util";
 import { getBooks } from "@app/models/book";
 
 export class RecommendService {

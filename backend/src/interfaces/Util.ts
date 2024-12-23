@@ -5,3 +5,10 @@ export enum FileSizeMetric {
     Gigabytes = 'GB',
     Terabytes = 'TB'
 }
+
+export enum Languages {
+    English = "eng",
+    French = "fre",
+    Spanish = "spa",
+    German = "ger"
+}
