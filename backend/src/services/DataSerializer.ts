@@ -1,6 +1,6 @@
 import { mainSubjects, additionalSubjects } from "@app/data/scrapingCategories.json";
 import associations from "@app/data/associations.json";
-import { AssociateType, ScrapingTypes, SubjectAssociates } from "@app/interfaces/Data";
+import { AssociateType, ScrapingTypes, SubjectAssociates, SubjectGenre } from "@app/interfaces/Data";
 
 export class DataSerializer {
     private static associates = Object.entries(associations).map(([key, value]) => ({
@@ -32,5 +32,19 @@ export class DataSerializer {
         }
 
         return associate;
+    }
+
+    static parseGenres(): SubjectGenre[] {
+        const genres: SubjectGenre[] = [];
+
+        for (const associate of this.associates) {
+            const genre = {
+                name: associate.subject.name,
+                subjects: associate.subject.associations
+            };
+            genres.push(genre);
+        }
+
+        return genres;
     }
 }
