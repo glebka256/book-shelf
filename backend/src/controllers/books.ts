@@ -11,6 +11,7 @@ import {
     updateBookById 
 } from "@app/models/book";
 import { extractBookFromDoc } from "@app/utils";
+import { BookFilter } from "@app/services/BookFilter";
 
 export const getBook = async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id;
@@ -89,6 +90,15 @@ export const getGeneralPopular = async (req: Request, res: Response): Promise<vo
         const errorMessage = "Could not get most popular books of all subjects.";
         console.error(`${errorMessage}: `, error);
         res.status(400).json({ message: `${errorMessage}.` });
+    }
+}
+
+export const getFilterOptions = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const filters = BookFilter.submitOptions();
+        res.status(200).json(filters);
+    } catch (error) {
+        res.sendStatus(500);
     }
 }
 

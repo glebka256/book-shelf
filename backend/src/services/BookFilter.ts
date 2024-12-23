@@ -1,20 +1,31 @@
 import { StorageBook } from "@app/interfaces/Books";
-import { FilterQuery, HardQuery, ArrayEntryQuery, FilterResult, FilterStatus } from "@app/interfaces/Filter";
+import { 
+    FilterQuery, 
+    HardQuery, 
+    ArrayEntryQuery, 
+    FilterResult, 
+    FilterStatus, 
+    FilterOptions,
+} from "@app/interfaces/Filter";
 import { queryBooks } from "@app/models/book";
 import { DataSerializer } from "./DataSerializer";
 import { SubjectAssociates } from "@app/interfaces/Data";
 import { RecommendService } from "./RecommendService";
+import { Languages } from "@app/interfaces/Util";
 
 export class BookFilter {
-    private query: FilterQuery
-
-    constructor(filterQuery: FilterQuery) {
-        this.query = filterQuery;
+    static submitOptions(): FilterOptions {
+        return {
+            genre: DataSerializer.parseGenres(),
+            language: Object.values(Languages),
+            downloadable: 'true or false',
+            readable: 'true or false'
+        }
     }
 
-    async getBooks(requested: number): Promise<FilterResult> {
-        const requiredFilter = await this.hardQuery(this.query);
-        const subjectFiltered = await this.subjectQuery(this.query.subjects);
+    static async getBooks(query: FilterQuery, requested: number): Promise<FilterResult> {
+        const requiredFilter = await this.hardQuery(query);
+        const subjectFiltered = await this.subjectQuery(query.subjects);
         const filteredHard = this.filterIntersection(requiredFilter, subjectFiltered);
 
         if (filteredHard.length >= requested) {
@@ -23,7 +34,7 @@ export class BookFilter {
 
         const subjectAssociates: SubjectAssociates[] = [];
 
-        for (const subject of this.query.subjects) {
+        for (const subject of query.subjects) {
             subjectAssociates.push(DataSerializer.getAssociations(subject));
         }
 
@@ -44,7 +55,7 @@ export class BookFilter {
         return { status: FilterStatus.Extend, books: suggested };
     }
 
-    private async hardQuery(query: FilterQuery): Promise<StorageBook[]> {
+    private static async hardQuery(query: FilterQuery): Promise<StorageBook[]> {
         const hardQuery: HardQuery = {
             language: { $in: query.languages },
             link: {
@@ -57,14 +68,14 @@ export class BookFilter {
         return documents as StorageBook[];
     }
 
-    private async subjectQuery(keywords: string[]): Promise<StorageBook[]> {
+    private static async subjectQuery(keywords: string[]): Promise<StorageBook[]> {
         const relaxedQuery: ArrayEntryQuery = { $in: keywords};
 
         const documents = await queryBooks(relaxedQuery);
         return documents as StorageBook[];
     }
 
-    private filterIntersection(array1: StorageBook[], array2: StorageBook[]) {
+    private static filterIntersection(array1: StorageBook[], array2: StorageBook[]) {
         const filterSet = new Set(array2);
         return array1.filter((item) => filterSet.has(item));
     }
