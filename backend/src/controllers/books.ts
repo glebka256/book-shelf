@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { query, Request, Response } from "express";
 import { BookSources, ClientBook } from "@app/interfaces/Books";
 import { Languages } from "@app/interfaces/Util";
 import { RecommendService } from "@app/services/RecommendService";
@@ -12,6 +12,7 @@ import {
 } from "@app/models/book";
 import { extractBookFromDoc } from "@app/utils";
 import { BookFilter } from "@app/services/BookFilter";
+import { FilterStatus } from "@app/interfaces/Filter";
 
 export const getBook = async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id;
@@ -98,7 +99,28 @@ export const getFilterOptions = async (req: Request, res: Response): Promise<voi
         const filters = BookFilter.submitOptions();
         res.status(200).json(filters);
     } catch (error) {
+        const errorMessage = "Could not submit filtering options.";
+        console.error(`${errorMessage} Error: `, error);
         res.sendStatus(500);
+    }
+}
+
+export const getFiltered = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const query = BookFilter.mapQuery(req.body.query);
+        const endPage = parseInt(req.body.page);
+        const beginPage = endPage - 1;
+
+        const pageSize = 50;
+        BookFilter.updateSuggestionSize(pageSize);
+        const filtered = await BookFilter.getBooks(query, pageSize * endPage);
+        
+        filtered.books = filtered.books.slice(beginPage * pageSize, endPage * pageSize);
+        res.status(200).json(filtered)
+    } catch (error) {
+        const errorMessage = "Could not filter books by query provided in requst body."
+        console.error(errorMessage, `Error: ${error}`);
+        res.status(400).json({ message: errorMessage });
     }
 }
 

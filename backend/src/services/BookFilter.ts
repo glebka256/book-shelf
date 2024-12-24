@@ -14,12 +14,27 @@ import { RecommendService } from "./RecommendService";
 import { Languages } from "@app/interfaces/Util";
 
 export class BookFilter {
+    static suggestionSize = 50;
+
+    static updateSuggestionSize(newSize: number) {
+        this.suggestionSize = newSize;
+    }
+
     static submitOptions(): FilterOptions {
         return {
             genre: DataSerializer.parseGenres(),
             language: Object.values(Languages),
             downloadable: 'true or false',
             readable: 'true or false'
+        }
+    }
+
+    static mapQuery(query: any): FilterQuery {
+        return {
+            subjects: query.subjects,
+            languages: query.languages,
+            downloadable: query.downloadable == 'true' ? true : false,
+            readable: query.downloadable == 'true' ? true : false,
         }
     }
 
@@ -48,20 +63,18 @@ export class BookFilter {
 
         const recommendation = new RecommendService();
 
-        const page = Math.floor(50 / requested); 
+        const page = Math.floor(requested / this.suggestionSize); 
         const requestPage = page > 0 ? page : 1;
-        const suggested = await recommendation.getPopularBooks(requestPage, requested);
+        const suggested = await recommendation.getPopularBooks(requestPage, this.suggestionSize);
         
         return { status: FilterStatus.Extend, books: suggested };
     }
 
     private static async hardQuery(query: FilterQuery): Promise<StorageBook[]> {
         const hardQuery: HardQuery = {
-            language: { $in: query.languages },
-            link: {
-                downloadUrl: { $exists: true, $ne: '' },
-                readUrl: { $exists: true, $ne: '' }
-            }
+            'language': { $in: query.languages },
+            'link.downloadUrl': { $exists: true, $ne: '' },
+            'link.readUrl': { $exists: true, $ne: '' }
         }
 
         const documents = await queryBooks(hardQuery);
@@ -75,6 +88,7 @@ export class BookFilter {
         return documents as StorageBook[];
     }
 
+    // Asumes array2 has unique items for efficient O(n) Set lookup time.
     private static filterIntersection(array1: StorageBook[], array2: StorageBook[]) {
         const filterSet = new Set(array2);
         return array1.filter((item) => filterSet.has(item));

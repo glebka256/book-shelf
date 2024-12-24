@@ -25,14 +25,13 @@ export interface AccessabilityQuery {
 }
 
 export interface HardQuery {
-    language: ArrayEntryQuery,
-    link: {
-        downloadUrl: AccessabilityQuery,
-        readUrl: AccessabilityQuery
-    }
+    'language': ArrayEntryQuery,
+    'link.downloadUrl': AccessabilityQuery,
+    'link.readUrl': AccessabilityQuery,
 }
 
 export enum FilterStatus {
+    Empty = 401,
     Hard = 101,
     Soft = 102,
     Extend = 103

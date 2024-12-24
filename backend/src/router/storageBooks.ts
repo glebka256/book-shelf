@@ -5,6 +5,7 @@ import {
     deleteBook,
     getAllBooks,
     getBook, 
+    getFiltered, 
     getFilterOptions, 
     getGeneralPopular, 
     lookupBookDetails, 
@@ -20,4 +21,5 @@ export default (router: Router): void => {
     router.get('/books/popular/:page/:limit?', getGeneralPopular);
     router.get('/books/detailed/:id', lookupBookDetails);
     router.get('/books/filter/options', getFilterOptions);
+    router.post('/books/filter/', getFiltered);
 }
