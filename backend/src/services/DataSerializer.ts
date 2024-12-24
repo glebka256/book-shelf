@@ -48,8 +48,6 @@ export class DataSerializer {
             genres.push(genre);
         }
 
-        console.log(genres);
-
         return genres;
     }
 }
