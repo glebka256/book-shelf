@@ -82,13 +82,14 @@ export class BookFilter {
     }
 
     private static async subjectQuery(keywords: string[]): Promise<StorageBook[]> {
-        const relaxedQuery: ArrayEntryQuery = { $in: keywords};
+        const queryCondition: ArrayEntryQuery = { $in: keywords };
+        const relaxedQuery = { 'subject': queryCondition };
 
         const documents = await queryBooks(relaxedQuery);
         return documents as StorageBook[];
     }
 
-    // Asumes array2 has unique items for efficient O(n) Set lookup time.
+    // Asumes array2 has unique items for efficient O(1) Set lookup time.
     private static filterIntersection(array1: StorageBook[], array2: StorageBook[]) {
         const filterSet = new Set(array2);
         return array1.filter((item) => filterSet.has(item));
