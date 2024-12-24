@@ -4,8 +4,8 @@ import SearchBar from '@/components/SearchBar.vue';
 import BookSkeleton from '@/components/BookSkeleton.vue';
 import CommonButton from '@/components/CommonButton.vue';
 import HorizontalScroll from '@/components/HorizontalScroll.vue';
-import InputSelector from '@/components/InputSelector.vue';
 import IconButton from '@/components/IconButton.vue';
+import FilterForm from '@/components/FilterForm.vue';
 import BookGrid from '@/components/BookGrid.vue';
 import BookFilter from '@/components/BookFilter.vue';
 import { calculateTextWidth } from '@/utils';
@@ -38,25 +38,11 @@ async function fetchPopularBooks(page: number, limit: number): Promise<void> {
 }
 
 function addCategory(category: string) {
-  if (!selectedCategories.value.includes(category)) {
-    selectedCategories.value.push(category);
-
-    const index = categories.value.indexOf(category);
-    if (index !== -1) {
-      categories.value.splice(index, 1);
-    }
-  }
+  
 }
 
 function deleteCategory(category: string) {
-  if (selectedCategories.value.includes(category)) {
-    const index = selectedCategories.value.indexOf(category);
-    if (index !== -1) {
-      selectedCategories.value.splice(index, 1);
-    }
 
-    categories.value.push(category);
-  }
 }
 
 const filterGrid = ref<HTMLDivElement | null>(null);
@@ -158,48 +144,7 @@ onBeforeUnmount(() => {
           <common-button>Apply Filter</common-button>
         </div>
       </div>
-      <div class="filter-heading">
-        <div class="heading-row applied-margin applied-shrink">
-          <div class="heading-cell">
-            <input-selector 
-              label-text="Category" 
-              :options="categories"
-              placeholder="Choose category" 
-              @select-option="addCategory"
-            />
-            <icon-button icon-type="reset" />
-          </div>
-          <div class="heading-cell">
-            <input-selector 
-              label-text="Language" 
-              :options="categories"
-              placeholder="Choose language" 
-              @select-option="addCategory"
-            />
-            <icon-button icon-type="reset" />
-          </div>
-        </div>
-        <div class="heading-row applied-shrink">
-          <div class="heading-cell">
-            <input-selector 
-              label-text="Downloadable" 
-              :options="categories"
-              placeholder="Chose download type" 
-              @select-option="addCategory"
-            />
-            <icon-button icon-type="reset" />    
-          </div>
-          <div class="heading-cell">
-            <input-selector 
-              label-text="Read access" 
-              :options="categories"
-              placeholder="Choose accessability" 
-              @select-option="addCategory"
-            />
-            <icon-button icon-type="reset" />
-          </div>
-        </div>
-      </div>
+      <filter-form />
       <div class="heading-row">
         <div class="filters-view" ref="filterGrid">
           <book-filter 
@@ -234,6 +179,18 @@ onBeforeUnmount(() => {
   padding: 20px;
 }
 
+.view-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.recommended-title-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+}
+
 .recommended-view, .search-view {
   margin-top: -35px;
   background-color: white;
@@ -257,35 +214,6 @@ onBeforeUnmount(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
-  &.applied-margin {
-    margin-bottom: 14px;
-  }
-
-  .heading-cell {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 10px;
-  }
-
-  .input-selector {
-    flex-shrink: 0;
-    width: auto;
-  }
-}
-
-.recommended-title-wrapper {
-  display: flex;
-  flex-direction: row;
-  gap: 12px;
-}
-
-.view-title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #2c3e50;
 }
 
 .view-options {
