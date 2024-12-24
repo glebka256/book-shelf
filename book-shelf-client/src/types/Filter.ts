@@ -1,5 +1,10 @@
+export interface FilterGenre {
+    name: string,
+    subjects: string,
+}
+
 export interface FilterOptions {
-    genre: string[],
+    genre: FilterGenre[],
     language: string[]
 }
 

@@ -1,14 +1,41 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted, reactive } from 'vue';
 import InputSelector from '@/components/InputSelector.vue';
 import IconButton from '@/components/IconButton.vue';
+import { FilterOptions, FilterGenre, FilterQuery } from '@/types/Filter';
+import baseInstance from '@/api/baseInstance';
 
-const categories = ref<string[]>(["fiction", "non-fiction", "science", "fantasy","epic_fantasy", "dark_fantasy", "mystery", "romance", "thriller", "horror", "historical_fiction", "science_fiction", "literary_fiction", "young_adult", "children's_books", "classics", "adventure", "crime", "paranormal", ]);
-const selectedCategories = ref<string[]>([]);
+const categories = ref<string[]>([]);
+const languages = ref<string[]>([]);
+const loading = ref<boolean>(true);
+
+const selectedOptions = reactive<FilterQuery>({
+  subjects: [],
+  languages: [],
+  downloadable: false,
+  readable: false
+});
+
+async function fetchOptions() {
+  try {
+    const response = await baseInstance.get<FilterOptions>(
+      `/books/filter/options`
+    );
+
+    const genres = response.data.genre as FilterGenre[];
+    categories.value = genres.map((genre) => (genre.name));
+    languages.value = response.data.language;
+  } catch (error) {
+    console.error(`Could not fetch popular books. Error: ${error}`);
+    loading.value = false;
+  } finally {
+    loading.value = false;
+  }
+}
 
 function addCategory(category: string) {
-  if (!selectedCategories.value.includes(category)) {
-    selectedCategories.value.push(category);
+  if (!selectedOptions.subjects.includes(category)) {
+    selectedOptions.subjects.push(category);
 
     const index = categories.value.indexOf(category);
     if (index !== -1) {
@@ -18,23 +45,27 @@ function addCategory(category: string) {
 }
 
 function deleteCategory(category: string) {
-  if (selectedCategories.value.includes(category)) {
-    const index = selectedCategories.value.indexOf(category);
+  if (selectedOptions.subjects.includes(category)) {
+    const index = selectedOptions.subjects.indexOf(category);
     if (index !== -1) {
-      selectedCategories.value.splice(index, 1);
+      selectedOptions.subjects.splice(index, 1);
     }
 
     categories.value.push(category);
   }
 }
+
+onMounted(() => {
+  fetchOptions();
+});
 </script>
 
 <template>
-  <form class="filter-form">
+  <form class="filter-form" v-if="!loading">
       <div class="filter-row applied-margin applied-shrink">
         <div class="filter-cell">
           <input-selector 
-            label-text="Category" 
+            label-text="Add Categories" 
             :options="categories"
             placeholder="Choose category" 
             @select-option="addCategory"
@@ -44,7 +75,7 @@ function deleteCategory(category: string) {
         <div class="filter-cell">
           <input-selector 
             label-text="Language" 
-            :options="categories"
+            :options="languages"
             placeholder="Choose language" 
             @select-option="addCategory"
           />
@@ -55,8 +86,8 @@ function deleteCategory(category: string) {
         <div class="filter-cell">
           <input-selector 
             label-text="Downloadable" 
-            :options="categories"
-            placeholder="Chose download type" 
+            :options="['Only downloadable']"
+            placeholder="Choose access" 
             @select-option="addCategory"
           />
           <icon-button icon-type="reset" />    
@@ -64,8 +95,8 @@ function deleteCategory(category: string) {
         <div class="filter-cell">
           <input-selector 
             label-text="Read access" 
-            :options="categories"
-            placeholder="Choose accessability" 
+            :options="['Only readable']"
+            placeholder="Choose access" 
             @select-option="addCategory"
           />
           <icon-button icon-type="reset" />

@@ -37,14 +37,6 @@ async function fetchPopularBooks(page: number, limit: number): Promise<void> {
   }
 }
 
-function addCategory(category: string) {
-  
-}
-
-function deleteCategory(category: string) {
-
-}
-
 const filterGrid = ref<HTMLDivElement | null>(null);
 
 // A big hack but seems to work for now
@@ -147,10 +139,12 @@ onBeforeUnmount(() => {
       <filter-form />
       <div class="heading-row">
         <div class="filters-view" ref="filterGrid">
+          <!--
           <book-filter 
             v-for="category in selectedCategories" v-bind:key="category"
             :filter-value="category"
             @deleted-filter="deleteCategory"
+          -->
           />
         </div>
       </div>
