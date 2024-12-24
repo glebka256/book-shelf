@@ -25,10 +25,13 @@ export class DataSerializer {
         return this.associates;
     }
 
-    static getAssociations(name: string): SubjectAssociates {
-        const associate = this.associates.find(associate => associate.subject.name === name);
+    static getAssociations(name: string): SubjectAssociates {        
+        const associate = this.associates.find(associate => {
+            return associate.subject.associations.includes(name)
+        });
+
         if (!associate) {
-            throw new Error(`Could not read subject associatoins from .JSON with name: ${name}`);
+            throw new Error(`Could not read subject '${name}' associatoins from .JSON.`);
         }
 
         return associate;
@@ -44,6 +47,8 @@ export class DataSerializer {
             };
             genres.push(genre);
         }
+
+        console.log(genres);
 
         return genres;
     }
