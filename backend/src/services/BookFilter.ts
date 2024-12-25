@@ -1,4 +1,4 @@
-import { StorageBook } from "@app/interfaces/Books";
+import { ClientBook, StorageBook } from "@app/interfaces/Books";
 import { 
     FilterQuery, 
     HardQuery, 
@@ -44,7 +44,10 @@ export class BookFilter {
         const filteredHard = this.filterIntersection(requiredFilter, subjectFiltered);
 
         if (filteredHard.length >= requested) {
-            return { status: FilterStatus.Hard, books: filteredHard }
+            return { 
+                status: FilterStatus.Hard, 
+                books: filteredHard as ClientBook[]
+            }
         }
 
         const subjectAssociates: SubjectAssociates[] = [];
@@ -58,7 +61,10 @@ export class BookFilter {
         const filteredExtended = this.filterIntersection(requiredFilter, extendedFilter);
 
         if (filteredExtended.length >= requested) {
-            return { status: FilterStatus.Soft, books: filteredExtended };
+            return { 
+                status: FilterStatus.Soft, 
+                books: filteredExtended as ClientBook[]
+            };
         }
 
         const recommendation = new RecommendService();
@@ -67,7 +73,10 @@ export class BookFilter {
         const requestPage = page > 0 ? page : 1;
         const suggested = await recommendation.getPopularBooks(requestPage, this.suggestionSize);
         
-        return { status: FilterStatus.Extend, books: suggested };
+        return { 
+            status: FilterStatus.Extend, 
+            books: suggested as ClientBook[]
+        };
     }
 
     private static async hardQuery(query: FilterQuery): Promise<StorageBook[]> {
@@ -91,7 +100,9 @@ export class BookFilter {
 
     // Asumes array2 has unique items for efficient O(1) Set lookup time.
     private static filterIntersection(array1: StorageBook[], array2: StorageBook[]) {
-        const filterSet = new Set(array2);
-        return array1.filter((item) => filterSet.has(item));
+        const array2Ids = new Set(array2.map((book) => book.id));
+        const filteredBooks = array1.filter((book) => array2Ids.has(book.id));
+
+        return filteredBooks;
     }
 }

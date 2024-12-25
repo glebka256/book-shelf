@@ -13,6 +13,7 @@ import {
 import { extractBookFromDoc } from "@app/utils";
 import { BookFilter } from "@app/services/BookFilter";
 import { FilterStatus } from "@app/interfaces/Filter";
+import { filter } from "lodash";
 
 export const getBook = async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id;

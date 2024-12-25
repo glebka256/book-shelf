@@ -1,4 +1,4 @@
-import { StorageBook } from "./Books"
+import { ClientBook } from "./Books"
 import { SubjectGenre } from "./Data"
 
 export interface FilterOptions {
@@ -39,5 +39,5 @@ export enum FilterStatus {
 
 export interface FilterResult {
     status: FilterStatus,
-    books: StorageBook[]
+    books: ClientBook[]
 }
