@@ -10,7 +10,7 @@ const props = defineProps({
 });
 
 const bookCover = computed(() => {
-  return props.book.coverUrl || '@/assets/cover_placeholder.png';
+  return props.book.coverUrl || require('@/assets/cover_placeholder.png');
 });
 
 const isImageLoaded = ref(false);

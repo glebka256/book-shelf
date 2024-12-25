@@ -14,3 +14,9 @@ export interface FilterQuery {
     downloadable: boolean,
     readable: boolean
 }
+
+export interface FilterFormInstance {
+    selectedOptions: FilterQuery;
+    resetOptions: () => void;
+    submitOptions: () => void;
+}

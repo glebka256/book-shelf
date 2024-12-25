@@ -9,9 +9,11 @@ import FilterForm from '@/components/FilterForm.vue';
 import BookGrid from '@/components/BookGrid.vue';
 import { Book } from '@/types/Book';
 import baseInstance from '@/api/baseInstance';
+import { FilterFormInstance, FilterQuery } from '@/types/Filter';
 
-const recommendedBooks = ref<Book[]>([]);
 const popularBooks = ref<Book[]>([]);
+const recommendedBooks = ref<Book[]>([]);
+const filteredBooks = ref<Book[]>([]);
 const isLoading = ref(false);
 const errorMessage = ref<string | null>(null);
 
@@ -24,6 +26,9 @@ async function fetchPopularBooks(page: number, limit: number): Promise<void> {
       `/books/popular/${page}/${limit}`
     );
     popularBooks.value = response.data;
+    filteredBooks.value = popularBooks.value;
+
+    // For now populate recommended with just popular.
     recommendedBooks.value = popularBooks.value;
   } catch (error) {
     errorMessage.value = `Could not fetch popular books. Error: ${error}`;
@@ -32,12 +37,50 @@ async function fetchPopularBooks(page: number, limit: number): Promise<void> {
   }
 }
 
+const filterFormRef = ref<FilterFormInstance>();
+const filterPage = ref(1);
+
 function handleFilterReset() {
   // TODO: need to call resetFilters function in FilterForm
+  if (filterFormRef.value) {
+    filterFormRef.value.resetOptions();
+    filterPage.value = 1;
+  }
 }
 
 function handleFilterSubmit() {
   // TODO: should get selectedFilters from FilterForm
+
+  if (filterFormRef.value) {
+    const selectedFilters: FilterQuery = filterFormRef.value.selectedOptions;
+    applyFilters(selectedFilters);
+  }
+}
+
+async function applyFilters(query: FilterQuery) {
+  isLoading.value = true;
+  
+  try {
+    const body = {
+      'query': query,
+      'page': filterPage.value
+    }
+
+    const response = await baseInstance.post(
+      `/books/filter/`,
+      body
+    );
+
+    const books = await response.data.books as Book[];
+    filteredBooks.value = books;
+
+    filterPage.value += 1;
+  } catch (error) {
+    console.error(`Could not get filtered books. Error: ${error}`);
+    isLoading.value = false;
+  } finally {
+    isLoading.value = false;
+  }
 }
 
 onMounted(() => {
@@ -78,9 +121,9 @@ onMounted(() => {
           <common-button @click="handleFilterSubmit">Apply Filter</common-button>
         </div>
       </div>
-      <filter-form />
+      <filter-form ref="filterFormRef"/>
     </div>
-    <book-grid :books="popularBooks"/>
+    <book-grid :books="filteredBooks"/>
   </div>
  </div>
 </template>
