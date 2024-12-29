@@ -9,7 +9,6 @@ import {
 } from "@app/interfaces/Filter";
 import { queryBooks } from "@app/models/book";
 import { DataSerializer } from "./DataSerializer";
-import { SubjectAssociates } from "@app/interfaces/Data";
 import { RecommendService } from "./RecommendService";
 import { Languages } from "@app/interfaces/Util";
 
@@ -41,15 +40,11 @@ export class BookFilter {
             }
         }
 
-        const subjectAssociates: SubjectAssociates[] = [];
+        const subjectAssociates = DataSerializer.formAssociations(query.subjects);
+        const keywords = DataSerializer.getAssociationKeywords(subjectAssociates);
 
-        for (const subject of query.subjects) {
-            subjectAssociates.push(DataSerializer.getAssociations(subject));
-        }
-
-        const keywords = subjectAssociates.map((associate) => (associate.subject.name));
-        const extendedFilter = await this.subjectQuery(keywords);
-        const filteredExtended = this.filterIntersection(requiredFilter, extendedFilter);
+        const filteredByAssociations = await this.subjectQuery(keywords);
+        const filteredExtended = this.filterIntersection(requiredFilter, filteredByAssociations);
 
         if (filteredExtended.length >= requested) {
             return { 

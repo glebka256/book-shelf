@@ -37,6 +37,26 @@ export class DataSerializer {
         return associate;
     }
 
+    static formAssociations(subjects: string[]): SubjectAssociates[] {
+        const subjectAssociates = new Set<SubjectAssociates>();
+
+        for (const subject of subjects) {
+            subjectAssociates.add(DataSerializer.getAssociations(subject));
+        }
+
+        return Array.from(subjectAssociates);
+    }
+
+    static getAssociationKeywords(associations: SubjectAssociates[]): string[] {
+        const keywords: string[] = [];
+        
+        for (const associate of associations) {
+            keywords.push(...associate.subject.associations);
+        }
+
+        return keywords;
+    }
+
     static parseGenres(): SubjectGenre[] {
         const genres: SubjectGenre[] = [];
 
