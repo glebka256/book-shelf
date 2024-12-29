@@ -11,6 +11,7 @@ import { DataSerializer } from "./DataSerializer";
 import { RecommendService } from "./RecommendService";
 import { Languages } from "@app/interfaces/Util";
 import { setArrayWhitespace } from "@app/utils";
+import { Logger } from "@app/utils/logger";
 
 export class BookFilter {
     static suggestionSize = 50;
@@ -41,8 +42,9 @@ export class BookFilter {
         result.status = FilterStatus.Hard;
         result.books = filteredHard as ClientBook[];
 
-        console.log('Filtered hard: ', filteredHard.length);
-        console.log('Filtered total: ', result.books.length);
+        Logger.log('Filtering...');
+        Logger.log('Filtered hard: ', filteredHard.length);
+        Logger.log('Filtered total: ', result.books.length);
 
         if (result.books.length >= requested) {
             return result;
@@ -57,8 +59,8 @@ export class BookFilter {
         result.status = FilterStatus.Soft;
         result.books = [...result.books, ...filteredExtended as ClientBook[]];
 
-        console.log('Filtered extended: ', filteredExtended.length);
-        console.log('Filtered total: ', result.books.length);
+        Logger.log('Filtered extended: ', filteredExtended.length);
+        Logger.log('Filtered total: ', result.books.length);
 
         if (result.books.length >= requested) {
             return result;
@@ -73,8 +75,8 @@ export class BookFilter {
         result.status = FilterStatus.Extend;
         result.books = [...result.books, ...suggested as ClientBook[]];
 
-        console.log('Filtered extended: ', suggested.length);
-        console.log('Filtered total: ', result.books.length);
+        Logger.log('Filtered extended: ', suggested.length);
+        Logger.log('Filtered total: ', result.books.length);
 
         return result;
     }
