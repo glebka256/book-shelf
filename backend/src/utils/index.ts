@@ -73,3 +73,19 @@ export const splitFileSize = (fileSize: string): { value: number, metric: FileSi
     const value = parseFloat(fileSize.trim());
     return { value, metric: FileSizeMetric.Bytes };
 }
+
+export const toWhitespace = (words: string): string => {
+    return words.replace(/_/g, ' ');
+}
+
+export const toUnderscore = (words: string) => {
+    return words.replace(/ /g, '_');
+}
+
+export const setArrayWhitespace = (array: string[], type: 'whitespace' | 'underscore') => {
+    if (type === 'whitespace') {
+        return array.map((element) => toWhitespace(element));
+    } else {
+        return array.map((element) => toUnderscore(element));
+    }
+}

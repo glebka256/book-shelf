@@ -2,7 +2,6 @@ import { ClientBook, StorageBook } from "@app/interfaces/Books";
 import { 
     FilterQuery, 
     HardQuery, 
-    ArrayEntryQuery, 
     FilterResult, 
     FilterStatus, 
     FilterOptions,
@@ -11,6 +10,7 @@ import { queryBooks } from "@app/models/book";
 import { DataSerializer } from "./DataSerializer";
 import { RecommendService } from "./RecommendService";
 import { Languages } from "@app/interfaces/Util";
+import { setArrayWhitespace } from "@app/utils";
 
 export class BookFilter {
     static suggestionSize = 50;
@@ -29,15 +29,23 @@ export class BookFilter {
     }
 
     static async getBooks(query: FilterQuery, requested: number): Promise<FilterResult> {
+        const result: FilterResult = {
+            status: FilterStatus.Empty,
+            books: []
+        }
+        
         const requiredFilter = await this.hardQuery(query);
         const subjectFiltered = await this.subjectQuery(query.subjects);
         const filteredHard = this.filterIntersection(requiredFilter, subjectFiltered);
 
-        if (filteredHard.length >= requested) {
-            return { 
-                status: FilterStatus.Hard, 
-                books: filteredHard as ClientBook[]
-            }
+        result.status = FilterStatus.Hard;
+        result.books = filteredHard as ClientBook[];
+
+        console.log('Filtered hard: ', filteredHard.length);
+        console.log('Filtered total: ', result.books.length);
+
+        if (result.books.length >= requested) {
+            return result;
         }
 
         const subjectAssociates = DataSerializer.formAssociations(query.subjects);
@@ -46,23 +54,29 @@ export class BookFilter {
         const filteredByAssociations = await this.subjectQuery(keywords);
         const filteredExtended = this.filterIntersection(requiredFilter, filteredByAssociations);
 
-        if (filteredExtended.length >= requested) {
-            return { 
-                status: FilterStatus.Soft, 
-                books: filteredExtended as ClientBook[]
-            };
+        result.status = FilterStatus.Soft;
+        result.books = [...result.books, ...filteredExtended as ClientBook[]];
+
+        console.log('Filtered extended: ', filteredExtended.length);
+        console.log('Filtered total: ', result.books.length);
+
+        if (result.books.length >= requested) {
+            return result;
         }
 
         const recommendation = new RecommendService();
 
         const page = Math.floor(requested / this.suggestionSize); 
         const requestPage = page > 0 ? page : 1;
-        const suggested = await recommendation.getPopularBooks(requestPage, this.suggestionSize);
+        const suggested = await recommendation.getPopularBooks(requestPage, requested - result.books.length);
         
-        return { 
-            status: FilterStatus.Extend, 
-            books: suggested as ClientBook[]
-        };
+        result.status = FilterStatus.Extend;
+        result.books = [...result.books, ...suggested as ClientBook[]];
+
+        console.log('Filtered extended: ', suggested.length);
+        console.log('Filtered total: ', result.books.length);
+
+        return result;
     }
 
     private static async hardQuery(query: FilterQuery): Promise<StorageBook[]> {
@@ -85,11 +99,17 @@ export class BookFilter {
     }
 
     private static async subjectQuery(keywords: string[]): Promise<StorageBook[]> {
-        const queryCondition: ArrayEntryQuery = { $in: keywords };
-        const relaxedQuery = { 'subject': queryCondition };
+        const results = new Set<StorageBook>();
+        
+        const strictResults = await queryBooks({ 'subject': { $in: keywords }});
+        strictResults.forEach(result => results.add(result as StorageBook));
 
-        const documents = await queryBooks(relaxedQuery);
-        return documents as StorageBook[];
+        const formattedKeywords = setArrayWhitespace(keywords, 'whitespace');
+        const relaxedQuery = { 'subject': { $in: formattedKeywords } };
+        const relaxedResults = await queryBooks(relaxedQuery);
+        relaxedResults.forEach(result => results.add(result as StorageBook));
+
+        return Array.from(results);
     }
 
     // Asumes array2 has unique items for efficient O(1) Set lookup time.
