@@ -8,7 +8,7 @@ import cors from 'cors';
 
 import { connectDB } from '@app/config/db';
 import router from '@app/router';
-import { Logger } from './utils/logger';
+import { Logger } from './utils/Logger';
 
 Logger.enable();
 

@@ -11,7 +11,7 @@ import { DataSerializer } from "./DataSerializer";
 import { RecommendService } from "./RecommendService";
 import { Languages } from "@app/interfaces/Util";
 import { setArrayWhitespace } from "@app/utils";
-import { Logger } from "@app/utils/logger";
+import { Logger } from "@app/utils/Logger";
 
 export class BookFilter {
     static suggestionSize = 50;
