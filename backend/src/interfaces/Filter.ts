@@ -21,13 +21,15 @@ export interface ArrayEntryQuery {
 
 export interface AccessabilityQuery {
     $exists: boolean,
-    $ne: string | null
+    $not: {
+        $size: number
+    }
 }
 
 export interface HardQuery {
-    'language': ArrayEntryQuery,
-    'link.downloadUrl': AccessabilityQuery,
-    'link.readUrl': AccessabilityQuery,
+    'language'?: ArrayEntryQuery,
+    'meta.idGutenberg'?: AccessabilityQuery,
+    'meta.idGoodreads'?: AccessabilityQuery,
 }
 
 export enum FilterStatus {

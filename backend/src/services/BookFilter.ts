@@ -29,15 +29,6 @@ export class BookFilter {
         }
     }
 
-    static mapQuery(query: any): FilterQuery {
-        return {
-            subjects: query.subjects,
-            languages: query.languages,
-            downloadable: query.downloadable == 'true' ? true : false,
-            readable: query.downloadable == 'true' ? true : false,
-        }
-    }
-
     static async getBooks(query: FilterQuery, requested: number): Promise<FilterResult> {
         const requiredFilter = await this.hardQuery(query);
         const subjectFiltered = await this.subjectQuery(query.subjects);
@@ -80,10 +71,18 @@ export class BookFilter {
     }
 
     private static async hardQuery(query: FilterQuery): Promise<StorageBook[]> {
-        const hardQuery: HardQuery = {
-            'language': { $in: query.languages },
-            'link.downloadUrl': { $exists: true, $ne: '' },
-            'link.readUrl': { $exists: true, $ne: '' }
+        const hardQuery: HardQuery = {};
+        
+        if (query.languages && query.languages.length > 0) {
+            hardQuery['language'] = { $in: query.languages }
+        }
+
+        if (query.downloadable) {
+            hardQuery['meta.idGutenberg'] = { $exists: true, $not: { $size: 0 } }
+        }
+
+        if (query.readable) {
+            hardQuery['meta.idGoodreads'] = { $exists: true, $not: { $size: 0 } }
         }
 
         const documents = await queryBooks(hardQuery);

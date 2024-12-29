@@ -12,7 +12,7 @@ import {
 } from "@app/models/book";
 import { extractBookFromDoc } from "@app/utils";
 import { BookFilter } from "@app/services/BookFilter";
-import { FilterStatus } from "@app/interfaces/Filter";
+import { FilterQuery, FilterStatus } from "@app/interfaces/Filter";
 import { filter } from "lodash";
 
 export const getBook = async (req: Request, res: Response): Promise<void> => {
@@ -108,7 +108,7 @@ export const getFilterOptions = async (req: Request, res: Response): Promise<voi
 
 export const getFiltered = async (req: Request, res: Response): Promise<void> => {
     try {
-        const query = BookFilter.mapQuery(req.body.query);
+        const query = req.body.query as FilterQuery;
         const endPage = parseInt(req.body.page);
         const beginPage = endPage - 1;
 
