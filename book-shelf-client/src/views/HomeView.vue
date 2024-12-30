@@ -14,26 +14,41 @@ import { FilterFormInstance, FilterQuery } from '@/types/Filter';
 const popularBooks = ref<Book[]>([]);
 const recommendedBooks = ref<Book[]>([]);
 const filteredBooks = ref<Book[]>([]);
-const isLoading = ref(false);
+
+const isPageLoading = ref(false);
+const isRecommendedLoading = ref(false);
+const isDiscoverLoading = ref(false);
+
 const errorMessage = ref<string | null>(null);
 
-async function fetchPopularBooks(page: number, limit: number): Promise<void> {
-  isLoading.value = true;
+async function fetchPopularBooks(page: number, limit: number): Promise<Book[]> {
   errorMessage.value = null;
 
   try {
     const response = await baseInstance.get<Book[]>(
       `/books/popular/${page}/${limit}`
     );
-    popularBooks.value = response.data;
-    filteredBooks.value = popularBooks.value;
+    
+    if (!response.data) {
+      throw new Error('Invalid recommended response data.');
+    }
 
-    // For now populate recommended with just popular.
-    recommendedBooks.value = popularBooks.value;
+    return response.data as Book[];
   } catch (error) {
     errorMessage.value = `Could not fetch popular books. Error: ${error}`;
-  } finally {
-    isLoading.value = false;
+    return [];
+  }
+}
+
+async function handleRecommendationReset() {
+  // Set with popular for now.
+  // TODO: update to recommended request when it's implemented on server.
+  isRecommendedLoading.value = true;
+  popularBooks.value = await fetchPopularBooks(1, 50);
+  isRecommendedLoading.value = false;
+  
+  if (popularBooks.value.length > 0) {
+    recommendedBooks.value = popularBooks.value;
   }
 }
 
@@ -58,7 +73,7 @@ function handleFilterSubmit() {
 }
 
 async function applyFilters(query: FilterQuery) {
-  isLoading.value = true;
+  isDiscoverLoading.value = true;
   
   try {
     const body = {
@@ -77,14 +92,20 @@ async function applyFilters(query: FilterQuery) {
     filterPage.value += 1;
   } catch (error) {
     console.error(`Could not get filtered books. Error: ${error}`);
-    isLoading.value = false;
+    isDiscoverLoading.value = false;
   } finally {
-    isLoading.value = false;
+    isDiscoverLoading.value = false;
   }
 }
 
-onMounted(() => {
-  fetchPopularBooks(1, 50);
+onMounted(async () => {
+  isPageLoading.value = true;
+  popularBooks.value = await fetchPopularBooks(1, 50);
+  isPageLoading.value = false;
+  filteredBooks.value = popularBooks.value;
+
+  // For now populate recommended with just popular.
+  recommendedBooks.value = popularBooks.value;
 });
 </script>
 
@@ -92,24 +113,25 @@ onMounted(() => {
  <div class="home-view">
   <div class="empty-top"></div>
   <search-bar placeholder="Search book" />
-  <div class="book-sceleton" v-if="isLoading">
-    <book-skeleton :skeleton-type="'horizontal'" />
-  </div>
-  <div v-else class="recommended-view">
+  <div class="recommended-view">
     <div class="view-heading">
       <div class=heading-row>
         <div class="recommended-title-wrapper">
           <h2 class="view-title">Recommended</h2>
-          <icon-button icon-type="reset" />
+          <icon-button icon-type="reset" 
+          @click="handleRecommendationReset" />
         </div>
         <div class="view-options">
           <common-button>See All</common-button>
         </div>
       </div>
     </div>
-    <horizontal-scroll :books="recommendedBooks"/>
+    <div class="book-sceleton" v-if="isPageLoading || isRecommendedLoading">
+      <book-skeleton :skeleton-type="'horizontal'" />
+    </div>
+    <horizontal-scroll v-else :books="recommendedBooks"/>
   </div>
-  <div class="book-sceleton" v-if="isLoading">
+  <div class="book-sceleton" v-if="isPageLoading && isDiscoverLoading">
     <book-skeleton :skeleton-type="'vertical'" />
   </div>
   <div v-else class="search-view">
@@ -122,6 +144,9 @@ onMounted(() => {
         </div>
       </div>
       <filter-form ref="filterFormRef"/>
+    </div>
+    <div class="book-sceleton" v-if="isDiscoverLoading || isPageLoading">
+      <book-skeleton :skeleton-type="'vertical'" />
     </div>
     <book-grid :books="filteredBooks"/>
   </div>
