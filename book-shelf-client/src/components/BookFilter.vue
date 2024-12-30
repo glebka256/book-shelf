@@ -5,6 +5,11 @@ const props = defineProps({
   filterValue: {
     type: String,
     required: true
+  },
+  color: {
+    type: String,
+    required: false,
+    default: '#dddaf8'
   }
 });
 
@@ -16,7 +21,7 @@ function handleDelete() {
 </script>
 
 <template>
-  <div class="book-filter">
+  <div class="book-filter" :style="{ backgroundColor: props.color }">
     <span class="filterValue">{{ props.filterValue }}</span>
     <button class="cross-button" aria-label="Remove filter" @click="handleDelete">
       <i class="fa-solid fa-xmark cross-icon"></i>
@@ -29,7 +34,6 @@ function handleDelete() {
   display: flex;
   align-items: center;
   padding: 5px 15px;
-  background-color: #dddaf8;
   border-radius: 20px;
   gap: 10px;
 }
