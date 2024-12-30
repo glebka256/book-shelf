@@ -49,7 +49,6 @@ onBeforeUnmount(() => {
 
 <template>
   <div v-if="isHorizontal" class="book-sceleton">
-    <div class="skeleton-heading"></div>
     <div class="skeleton-horizontall-scroll">
       <div class=skeleton-cards>
         <div v-for="n in cardCount" :key="n" class="skeleton-card"></div>
@@ -57,7 +56,6 @@ onBeforeUnmount(() => {
     </div>
   </div>
   <div v-else class="book-sceleton">
-    <div class="skeleton-heading"></div>
     <div class="skeleton-grid">
       <div v-for="n in cardCount" :key="n" class="skeleton-box"></div>
     </div>
@@ -65,15 +63,6 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped lang="scss">
-.skeleton-heading {
-  height: 60px;
-  width: 50%;
-  background: #e0e0e0;
-  border-radius: 5px;
-  margin-bottom: 15px;
-  animation: shimmer 1.5s infinite;
-}
-
 .skeleton-cards {
   display: flex;
   gap: 15px;
