@@ -1,7 +1,13 @@
 <script setup lang="ts">
-import { defineProps, PropType, defineEmits } from 'vue';
+import { defineProps, PropType, defineEmits, ref, watch, onMounted } from 'vue';
 
-defineProps({
+const selectedValue = ref('');
+
+const props = defineProps({
+  selectorType: {
+    type: String as PropType<'picker' | 'selector'>,
+    required: true,
+  },
   labelText: {
     type: String,
     required: true
@@ -22,15 +28,32 @@ const emit = defineEmits(['select-option']);
 function handleSelection(event: Event) {
   const target = event.target as HTMLSelectElement;
   if (target.value) {
+    if (props.selectorType === 'picker') {
+      selectedValue.value = props.placeholder;
+    } else {
+      selectedValue.value = target.value;
+    }
+
     emit('select-option', target.value);
   }
 }
+
+watch(
+  () => props.options,
+  () => {
+    selectedValue.value = props.placeholder;
+  }
+);
+
+onMounted(() => {
+  selectedValue.value = props.placeholder;
+});
 </script>
 
 <template>
   <div class="input-selector">
     <label for="selector" class="selector-label">{{ labelText }}</label>
-    <select id="selector" name="selector" class="selector" @change="handleSelection">
+    <select id="selector" name="selector" class="selector" @change="handleSelection" v-model="selectedValue">
       <option class="placeholder">{{ placeholder }}</option>
       <option v-for="option in options" :key="option" :value="option">{{ option }}</option>
     </select>
