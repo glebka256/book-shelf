@@ -3,15 +3,22 @@ import { ref, onMounted, reactive, defineExpose, defineEmits, nextTick, watch, o
 import InputSelector from '@/components/InputSelector.vue';
 import IconButton from '@/components/IconButton.vue';
 import BookFilter from '@/components/BookFilter.vue';
-import { FilterOptions, FilterGenre, FilterQuery } from '@/types/Filter';
+import { FilterOptions, FilterGenre, FilterQuery, AcessOptions, FilterSelectorInstance } from '@/types/Filter';
 import baseInstance from '@/api/baseInstance';
 import { calculateTextWidth } from '@/utils';
 
 const emit = defineEmits(['filters-applied']);
 
+// 'all-' variables are used for fetching options only once on mount or reload trigger
+let allCategories: string[];
+let allLanguages: string[];
+const loading = ref<boolean>(true);
+
+// These are separated from -all for managing better UX on input selectors 
 const categories = ref<string[]>([]);
 const languages = ref<string[]>([]);
-const loading = ref<boolean>(true);
+const downloadability = ref<string[]>([AcessOptions.All, AcessOptions.Downloadable]);
+const readablility = ref<string[]>([AcessOptions.All, AcessOptions.Readable]);
 
 const selectedOptions = reactive<FilterQuery>({
   subjects: [],
@@ -33,24 +40,68 @@ async function fetchOptions() {
     );
 
     const genres = response.data.genre as FilterGenre[];
-    categories.value = genres.map((genre) => (genre.name));
-    languages.value = response.data.language;
+    allCategories = genres.map((genre) => (genre.name));
+    allLanguages = response.data.language;
+
+    categories.value = [...allCategories];
+    languages.value = [...allLanguages];
   } catch (error) {
-    console.error(`Could not fetch popular books. Error: ${error}`);
+    console.error(`Could not fetch filtering options. Error: ${error}`);
     loading.value = false;
   } finally {
     loading.value = false;
   }
 }
 
-function resetOptions() {
-  selectedOptions.subjects = [],
-  selectedOptions.languages = [],
-  selectedOptions.downloadable = false,
-  selectedOptions.readable = false
+function refreshFilters() {
+  setTimeout(() => adjustFilterGrid(), 10);
+}
 
-  loading.value = true;
-  fetchOptions();
+function resetCategories() {
+  selectedOptions.subjects = [],
+  categories.value = [...allCategories];
+
+  refreshFilters(); 
+}
+
+function resetLanguages() {
+  selectedOptions.languages = [],
+  languages.value = [...allLanguages];
+
+  refreshFilters();
+}
+
+const downloadSelectorRef = ref<FilterSelectorInstance>();
+
+// TODO: implement proper input UI selection on reset
+function resetDownloadable() {
+  toggleDownloadable(AcessOptions.All);
+
+  if (downloadSelectorRef.value) {
+    downloadSelectorRef.value.selectedValue = 'Choose Access';
+  }
+
+  refreshFilters();
+}
+
+const readSelectorRef = ref<FilterSelectorInstance>();
+
+function resetReadable() {
+  toggleReadable(AcessOptions.All);
+
+  if (readSelectorRef.value) {
+    readSelectorRef.value.selectedValue = 'Choose Access';
+  }
+
+  refreshFilters();
+}
+
+// Break down each option reset into it's own function for adding click listeners on their respective buttons.
+function resetOptions() {
+  resetCategories();
+  resetLanguages();
+  resetDownloadable();
+  resetReadable();
 }
 
 async function submitOptions() {
@@ -66,6 +117,8 @@ function addCategory(category: string) {
       categories.value.splice(index, 1);
     }
   }
+
+  refreshFilters();
 }
 
 function deleteCategory(category: string) {
@@ -77,35 +130,71 @@ function deleteCategory(category: string) {
 
     categories.value.push(category);
   }
+
+  refreshFilters();
 }
 
 function addLanguage(language: string) {
   if (!selectedOptions.languages.includes(language)) {
     selectedOptions.languages.push(language);
+
+    const index = languages.value.indexOf(language);
+    if (index !== -1) {
+      languages.value.splice(index, 1);
+    }
+  }
+
+  refreshFilters();
+}
+
+function deleteLanguage(language: string) {
+  if (selectedOptions.languages.includes(language)) {
+    const index = selectedOptions.languages.indexOf(language);
+    if (index !== -1) {
+      selectedOptions.languages.splice(index, 1);
+    }
+
+    languages.value.push(language);
+  }
+
+  refreshFilters();
+}
+
+function toggleDownloadable(option: string) {
+  if (option === 'Only downloadable') {
+    selectedOptions.downloadable = true;
+  } else {
+    selectedOptions.downloadable = false;
   }
 }
 
-function toggleDownloadable(status: boolean) {
-  selectedOptions.downloadable = status;
-}
-
-function toggleReadable(status: boolean) {
-  selectedOptions.readable = status;
+function toggleReadable(option: string) {
+  if (option === 'Only readable') {
+    selectedOptions.readable = true;
+  } else {
+    selectedOptions.readable = false;
+  }
 }
 
 const filterGrid = ref<HTMLDivElement | null>(null);
+
+const getItemsWidths = (items: string[]): number[] => {
+  const fontFamily = "Avenir, Helvetica, Arial, sans-serif";
+  return items.map(item => {
+    const labelWidth = calculateTextWidth(item, 16, fontFamily);
+    const iconOffset = 45;  // Assuming an icon width/offset for each item
+    return labelWidth + iconOffset;
+  });
+}
 
 const adjustFilterGrid = () => {
   if (filterGrid.value) {
     const grid = filterGrid.value as HTMLDivElement;
 
+    const allItems = [...selectedOptions.subjects, ...selectedOptions.languages];
+
     // Getting supposed width of each element to find out how many can fit
-    const fontFamily = "Avenir, Helvetica, Arial, sans-serif";
-    const elementsWidth = selectedOptions.subjects.map(category => {
-      const labelWidth = calculateTextWidth(category, 16, fontFamily);
-      const iconOffset = 45;  // Assuming an icon width/offset for each item
-      return labelWidth + iconOffset;
-    });
+    const elementsWidth = getItemsWidths(allItems);
 
     const containerWidth = grid.offsetWidth;
     // Taking padding into consideration so that elements don't get smaller than they are
@@ -114,12 +203,13 @@ const adjustFilterGrid = () => {
     const itemsPerRow = Math.max(1, Math.floor(containerWidth / (Math.max(...elementsWidth) + columnElementPadding)));
 
     const rowOffsets: string[] = [];
-    for (let i = 0; i < selectedOptions.subjects.length; i++) {
+
+    for (let i = 0; i < allItems.length; i++) {
       const isOddRow = Math.floor(i / itemsPerRow) % 2 === 1;
       rowOffsets.push(isOddRow ? '20px' : '0px');
     }
 
-    selectedOptions.subjects.forEach((category, index) => {
+    allItems.forEach((category, index) => {
       const row = Math.floor(index / itemsPerRow);
       const column = index % itemsPerRow;
       const item = grid.children[index] as HTMLElement;
@@ -154,6 +244,13 @@ watch(selectedOptions.subjects, async () => {
   { deep: true }
 );
 
+watch(selectedOptions.languages, async () => {
+    await nextTick();
+    adjustFilterGrid();
+  },
+  { deep: true }
+);
+
 onBeforeUnmount(() => {
   window.removeEventListener('resize', adjustFilterGrid);
 });
@@ -164,46 +261,58 @@ onBeforeUnmount(() => {
       <div class="filter-row applied-margin applied-shrink">
         <div class="filter-cell">
           <input-selector 
+            selector-type="picker"
             label-text="Add Categories" 
             :options="categories"
             placeholder="Choose category" 
             @select-option="addCategory"
           />
-          <icon-button icon-type="reset" />
+          <icon-button icon-type="reset" @click="resetCategories" />
         </div>
         <div class="filter-cell">
           <input-selector 
+            selector-type="picker"
             label-text="Language" 
             :options="languages"
             placeholder="Choose language" 
             @select-option="addLanguage"
           />
-          <icon-button icon-type="reset" />
+          <icon-button icon-type="reset" @click="resetLanguages" />
         </div>
       </div>
       <div class="filter-row applied-shrink">
         <div class="filter-cell">
-          <input-selector 
+          <input-selector
+            ref="downloadSelectorRef" 
+            selector-type="selector"
             label-text="Downloadable" 
-            :options="['Only downloadable']"
+            :options="downloadability"
             placeholder="Choose access" 
             @select-option="toggleDownloadable"
           />
-          <icon-button icon-type="reset" />    
+          <icon-button icon-type="reset" @click="resetDownloadable" />    
         </div>
         <div class="filter-cell">
           <input-selector 
+            ref="readSelectorRef"
+            selector-type="selector"
             label-text="Read access" 
-            :options="['Only readable']"
+            :options="readablility"
             placeholder="Choose access" 
             @select-option="toggleReadable"
           />
-          <icon-button icon-type="reset" />
+          <icon-button icon-type="reset" @click="resetReadable" />
         </div>
       </div>
   </form>
   <div class="heading-row">
     <div class="filters-view" ref="filterGrid">
+      <book-filter 
+        v-for="language in selectedOptions.languages" v-bind:key="language"
+        :filter-value="language"
+        :color="'#f57886'"
+        @deleted-filter="deleteLanguage"
+      />
       <book-filter 
         v-for="category in selectedOptions.subjects" v-bind:key="category"
         :filter-value="category"

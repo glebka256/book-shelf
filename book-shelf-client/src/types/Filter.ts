@@ -15,8 +15,18 @@ export interface FilterQuery {
     readable: boolean
 }
 
+export interface FilterSelectorInstance {
+    selectedValue: string
+}
+
 export interface FilterFormInstance {
     selectedOptions: FilterQuery;
     resetOptions: () => void;
     submitOptions: () => void;
+}
+
+export enum AcessOptions {
+    All = 'All',
+    Downloadable = 'Only downloadable',
+    Readable = 'Only readable'
 }
