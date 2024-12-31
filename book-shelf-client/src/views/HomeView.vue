@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import SearchBar from '@/components/SearchBar.vue';
 import BookSkeleton from '@/components/BookSkeleton.vue';
 import CommonButton from '@/components/CommonButton.vue';
@@ -56,7 +56,6 @@ const filterFormRef = ref<FilterFormInstance>();
 const filterPage = ref(1);
 
 function handleFilterReset() {
-  // TODO: need to call resetFilters function in FilterForm
   if (filterFormRef.value) {
     filterFormRef.value.resetOptions();
     filterPage.value = 1;
@@ -64,21 +63,17 @@ function handleFilterReset() {
 }
 
 function handleFilterSubmit() {
-  // TODO: should get selectedFilters from FilterForm
-
   if (filterFormRef.value) {
     const selectedFilters: FilterQuery = filterFormRef.value.selectedOptions;
     applyFilters(selectedFilters);
   }
 }
 
-async function applyFilters(query: FilterQuery) {
-  isDiscoverLoading.value = true;
-  
+async function fetchFiltred(page: number, query: FilterQuery): Promise<Book[]> {
   try {
     const body = {
       'query': query,
-      'page': filterPage.value
+      'page': page
     }
 
     const response = await baseInstance.post(
@@ -87,25 +82,75 @@ async function applyFilters(query: FilterQuery) {
     );
 
     const books = await response.data.books as Book[];
+    return books;
+  } catch (error) {
+    console.error(`Could not fetch filtered books. Page ${page}, Error: ${error}`);
+    return [];
+  }
+}
+
+async function applyFilters(query: FilterQuery): Promise<void> {
+  isDiscoverLoading.value = true;
+  filterPage.value = 1;
+  
+  try {
+    const books = await fetchFiltred(1, query);
     filteredBooks.value = books;
 
     filterPage.value += 1;
   } catch (error) {
-    console.error(`Could not get filtered books. Error: ${error}`);
+    console.error(`Could not get books by filters applied. Error: ${error}`);
     isDiscoverLoading.value = false;
   } finally {
     isDiscoverLoading.value = false;
   }
 }
 
+async function loadFiltered(query: FilterQuery): Promise<void> {
+  try {
+    const books = await fetchFiltred(filterPage.value, query); 
+    filteredBooks.value = [...filteredBooks.value, ...books];
+
+    filterPage.value += 1;
+  } catch (error) {
+    console.error(`Could not load more filtered books. Error: ${error}`);
+  }
+}
+
+const loadMoreBooks = () => {
+  if (filterFormRef.value) {
+    const selectedFilters: FilterQuery = filterFormRef.value.selectedOptions;
+    loadFiltered(selectedFilters);
+  }
+}
+
+const bottomObserver = ref<IntersectionObserver | null>(null);
+const bottomRef = ref<HTMLDivElement>();
+
 onMounted(async () => {
   isPageLoading.value = true;
   popularBooks.value = await fetchPopularBooks(1, 50);
   isPageLoading.value = false;
   filteredBooks.value = popularBooks.value;
-
+  
   // For now populate recommended with just popular.
   recommendedBooks.value = popularBooks.value;
+
+  bottomObserver.value = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      loadMoreBooks();
+    }
+  });
+
+  if (bottomRef.value) {
+    bottomObserver.value.observe(bottomRef.value);
+  }
+});
+
+onBeforeUnmount(() => {
+  if (bottomObserver.value && bottomRef.value) {
+    bottomObserver.value.unobserve(bottomRef.value);
+  }
 });
 </script>
 
@@ -149,6 +194,7 @@ onMounted(async () => {
       <book-skeleton :skeleton-type="'vertical'" />
     </div>
     <book-grid :books="filteredBooks"/>
+    <div ref="bottomRef" class="bottom-observer"></div>
   </div>
  </div>
 </template>
@@ -160,8 +206,15 @@ onMounted(async () => {
   align-items: center;
 }
 
+// Used to to prevent content from going under the search bar before scroll.
+// Removing makes search bar twitch on first scroll.
 .empty-top {
   height: 100px;
+}
+
+// Just used to apply observer to it's reference, should not be visible.
+.bottom-observer {
+  height: 1px;
 }
 
 .book-sceleton {
