@@ -108,10 +108,10 @@ async function applyFilters(query: FilterQuery): Promise<void> {
 
 async function loadFiltered(query: FilterQuery): Promise<void> {
   try {
+    filterPage.value += 1;
+
     const books = await fetchFiltred(filterPage.value, query); 
     filteredBooks.value = [...filteredBooks.value, ...books];
-
-    filterPage.value += 1;
   } catch (error) {
     console.error(`Could not load more filtered books. Error: ${error}`);
   }
@@ -129,12 +129,17 @@ const bottomRef = ref<HTMLDivElement>();
 
 onMounted(async () => {
   isPageLoading.value = true;
-  popularBooks.value = await fetchPopularBooks(1, 50);
+
+  const [popular, filtered] = await Promise.all([
+    handleRecommendationReset(),
+    handleFilterSubmit(),
+  ]);
+
   isPageLoading.value = false;
-  filteredBooks.value = popularBooks.value;
-  
+
   // For now populate recommended with just popular.
-  recommendedBooks.value = popularBooks.value;
+  recommendedBooks.value = popularBooks.value || [];
+  filteredBooks.value = filteredBooks.value || [];
 
   bottomObserver.value = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting) {
@@ -193,7 +198,7 @@ onBeforeUnmount(() => {
     <div class="book-sceleton" v-if="isDiscoverLoading || isPageLoading">
       <book-skeleton :skeleton-type="'vertical'" />
     </div>
-    <book-grid :books="filteredBooks"/>
+    <book-grid v-else :books="filteredBooks"/>
     <div ref="bottomRef" class="bottom-observer"></div>
   </div>
  </div>
