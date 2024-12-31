@@ -3,7 +3,7 @@ import { ref, onMounted, reactive, defineExpose, defineEmits, nextTick, watch, o
 import InputSelector from '@/components/InputSelector.vue';
 import IconButton from '@/components/IconButton.vue';
 import BookFilter from '@/components/BookFilter.vue';
-import { FilterOptions, FilterGenre, FilterQuery, AcessOptions, FilterSelectorInstance } from '@/types/Filter';
+import { FilterOptions, FilterGenre, FilterQuery, AcessOptions } from '@/types/Filter';
 import baseInstance from '@/api/baseInstance';
 import { calculateTextWidth } from '@/utils';
 
@@ -71,37 +71,10 @@ function resetLanguages() {
   refreshFilters();
 }
 
-const downloadSelectorRef = ref<FilterSelectorInstance>();
-
-// TODO: implement proper input UI selection on reset
-function resetDownloadable() {
-  toggleDownloadable(AcessOptions.All);
-
-  if (downloadSelectorRef.value) {
-    downloadSelectorRef.value.selectedValue = 'Choose Access';
-  }
-
-  refreshFilters();
-}
-
-const readSelectorRef = ref<FilterSelectorInstance>();
-
-function resetReadable() {
-  toggleReadable(AcessOptions.All);
-
-  if (readSelectorRef.value) {
-    readSelectorRef.value.selectedValue = 'Choose Access';
-  }
-
-  refreshFilters();
-}
-
 // Break down each option reset into it's own function for adding click listeners on their respective buttons.
 function resetOptions() {
   resetCategories();
   resetLanguages();
-  resetDownloadable();
-  resetReadable();
 }
 
 async function submitOptions() {
@@ -283,25 +256,21 @@ onBeforeUnmount(() => {
       <div class="filter-row applied-shrink">
         <div class="filter-cell">
           <input-selector
-            ref="downloadSelectorRef" 
             selector-type="selector"
             label-text="Downloadable" 
             :options="downloadability"
             placeholder="Choose access" 
             @select-option="toggleDownloadable"
-          />
-          <icon-button icon-type="reset" @click="resetDownloadable" />    
+          />  
         </div>
         <div class="filter-cell">
           <input-selector 
-            ref="readSelectorRef"
             selector-type="selector"
             label-text="Read access" 
             :options="readablility"
             placeholder="Choose access" 
             @select-option="toggleReadable"
           />
-          <icon-button icon-type="reset" @click="resetReadable" />
         </div>
       </div>
   </form>
