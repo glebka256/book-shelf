@@ -6,6 +6,10 @@ const props = defineProps({
     type: String,
     required: true
   },
+  deleteEnabled: {
+    type: Boolean,
+    required: true
+  },
   color: {
     type: String,
     required: false,
@@ -23,7 +27,12 @@ function handleDelete() {
 <template>
   <div class="book-filter" :style="{ backgroundColor: props.color }">
     <span class="filterValue">{{ props.filterValue }}</span>
-    <button class="cross-button" aria-label="Remove filter" @click="handleDelete">
+    <button 
+      v-if="props.deleteEnabled" 
+      class="cross-button" 
+      aria-label="Remove filter" 
+      @click="handleDelete"
+    >
       <i class="fa-solid fa-xmark cross-icon"></i>
     </button>
   </div>

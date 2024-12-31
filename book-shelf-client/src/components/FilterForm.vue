@@ -139,6 +139,8 @@ function toggleDownloadable(option: string) {
   } else {
     selectedOptions.downloadable = false;
   }
+
+  refreshFilters();
 }
 
 function toggleReadable(option: string) {
@@ -147,6 +149,8 @@ function toggleReadable(option: string) {
   } else {
     selectedOptions.readable = false;
   }
+
+  refreshFilters();
 }
 
 const filterGrid = ref<HTMLDivElement | null>(null);
@@ -165,6 +169,14 @@ const adjustFilterGrid = () => {
     const grid = filterGrid.value as HTMLDivElement;
 
     const allItems = [...selectedOptions.subjects, ...selectedOptions.languages];
+
+    if (selectedOptions.downloadable) {
+      allItems.push('downloadable');
+    }
+
+    if (selectedOptions.readable) {
+      allItems.push('readable');
+    }
 
     // Getting supposed width of each element to find out how many can fit
     const elementsWidth = getItemsWidths(allItems);
@@ -276,15 +288,29 @@ onBeforeUnmount(() => {
   </form>
   <div class="heading-row">
     <div class="filters-view" ref="filterGrid">
+      <book-filter
+        v-if="selectedOptions.downloadable"
+        :filter-value="'downloadable'"
+        :deleteEnabled="false"
+        :color="'#19c224'"
+      />
+      <book-filter
+        v-if="selectedOptions.readable"
+        :filter-value="'readable'"
+        :deleteEnabled="false"
+        :color="'#cc9e1f'"
+      />
       <book-filter 
         v-for="language in selectedOptions.languages" v-bind:key="language"
         :filter-value="language"
+        :deleteEnabled="true"
         :color="'#f57886'"
         @deleted-filter="deleteLanguage"
       />
       <book-filter 
         v-for="category in selectedOptions.subjects" v-bind:key="category"
         :filter-value="category"
+        :deleteEnabled="true"
         @deleted-filter="deleteCategory"
       />
     </div>
