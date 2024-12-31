@@ -112,7 +112,7 @@ export const getFiltered = async (req: Request, res: Response): Promise<void> =>
         const endPage = parseInt(req.body.page);
         const beginPage = endPage - 1;
 
-        const pageSize = 50;
+        const pageSize = 20;
         BookFilter.updateSuggestionSize(pageSize);
         const filtered = await BookFilter.getBooks(query, pageSize * endPage);
         

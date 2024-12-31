@@ -12,6 +12,7 @@ import { RecommendService } from "./RecommendService";
 import { Languages } from "@app/interfaces/Util";
 import { setArrayWhitespace } from "@app/utils";
 import { Logger } from "@app/utils/Logger";
+import { BookMerger } from "@app/utils/BookMerger";
 
 export class BookFilter {
     static suggestionSize = 50;
@@ -37,7 +38,7 @@ export class BookFilter {
         
         const requiredFilter = await this.hardQuery(query);
         const subjectFiltered = await this.subjectQuery(query.subjects);
-        const filteredHard = this.filterIntersection(requiredFilter, subjectFiltered);
+        const filteredHard = BookMerger.findIntersection(requiredFilter, subjectFiltered);
 
         result.status = FilterStatus.Hard;
         result.books = filteredHard as ClientBook[];
@@ -54,7 +55,7 @@ export class BookFilter {
         const keywords = DataSerializer.getAssociationKeywords(subjectAssociates);
 
         const filteredByAssociations = await this.subjectQuery(keywords);
-        const filteredExtended = this.filterIntersection(requiredFilter, filteredByAssociations);
+        const filteredExtended = BookMerger.findIntersection(requiredFilter, filteredByAssociations);
 
         result.status = FilterStatus.Soft;
         result.books = [...result.books, ...filteredExtended as ClientBook[]];
@@ -112,13 +113,5 @@ export class BookFilter {
         relaxedResults.forEach(result => results.add(result as StorageBook));
 
         return Array.from(results);
-    }
-
-    // Asumes array2 has unique items for efficient O(1) Set lookup time.
-    private static filterIntersection(array1: StorageBook[], array2: StorageBook[]) {
-        const array2Ids = new Set(array2.map((book) => book.id));
-        const filteredBooks = array1.filter((book) => array2Ids.has(book.id));
-
-        return filteredBooks;
     }
 }
