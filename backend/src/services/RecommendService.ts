@@ -1,8 +1,15 @@
 import { StorageBook } from "@app/interfaces/Books";
 import { Languages } from "@app/interfaces/Util";
 import { getBooks } from "@app/models/book";
+import { extractBookFromDoc } from "@app/utils";
 
 export class RecommendService {
+    private preferedLanuages: string[] = [Languages.English];
+
+    updatePreferedLanguages(languages: Languages[]): void {
+        this.preferedLanuages = languages;
+    }
+
     /**
      * Retrieves a list of popular books sorted by default for all users recommendation.
      * @param page - Current page number (1-indexed).
@@ -16,8 +23,8 @@ export class RecommendService {
 
         const scoreCalculator = new ScoreCalculator;
 
-        const scoredBooks = books
-        .filter((book) => book.language.includes(Languages.English))
+        const scoredBooks = extractBookFromDoc(books)
+        .filter((book) => book.language.some(lang => this.preferedLanuages.includes(lang)))
         .map(book => ({
             ...book,
             score: scoreCalculator.calculateScore({
