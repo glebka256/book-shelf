@@ -58,7 +58,7 @@ export class BookFilter {
         const filteredExtended = BookMerger.findIntersection(requiredFilter, filteredByAssociations);
 
         result.status = FilterStatus.Soft;
-        result.books = [...result.books, ...filteredExtended as ClientBook[]];
+        result.books = BookMerger.findUnion(result.books as StorageBook[], filteredExtended) as ClientBook[];
 
         Logger.log('Filtered extended: ', filteredExtended.length);
         Logger.log('Filtered total: ', result.books.length);
@@ -74,7 +74,7 @@ export class BookFilter {
         const suggested = await recommendation.getPopularBooks(requestPage, requested - result.books.length);
         
         result.status = FilterStatus.Extend;
-        result.books = [...result.books, ...suggested as ClientBook[]];
+        result.books = BookMerger.findUnion(result.books as StorageBook[], suggested) as ClientBook[];
 
         Logger.log('Filtered extended: ', suggested.length);
         Logger.log('Filtered total: ', result.books.length);
