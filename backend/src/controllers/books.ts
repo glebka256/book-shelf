@@ -1,4 +1,4 @@
-import { query, Request, Response } from "express";
+import { Request, Response } from "express";
 import { BookSources, ClientBook } from "@app/interfaces/Books";
 import { Languages } from "@app/interfaces/Util";
 import { RecommendService } from "@app/services/RecommendService";
@@ -10,10 +10,9 @@ import {
     getBooks, 
     updateBookById 
 } from "@app/models/book";
-import { extractBookFromDoc } from "@app/utils";
 import { BookFilter } from "@app/services/BookFilter";
 import { FilterQuery, FilterStatus } from "@app/interfaces/Filter";
-import { filter } from "lodash";
+import { Logger } from "@app/utils/Logger";
 
 export const getBook = async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id;
@@ -87,7 +86,7 @@ export const getGeneralPopular = async (req: Request, res: Response): Promise<vo
 
         const defaultRecommend = new RecommendService(); 
         const popularBooks = await defaultRecommend.getPopularBooks(page, limit);
-        res.status(200).json(extractBookFromDoc(popularBooks));
+        res.status(200).json(popularBooks);
     } catch (error) {
         const errorMessage = "Could not get most popular books of all subjects.";
         console.error(`${errorMessage}: `, error);
@@ -113,10 +112,30 @@ export const getFiltered = async (req: Request, res: Response): Promise<void> =>
         const beginPage = endPage - 1;
 
         const pageSize = 20;
-        BookFilter.updateSuggestionSize(pageSize);
         const filtered = await BookFilter.getBooks(query, pageSize * endPage);
+
+        if (filtered.status === FilterStatus.Hard || filtered.status === FilterStatus.Soft) {
+            filtered.books = filtered.books.slice(beginPage * pageSize, endPage * pageSize);
+            
+            res.status(200).json(filtered)
+            return;
+        }
         
+        const recommendation = new RecommendService();
+
+        if (query.languages.length > 0) {
+            recommendation.updatePreferedLanguages(query.languages as Languages[]);
+        }
+
+        const retrieved = filtered.books.length;
+        const recommendationLimit = pageSize - retrieved;
+
+        const popularBooks = await recommendation.getPopularBooks(endPage, recommendationLimit);
+
         filtered.books = filtered.books.slice(beginPage * pageSize, endPage * pageSize);
+        filtered.books = filtered.books.concat(popularBooks as ClientBook[]);
+        filtered.status = FilterStatus.Extend;
+
         res.status(200).json(filtered)
     } catch (error) {
         const errorMessage = "Could not filter books by query provided in requst body."

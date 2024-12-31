@@ -8,19 +8,12 @@ import {
 } from "@app/interfaces/Filter";
 import { queryBooks } from "@app/models/book";
 import { DataSerializer } from "./DataSerializer";
-import { RecommendService } from "./RecommendService";
 import { Languages } from "@app/interfaces/Util";
 import { setArrayWhitespace } from "@app/utils";
 import { Logger } from "@app/utils/Logger";
 import { BookMerger } from "@app/utils/BookMerger";
 
 export class BookFilter {
-    static suggestionSize = 50;
-
-    static updateSuggestionSize(newSize: number) {
-        this.suggestionSize = newSize;
-    }
-
     static submitOptions(): FilterOptions {
         return {
             genre: DataSerializer.parseGenres(),
@@ -35,6 +28,10 @@ export class BookFilter {
             status: FilterStatus.Empty,
             books: []
         }
+
+        if (query.subjects.length === 0) {
+            return result;
+        }
         
         const requiredFilter = await this.hardQuery(query);
         const subjectFiltered = await this.subjectQuery(query.subjects);
@@ -42,6 +39,8 @@ export class BookFilter {
 
         result.status = FilterStatus.Hard;
         result.books = filteredHard as ClientBook[];
+
+        Logger.disable();
 
         Logger.log('Filtering...');
         Logger.log('Filtered hard: ', filteredHard.length);
@@ -67,18 +66,7 @@ export class BookFilter {
             return result;
         }
 
-        const recommendation = new RecommendService();
-
-        const page = Math.floor(requested / this.suggestionSize); 
-        const requestPage = page > 0 ? page : 1;
-        const suggested = await recommendation.getPopularBooks(requestPage, requested - result.books.length);
-        
         result.status = FilterStatus.Extend;
-        result.books = BookMerger.findUnion(result.books as StorageBook[], suggested) as ClientBook[];
-
-        Logger.log('Filtered extended: ', suggested.length);
-        Logger.log('Filtered total: ', result.books.length);
-
         return result;
     }
 
