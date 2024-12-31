@@ -26,4 +26,14 @@ export class BookMerger {
 
         return difference
     }
+
+    static findUnique(array: StorageBook[]): StorageBook[] {
+        const uniqueBooksMap = new Map<string, StorageBook>();
+
+        array.forEach((book) => {
+            uniqueBooksMap.set(book.title.toLowerCase(), book);
+        })
+
+        return Array.from(uniqueBooksMap.values());
+    }
 }
