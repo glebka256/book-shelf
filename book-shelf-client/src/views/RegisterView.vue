@@ -13,8 +13,7 @@ const registerFields: FormField[] = [
 
 const OK_STATUS = 'ok'
 
-const hasErrors = ref<boolean>(false);
-
+const displayMessage = ref<boolean>(false);
 const message = ref<string>();
 
 function validateInput(formData: Record<string, string>): string {
@@ -65,7 +64,7 @@ function handleRegister(formData: Record<string, string>) {
   if (validationMessage === OK_STATUS) {
     register(formData);
   } else {
-    hasErrors.value = true;
+    displayMessage.value = true;
     message.value = validationMessage;
   }
 }
@@ -77,7 +76,7 @@ interface RegisterQuery {
 }
 
 async function register(formData: Record<string, string>) {
-  hasErrors.value = false;
+  displayMessage.value = false;
   
   const query: RegisterQuery = {
     username: formData.username,
@@ -88,14 +87,14 @@ async function register(formData: Record<string, string>) {
   try {
     const response = await baseInstance.post('auth/register', query);
 
+    displayMessage.value = true;
     if (!response.data) {
-      hasErrors.value = true;
       message.value = "Could not connect to server.";
+    } else {
+      message.value = `Registered with email: ${query.email}`;
     }
-
-    message.value = `Registered with email: ${query.email}`;
   } catch (error: any) {
-    hasErrors.value = true;
+    displayMessage.value = true;
 
     if (error.response && error.response.data) {
       const serverError = error.response.data;
@@ -117,7 +116,7 @@ async function register(formData: Record<string, string>) {
   >
     <router-link to="/login">Already registered? Sign in</router-link>
   </AuthForm>
-  <div v-if="hasErrors" class="error">{{ message }}</div>
+  <div v-if="displayMessage" class="error">{{ message }}</div>
  </div>
 </template>
 
