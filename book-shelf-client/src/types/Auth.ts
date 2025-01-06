@@ -1,3 +1,8 @@
+export interface User {
+    username: string,
+    email: string
+}
+
 export interface FormField {
     name: string,
     label: string,
