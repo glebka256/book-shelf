@@ -41,7 +41,7 @@ async function login(formData: Record<string, string>) {
 
     if (error.response && error.response.data) {
       const serverError = error.response.data;
-      message.value = serverError.error || 'An error occured on the server.';
+      message.value = serverError.message || 'An error occured on the server.';
     } else {
       message.value = error.message || 'An unexpected error occured.';
     }
