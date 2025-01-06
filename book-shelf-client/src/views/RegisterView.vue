@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import AuthForm from '@/components/AuthForm.vue';
 import { FormField } from '@/types/Auth';
+import baseInstance from '@/api/baseInstance';
 
 const registerFields: FormField[] = [
   { name: 'username', label: 'Username', type: 'text', placeholder: 'Enter your username' },
@@ -9,8 +11,99 @@ const registerFields: FormField[] = [
   { name: 'pass-match', label: 'Repeat password', type: 'password', placeholder: 'Repeat your password' }
 ];
 
+const OK_STATUS = 'ok'
+
+const hasErrors = ref<boolean>(false);
+
+const message = ref<string>();
+
+function validateInput(formData: Record<string, string>): string {
+  const errorMessage = OK_STATUS;
+
+  const username = formData.username;
+  if (!username) {
+    return 'Username is required.';
+  }
+
+  if (username.length < 5 || username.length > 20) {
+    return 'Username should be between 5 and 20 characters in length.';
+  }
+
+  const email = formData.email;
+  if (!email) {
+    return 'Email is required.'
+  }
+
+  if (!email.includes('@') || !email.includes('.')) {
+    return 'Email must be valid.';
+  }
+
+  const password = formData.password;
+  if (!password) {
+    return 'Password is required.';
+  } 
+
+  if (password.length < 8) {
+    return 'Password must be at least 8 characters long.';
+  }
+
+  if (!/[0-9]/.test(password)) {
+    return 'Password must include at least one number.';
+  }
+
+  const passMatch = formData['pass-match'];
+  if (passMatch !== password) {
+    return 'Passwords do not match.';
+  }
+
+  return errorMessage;
+}
+
 function handleRegister(formData: Record<string, string>) {
-  console.log('registering...');
+  const validationMessage = validateInput(formData);
+
+  if (validationMessage === OK_STATUS) {
+    register(formData);
+  } else {
+    hasErrors.value = true;
+    message.value = validationMessage;
+  }
+}
+
+interface RegisterQuery {
+  username: string,
+  email: string,
+  password: string
+}
+
+async function register(formData: Record<string, string>) {
+  hasErrors.value = false;
+  
+  const query: RegisterQuery = {
+    username: formData.username,
+    email: formData.email,
+    password: formData.password
+  }
+  
+  try {
+    const response = await baseInstance.post('auth/register', query);
+
+    if (!response.data) {
+      hasErrors.value = true;
+      message.value = "Could not connect to server.";
+    }
+
+    message.value = `Registered with email: ${query.email}`;
+  } catch (error: any) {
+    hasErrors.value = true;
+
+    if (error.response && error.response.data) {
+      const serverError = error.response.data;
+      message.value = serverError.error || 'An error occured on the server.';
+    } else {
+      message.value = error.message || 'An unexpected error occured.';
+    }
+  }
 }
 </script>
 
@@ -24,6 +117,7 @@ function handleRegister(formData: Record<string, string>) {
   >
     <router-link to="/login">Already registered? Sign in</router-link>
   </AuthForm>
+  <div v-if="hasErrors" class="error">{{ message }}</div>
  </div>
 </template>
 
