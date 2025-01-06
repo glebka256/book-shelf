@@ -7,6 +7,7 @@ import {
     getUserCreditentialsByEmail, 
     updateUserById 
 } from "@app/models/user";
+import { DecodedJWT } from '@app/interfaces/User';
 
 export class AuthService {
     private static saltRounds = 12;
@@ -27,15 +28,16 @@ export class AuthService {
         return jwt.sign(payload, secret, { expiresIn: '1h' });
     }
 
-    static verifyAuthToken(token: string): void {
+    static verifyAuthToken(token: string): DecodedJWT | null{
         const secret = process.env.JWT_SECRET;
         try {
             const decoded = jwt.verify(token, secret);
             if (!decoded) {
-                throw new Error('Invalid token');
+                return null;
             }
+            return decoded as DecodedJWT;
         } catch (err) {
-            throw new Error('Invalid token');
+            return null;
         }
     }
 

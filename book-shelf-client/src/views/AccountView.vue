@@ -3,7 +3,7 @@
 </script>
 
 <template>
- <div class="">
+ <div class="account-view">
   <h1>This is Account Component</h1>
  </div>
 </template>
