@@ -15,6 +15,7 @@ Logger.enable();
 const app = express();
 
 app.use(cors({
+    origin: 'http://localhost:8081',
     credentials: true,
 }));
 
