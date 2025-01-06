@@ -1,6 +1,11 @@
 <script setup lang="ts">
+import { ref } from 'vue';
+import baseInstance from '@/api/baseInstance';
 import AuthForm from '@/components/AuthForm.vue';
 import { FormField } from '@/types/Auth';
+
+const displayMessage = ref<boolean>(false);
+const message = ref<string>('');
 
 const loginFields: FormField[] = [
   { name: 'email', label: 'Email', type: 'email', placeholder: 'Enter your email' },
@@ -8,7 +13,39 @@ const loginFields: FormField[] = [
 ];
 
 function handleLogin(formData: Record<string, string>) {
-  console.log('logging in...');
+  login(formData);
+}
+
+interface LoginQuery {
+  email: string,
+  password: string
+}
+
+async function login(formData: Record<string, string>) {
+  const query: LoginQuery = {
+    email: formData.email,
+    password: formData.password
+  }
+
+  try {
+    const response = await baseInstance.post('auth/login', query);
+
+    displayMessage.value = true;
+    if (!response.data) {
+      message.value = 'Could not connect to server.'
+    } else {
+      message.value = `Logged in with email: ${query.email}`;
+    }
+  } catch (error: any) {
+    displayMessage.value = true;
+
+    if (error.response && error.response.data) {
+      const serverError = error.response.data;
+      message.value = serverError.error || 'An error occured on the server.';
+    } else {
+      message.value = error.message || 'An unexpected error occured.';
+    }
+  }
 }
 </script>
 
@@ -22,6 +59,7 @@ function handleLogin(formData: Record<string, string>) {
   >
     <router-link to="/register">Don't have an account? Register</router-link>
   </AuthForm>
+  <div v-if="displayMessage" class="error">{{ message }}</div>
  </div>
 </template>
 
