@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, PropType, computed, ref } from 'vue';
+import { defineProps, PropType, defineEmits, computed, ref } from 'vue';
 import { Book } from '@/types/Book';
 
 const props = defineProps({
@@ -8,6 +8,10 @@ const props = defineProps({
     required: true
   }
 });
+
+// Emits sends bookId up the ierarchy to the HomeView
+// I dont like it but it stays
+const emit = defineEmits(['selectBook']);
 
 const bookCover = computed(() => {
   return props.book.coverUrl || require('@/assets/cover_placeholder.png');
@@ -45,11 +49,18 @@ function handleMouseEnter() {
 function handleMouseLeave() {
   isHovered.value = false;
 }
+
+function handleBookClick() {
+  emit('selectBook', props.book._id);
+}
 </script>
 
 <template>
  <div class="book-card">
-  <div class="book-container" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
+  <div class="book-container" 
+    @mouseenter="handleMouseEnter" 
+    @mouseleave="handleMouseLeave"
+    @click="handleBookClick">
     <div v-if="!isImageLoaded" class="skeleton-loader"></div>
     <div class="image-cover">
       <img

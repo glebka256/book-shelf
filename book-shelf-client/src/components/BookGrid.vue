@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import BookCard from './BookCard.vue';
-import { defineProps, PropType } from 'vue';
+import { defineProps, defineEmits, PropType } from 'vue';
 import { Book } from '@/types/Book';
 
 const props = defineProps({
@@ -9,12 +9,18 @@ const props = defineProps({
     required: true
   }
 });
+
+const emit = defineEmits(['select-book']);
+
+function onBookSelect(bookId: string) {
+  emit('select-book', bookId);
+}
 </script>
 
 <template>
  <div class="grid-container">
-  <div class="grid-item" v-for="book in props.books" :key="book.id" :value="book">
-    <book-card :book="book"/>
+  <div class="grid-item" v-for="book in props.books" :key="book._id" :value="book">
+    <book-card :book="book" @selectBook="onBookSelect"/>
   </div>
  </div>
 </template>

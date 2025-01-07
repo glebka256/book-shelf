@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, defineProps, PropType } from 'vue';
+import { ref, onMounted, onBeforeUnmount, defineProps, PropType, defineEmits } from 'vue';
 import BookCard from './BookCard.vue';
 import { Book } from '@/types/Book';
 
@@ -9,6 +9,12 @@ defineProps({
     required: true
   }
 });
+
+const emit = defineEmits(['select-book']);
+
+function onBookSelect(bookId: string) {
+  emit('select-book', bookId);
+}
 
 const scrollView = ref<HTMLElement>();
 const isScrolling = ref<boolean>(false);
@@ -63,7 +69,13 @@ onBeforeUnmount(() => {
   <button class="scroll-button right" @click="scroll('right')"><i class="fa-solid fa-chevron-right"></i></button>
   <div class="scroll-view-wrapper">
     <div class="scroll-view" ref="scrollView">
-      <book-card v-for="book in books" :key="book.id" :value="book" :book="book"/>
+      <book-card 
+        v-for="book in books" 
+        :key="book._id" 
+        :value="book" 
+        :book="book"
+        @selectBook="onBookSelect"
+      />
     </div>
   </div>
  </div>
