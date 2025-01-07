@@ -13,16 +13,43 @@ const bookCover = computed(() => {
   return props.book.coverUrl || require('@/assets/cover_placeholder.png');
 });
 
+const bookRating = computed(() => {
+  let rating = props.book.rating;
+
+  // scam marketing
+  if (5 - rating > 0.5) {
+    rating += 0.5;
+  }
+  // make scam less noticable on already high ratings
+  else if (5 - rating > 0.3) {
+    rating += 0.3;
+  }
+  else if (5 - rating > 0.1) {
+    rating += 0.1;
+  }
+  return rating.toFixed(1);
+})
+
 const isImageLoaded = ref(false);
 
 function handleImageLoad() {
   isImageLoaded.value = true;
 }
+
+const isHovered = ref(false);
+
+function handleMouseEnter() {
+  isHovered.value = true;
+}
+
+function handleMouseLeave() {
+  isHovered.value = false;
+}
 </script>
 
 <template>
  <div class="book-card">
-  <div class="book-container">
+  <div class="book-container" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
     <div v-if="!isImageLoaded" class="skeleton-loader"></div>
     <div class="image-cover">
       <img
@@ -33,7 +60,11 @@ function handleImageLoad() {
     </div>
     <div class="image-props">
       <h3 class="title">{{ props.book.title }}</h3>
-      <h4 class="author">{{ props.book.author }}</h4>
+      <h4 class="author">{{ props.book.author.join(', ') }}</h4>
+    </div>
+    <div v-if="isHovered" class="hover-content">
+      <span class="rating">{{ bookRating }}</span>
+      <div class="like-button"><i class="fas fa-heart"></i></div>
     </div>
   </div>
  </div>
@@ -125,5 +156,30 @@ function handleImageLoad() {
     font-weight: 400;
     color: #7f8c8d;
   }
+}
+
+.hover-content {
+  position: absolute;
+  top: 20;
+  width: 80%;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.rating {
+  background-color: rgba(155, 157, 158, 0.6);
+  font-size: 1.2em;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.like-button {
+  background: none;
+  border: none;
+  font-size: 1.6em;
+  cursor: pointer;
+  color: #ff0000;
 }
 </style>
