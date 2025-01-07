@@ -3,7 +3,7 @@ import { defineProps, PropType, computed } from 'vue';
 
 const props = defineProps({
   iconType: {
-    type: String as PropType<'reset'>,
+    type: String as PropType<'reset' | 'add'>,
     required: true
   },
   iconSize: {
@@ -14,7 +14,18 @@ const props = defineProps({
 });
 
 const iconClass = computed(() => {
-  return props.iconType === 'reset' ? 'fa-solid fa-rotate' : '';
+  let iconClass: string;
+
+  if (props.iconType === 'reset') {
+    iconClass = 'fa-solid fa-rotate';
+  } 
+  else if (props.iconType === 'add') {
+    iconClass = 'fa-solid fa-plus-circle';
+  } else {
+    iconClass = 'fa-solid fa-rotate';
+  }
+
+  return iconClass;
 });
 </script>
 
