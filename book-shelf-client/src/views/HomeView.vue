@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import SearchBar from '@/components/SearchBar.vue';
+import BookSidebar from '@/components/BookSidebar.vue';
 import BookSkeleton from '@/components/BookSkeleton.vue';
 import CommonButton from '@/components/CommonButton.vue';
 import HorizontalScroll from '@/components/HorizontalScroll.vue';
@@ -10,6 +11,7 @@ import BookGrid from '@/components/BookGrid.vue';
 import { Book } from '@/types/Book';
 import baseInstance from '@/api/baseInstance';
 import { FilterFormInstance, FilterQuery } from '@/types/Filter';
+import TextLoader from '@/components/TextLoader.vue';
 
 const popularBooks = ref<Book[]>([]);
 const recommendedBooks = ref<Book[]>([]);
@@ -51,6 +53,25 @@ async function handleRecommendationReset() {
   if (popularBooks.value.length > 0) {
     recommendedBooks.value = popularBooks.value;
   }
+}
+
+const selectedBookId = ref<string>('');
+const isSidebarOpen = ref<boolean>(false);
+
+async function openSidebar(bookId: string) {
+  if (isSidebarOpen.value) {
+    closeSidebar();
+
+    // Delay to make sure sidebar closes before opening a new one. 
+    await setTimeout(() => {/* */}, 0);
+  }
+
+  selectedBookId.value = bookId;
+  isSidebarOpen.value = true;
+}
+
+function closeSidebar() {
+  isSidebarOpen.value = false;
 }
 
 const filterFormRef = ref<FilterFormInstance>();
@@ -183,7 +204,7 @@ onBeforeUnmount(() => {
     <div class="book-sceleton" v-if="isPageLoading || isRecommendedLoading">
       <book-skeleton :skeleton-type="'horizontal'" />
     </div>
-    <horizontal-scroll v-else :books="recommendedBooks"/>
+    <horizontal-scroll v-else :books="recommendedBooks" @select-book="openSidebar"/>
   </div>
   <div class="book-sceleton" v-if="isPageLoading && isDiscoverLoading">
     <book-skeleton :skeleton-type="'vertical'" />
@@ -202,12 +223,17 @@ onBeforeUnmount(() => {
     <div class="book-sceleton" v-if="isDiscoverLoading || isPageLoading">
       <book-skeleton :skeleton-type="'vertical'" />
     </div>
-    <book-grid v-else :books="filteredBooks"/>
-    <div v-if="moreLoading" class="load-spinner">
-      Loading more books...
+    <book-grid v-else :books="filteredBooks" @select-book="openSidebar"/>
+    <div v-if="moreLoading" class="load-more">
+      <TextLoader loader-text="Loading more books..."/>
     </div>
     <div ref="bottomRef" class="bottom-observer"></div>
   </div>
+  <book-sidebar 
+    v-if="isSidebarOpen"
+    :bookId="selectedBookId"
+    @close="closeSidebar"
+  />
  </div>
 </template>
 
@@ -282,7 +308,7 @@ onBeforeUnmount(() => {
   }
 }
 
-.load-spinner {
+.load-more {
   text-align: center;
   padding: 20px;
 }
