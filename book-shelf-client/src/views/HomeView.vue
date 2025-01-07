@@ -18,6 +18,7 @@ const filteredBooks = ref<Book[]>([]);
 const isPageLoading = ref(false);
 const isRecommendedLoading = ref(false);
 const isDiscoverLoading = ref(false);
+const moreLoading = ref(false);
 
 const errorMessage = ref<string | null>(null);
 
@@ -107,6 +108,7 @@ async function applyFilters(query: FilterQuery): Promise<void> {
 }
 
 async function loadFiltered(query: FilterQuery): Promise<void> {
+  moreLoading.value = true;
   try {
     filterPage.value += 1;
 
@@ -114,6 +116,8 @@ async function loadFiltered(query: FilterQuery): Promise<void> {
     filteredBooks.value = [...filteredBooks.value, ...books];
   } catch (error) {
     console.error(`Could not load more filtered books. Error: ${error}`);
+  } finally {
+    moreLoading.value = false;
   }
 }
 
@@ -142,7 +146,7 @@ onMounted(async () => {
   filteredBooks.value = filteredBooks.value || [];
 
   bottomObserver.value = new IntersectionObserver((entries) => {
-    if (entries[0].isIntersecting) {
+    if (entries[0].isIntersecting && !moreLoading.value) {
       loadMoreBooks();
     }
   });
@@ -199,6 +203,9 @@ onBeforeUnmount(() => {
       <book-skeleton :skeleton-type="'vertical'" />
     </div>
     <book-grid v-else :books="filteredBooks"/>
+    <div v-if="moreLoading" class="load-spinner">
+      Loading more books...
+    </div>
     <div ref="bottomRef" class="bottom-observer"></div>
   </div>
  </div>
@@ -273,5 +280,10 @@ onBeforeUnmount(() => {
     flex-direction: row;
     gap: 20px;
   }
+}
+
+.load-spinner {
+  text-align: center;
+  padding: 20px;
 }
 </style>
