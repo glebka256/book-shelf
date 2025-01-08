@@ -187,7 +187,7 @@ onBeforeUnmount(() => {
 <template>
  <div class="home-view">
   <div class="empty-top"></div>
-  <search-bar placeholder="Search book" />
+  <search-bar />
   <div class="recommended-view">
     <div class="view-heading">
       <div class=heading-row>

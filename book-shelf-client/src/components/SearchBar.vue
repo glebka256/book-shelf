@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { defineProps, ref } from 'vue';
+import { defineProps, defineEmits, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 defineProps({
   placeholder: {
     type: String,
     required: false,
-    default: "Search book"
+    default: "Search by title, author, subject, etc."
   }
 });
+
+const emit = defineEmits(['submit']);
 
 const router = useRouter();
 const query = ref('');
@@ -33,6 +35,8 @@ function validateInput(): boolean {
 
 async function submitSearch() {
   if (validateInput()) {
+    emit('submit');
+    
     router.push({
       path: '/search',
       query: { q: query.value.trim() }
