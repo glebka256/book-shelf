@@ -201,12 +201,12 @@ onBeforeUnmount(() => {
         </div>
       </div>
     </div>
-    <div class="book-sceleton" v-if="isPageLoading || isRecommendedLoading">
+    <div class="book-skeleton" v-if="isPageLoading || isRecommendedLoading">
       <book-skeleton :skeleton-type="'horizontal'" />
     </div>
     <horizontal-scroll v-else :books="recommendedBooks" @select-book="openSidebar"/>
   </div>
-  <div class="book-sceleton" v-if="isPageLoading && isDiscoverLoading">
+  <div class="book-skeleton" v-if="isPageLoading && isDiscoverLoading">
     <book-skeleton :skeleton-type="'vertical'" />
   </div>
   <div v-else class="search-view">
@@ -220,7 +220,7 @@ onBeforeUnmount(() => {
       </div>
       <filter-form ref="filterFormRef"/>
     </div>
-    <div class="book-sceleton" v-if="isDiscoverLoading || isPageLoading">
+    <div class="book-skeleton" v-if="isDiscoverLoading || isPageLoading">
       <book-skeleton :skeleton-type="'vertical'" />
     </div>
     <book-grid v-else :books="filteredBooks" @select-book="openSidebar"/>
@@ -255,7 +255,7 @@ onBeforeUnmount(() => {
   height: 1px;
 }
 
-.book-sceleton {
+.book-skeleton {
   margin: 20px auto;
   width: 90%;
   background-color: white;
