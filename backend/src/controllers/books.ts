@@ -12,7 +12,6 @@ import {
 } from "@app/models/book";
 import { BookFilter } from "@app/services/BookFilter";
 import { FilterQuery, FilterStatus } from "@app/interfaces/Filter";
-import { Logger } from "@app/utils/Logger";
 
 export const getBook = async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id;
@@ -111,7 +110,7 @@ export const getFiltered = async (req: Request, res: Response): Promise<void> =>
         const endPage = parseInt(req.body.page);
         const beginPage = endPage - 1;
 
-        const pageSize = 20;
+        const pageSize = 50;
         const filtered = await BookFilter.getBooks(query, pageSize * endPage);
 
         if (filtered.status === FilterStatus.Hard || filtered.status === FilterStatus.Soft) {
