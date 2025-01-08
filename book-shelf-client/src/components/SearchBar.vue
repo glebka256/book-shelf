@@ -35,7 +35,7 @@ function validateInput(): boolean {
 
 async function submitSearch() {
   if (validateInput()) {
-    emit('submit');
+    emit('submit', query.value);
     
     router.push({
       path: '/search',

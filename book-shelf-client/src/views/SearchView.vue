@@ -42,9 +42,9 @@ async function fetchSearchResult(query: string): Promise<Book[]> {
   }
 }
 
-async function updateSearch() {
+async function updateSearch(query: string) {
   page.value = 1;
-  const searchQuery = route.query.q as string || '';
+  const searchQuery = query;
 
   if (!searchQuery.trim()) {
     books.value = [];
@@ -98,14 +98,14 @@ function closeSidebar() {
 
 // Watch the query parameter for changes
 watch(() => route.query.q, async () => {
-  await updateSearch();
+  await updateSearch((route.query.q) as string);
 });
 
 const bottomObserver = ref<IntersectionObserver | null>(null);
 const bottomRef = ref<HTMLDivElement>();
 
 onMounted(async () => {
-  await updateSearch();
+  await updateSearch((route.query.q) as string);
 
   bottomObserver.value = new IntersectionObserver((entries) => {
     if (
