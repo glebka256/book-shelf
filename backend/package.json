@@ -7,6 +7,7 @@
     "start": "nodemon",
     "dev": "nodemon",
     "scraper": "ts-node -r tsconfig-paths/register src/services/scraper/scraperHandler.ts",
+    "index-shema": "ts-node -r tsconfig-paths/register src/models/scripts/indexSchema.ts",
     "test": "jest"
   },
   "jest": {
