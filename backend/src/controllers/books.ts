@@ -160,7 +160,7 @@ export const lookupBookDetails = async (req: Request, res: Response): Promise<vo
 export const searchBook = async (req: Request, res: Response): Promise<void> => {
     const query = req.params.query;
     const page = Number(req.params.page);
-    const pageSize = 30;
+    const pageSize = 50;
 
     if (!query || isNaN(page)) {
         res.status(400).json({ message: "Search query and page number are required." });
