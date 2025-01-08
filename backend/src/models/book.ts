@@ -29,10 +29,16 @@ const BookSchema = new mongoose.Schema({
     }, required: false }
 });
 
+BookSchema.index({
+    'meta.isbn': 'text',
+    'title': 'text'
+});
+
 const BookModel = mongoose.model('Book', BookSchema);
 
 export const getBooks = () => BookModel.find();
 export const queryBooks = (query: Object) => BookModel.find(query);
+export const aggreageBooks = (aggregator: Array<any>) => BookModel.aggregate(aggregator);
 export const getBookById = (id: String) => BookModel.findById(id);
 export const getBookByTitle = (title: String) => BookModel.findOne({ title });
 
