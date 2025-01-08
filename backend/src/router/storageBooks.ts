@@ -9,6 +9,7 @@ import {
     getFilterOptions, 
     getGeneralPopular, 
     lookupBookDetails, 
+    searchBook, 
     updateBook
 } from '@app/controllers/books';
 
@@ -20,6 +21,7 @@ export default (router: Router): void => {
     router.delete('/books/:id', deleteBook);
     router.get('/books/popular/:page/:limit?', getGeneralPopular);
     router.get('/books/detailed/:id', lookupBookDetails);
+    router.get('/books/search/:query/:page', searchBook);
     router.get('/books/filter/options', getFilterOptions);
     router.post('/books/filter/', getFiltered);
 }

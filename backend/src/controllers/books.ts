@@ -12,6 +12,7 @@ import {
 } from "@app/models/book";
 import { BookFilter } from "@app/services/BookFilter";
 import { FilterQuery, FilterStatus } from "@app/interfaces/Filter";
+import { searchByQuery } from "@app/services/BookSearch";
 
 export const getBook = async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id;
@@ -153,6 +154,25 @@ export const lookupBookDetails = async (req: Request, res: Response): Promise<vo
         const errorMessage = `Could not lookup book details by: ${id}.`;
         console.error(`${errorMessage} Error: `, error);
         res.status(400).json({ message: `${errorMessage}.` });
+    }
+}
+
+export const searchBook = async (req: Request, res: Response): Promise<void> => {
+    const query = req.params.query;
+    const page = Number(req.params.page);
+    const pageSize = 30;
+
+    if (!query || isNaN(page)) {
+        res.status(400).json({ message: "Search query and page number are required." });
+        return;
+    }
+
+    const books = await searchByQuery(query, (page-1) * pageSize, pageSize);
+
+    if (!books) {
+        res.status(400).json({ message: `Could not search book by query: ${query}` });
+    } else {
+        res.status(200).json(books);
     }
 }
 
