@@ -5,12 +5,18 @@ import AccountView from "@/views/AccountView.vue";
 import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import LogoutView from "@/views/LogoutView.vue";
+import SearchView from "@/views/SearchView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
     name: "home",
     component: HomeView,
+  },
+  {
+    path: "/search",
+    name: "search",
+    component: SearchView
   },
   {
     path: "/about",
