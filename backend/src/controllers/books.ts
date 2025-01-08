@@ -160,7 +160,7 @@ export const lookupBookDetails = async (req: Request, res: Response): Promise<vo
 export const searchBook = async (req: Request, res: Response): Promise<void> => {
     const query = req.params.query;
     const page = Number(req.params.page);
-    const pageSize = 30;
+    const pageSize = 50;
 
     if (!query || isNaN(page)) {
         res.status(400).json({ message: "Search query and page number are required." });
@@ -169,10 +169,14 @@ export const searchBook = async (req: Request, res: Response): Promise<void> => 
 
     const books = await searchByQuery(query, (page-1) * pageSize, pageSize);
 
+    // Search status is used to inform server if all results have been fetched.
+    // In such case client can prevent making unnecessary repetative requests.
+    const searchStatus = books.length < page * pageSize ? true : false;
+
     if (!books) {
         res.status(400).json({ message: `Could not search book by query: ${query}` });
     } else {
-        res.status(200).json(books);
+        res.status(200).json({ searchComplete: searchStatus, books: books });
     }
 }
 
