@@ -1,24 +1,30 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, onBeforeUnmount, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import SearchBar from '@/components/SearchBar.vue';
 import BookSkeleton from '@/components/BookSkeleton.vue';
 import BookGrid from '@/components/BookGrid.vue';
 import BookSidebar from '@/components/BookSidebar.vue';
+import TextLoader from '@/components/TextLoader.vue';
 import baseInstance from '@/api/baseInstance';
 import { Book } from '@/types/Book';
 
 const isPageLoading = ref<boolean>(false);
+const isMoreLoading = ref<boolean>(false);
+const isPageComplete = ref<boolean>(false);
 const page = ref<number>(1);
 
 const route = useRoute();
 const books = ref<Book[]>([]);
 
-async function fetchSearchResult(query: string): Promise<Book[]> {
-  isPageLoading.value = true;
+interface SearchResponse {
+  searchComplete: boolean,
+  books: Book[]
+}
 
+async function fetchSearchResult(query: string): Promise<Book[]> {
   try {
-    const response = await baseInstance.get<Book[]>(
+    const response = await baseInstance.get<SearchResponse>(
       `/books/search/${query}/${page.value}`
     );
 
@@ -27,12 +33,12 @@ async function fetchSearchResult(query: string): Promise<Book[]> {
     }
 
     page.value += 1;
-    return response.data as Book[];
+    isPageComplete.value = response.data.searchComplete;
+
+    return response.data.books as Book[];
   } catch (error) {
     console.error(`Could not fetch search results by query: ${query}`);
     return [];
-  } finally {
-    isPageLoading.value = false;
   }
 }
 
@@ -45,7 +51,30 @@ async function updateSearch() {
     return;
   }
 
-  books.value = await fetchSearchResult(searchQuery);
+  isPageLoading.value = true;
+
+  try {
+    books.value = await fetchSearchResult(searchQuery);
+  } finally {
+    isPageLoading.value = false;
+  }
+}
+
+async function loadMore() {
+  const searchQuery = (route.query.q as string) || '';
+
+  if (!searchQuery.trim()) {
+    return;
+  }
+
+  isMoreLoading.value = true;
+
+  try {
+    const moreBooks = await fetchSearchResult(searchQuery);
+    books.value = [...books.value, ...moreBooks];
+  } finally {
+    isMoreLoading.value = false;
+  }
 }
 
 const selectedBookId = ref<string>('');
@@ -72,14 +101,38 @@ watch(() => route.query.q, async () => {
   await updateSearch();
 });
 
+const bottomObserver = ref<IntersectionObserver | null>(null);
+const bottomRef = ref<HTMLDivElement>();
+
 onMounted(async () => {
   await updateSearch();
+
+  bottomObserver.value = new IntersectionObserver((entries) => {
+    if (
+      entries[0].isIntersecting 
+      && !isMoreLoading.value 
+      && !isPageLoading.value
+      && !isPageComplete.value
+    ) {
+      loadMore();
+    }
+  });
+
+  if (bottomRef.value) {
+    bottomObserver.value.observe(bottomRef.value);
+  }
+});
+
+onBeforeUnmount(() => {
+  if (bottomObserver.value && bottomRef.value) {
+    bottomObserver.value.unobserve(bottomRef.value);
+  }
 });
 
 </script>
 
 <template>
- <div class="search-view">
+<div class="search-view">
   <div class="empty-top"></div>
   <search-bar @submit="updateSearch"/>
   <h2 class="view-title">Search Results</h2>
@@ -97,7 +150,11 @@ onMounted(async () => {
     :bookId="selectedBookId"
     @close="closeSidebar"
   />
- </div>
+  <div v-if="isMoreLoading" class="load-more">
+    <TextLoader loader-text="Loading more books..."/>
+  </div>
+  <div ref="bottomRef" class="bottom-observer"></div>
+</div>
 </template>
 
 <style scoped lang="scss">
