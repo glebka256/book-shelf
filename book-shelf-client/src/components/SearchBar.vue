@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { defineProps } from 'vue';
+import { defineProps, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 defineProps({
   placeholder: {
@@ -8,17 +9,61 @@ defineProps({
     default: "Search book"
   }
 });
+
+const router = useRouter();
+const query = ref('');
+
+function validateInput(): boolean {
+  if (!query.value.trim()) {
+    alert("Enter search term first");
+    return false;
+  }
+
+  if (query.value.length < 3) {
+    alert("Search term should be at least 3 characters long");
+    return false;
+  }
+
+  if (query.value.length > 165) {
+    alert("Use shorter search term");
+    return false;
+  }
+  return true;
+}
+
+async function submitSearch() {
+  if (validateInput()) {
+    router.push({
+      path: '/search',
+      query: { q: query.value.trim() }
+    });
+  }
+}
 </script>
 
 <template>
-  <div class="search-bar" ref="searchBar">
+  <form 
+    class="search-bar" 
+    ref="searchBar" 
+    @submit="submitSearch" 
+    @submit.prevent="submitSearch"
+  >
     <div class="input-container">
-      <input type="text" class="search-bar-input" :placeholder=placeholder>
-      <button id="search-button" class="search-bar-input">
+      <input 
+        type="text" 
+        class="search-bar-input"
+        v-model="query" 
+        :placeholder=placeholder
+      >
+      <button 
+        id="search-button" 
+        class="search-bar-input"
+        type="submit"
+      >
         <i class="fas fa-search"></i>
       </button>
     </div>
-  </div>
+  </form>
 </template>
  
 <style scoped lang="scss">
