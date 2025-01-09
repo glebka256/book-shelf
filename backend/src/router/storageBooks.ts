@@ -6,7 +6,7 @@ import {
     getAllBooks,
     getBook, 
     updateBook
-} from '@app/controllers/books';
+} from '@app/controllers/books/storageBooks';
 
 export default (router: Router): void => {
     router.get('/books/', getAllBooks);

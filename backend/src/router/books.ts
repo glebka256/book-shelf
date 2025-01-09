@@ -6,7 +6,7 @@ import {
     getGeneralPopular, 
     lookupBookDetails, 
     searchBook, 
-} from '@app/controllers/books';
+} from '@app/controllers/books/books';
 
 export default (router: Router): void => {
     router.get('/books/popular/:page/:limit?', getGeneralPopular);

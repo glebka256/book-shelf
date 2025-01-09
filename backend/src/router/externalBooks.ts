@@ -8,7 +8,7 @@ import {
     getGutenbergBook, 
     getOpenLibraryBooks, 
     searchBestBookById, 
-} from '@app/controllers/books';
+} from '@app/controllers/books/externallBooks';
 
 export default (router: Router): void => {
     router.get('/books/goodreads/:query/:page', getGoodreadsBooks);
