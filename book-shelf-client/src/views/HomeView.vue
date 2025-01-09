@@ -3,15 +3,15 @@ import { ref, onMounted, onBeforeUnmount } from 'vue';
 import SearchBar from '@/components/common/SearchBar.vue';
 import BookSidebar from '@/components/book/BookSidebar.vue';
 import BookSkeleton from '@/components/book/BookSkeleton.vue';
-import CommonButton from '@/components/common/CommonButton.vue';
+import CommonButton from '@/components/common/buttons/CommonButton.vue';
 import HorizontalScroll from '@/components/layout/HorizontalScroll.vue';
-import IconButton from '@/components/common/IconButton.vue';
+import IconButton from '@/components/common/buttons/IconButton.vue';
 import FilterForm from '@/components/layout/FilterForm.vue';
 import BookGrid from '@/components/book/BookGrid.vue';
 import baseInstance from '@/api/baseInstance';
 import { Book } from '@/types/Book';
 import { FilterFormInstance, FilterQuery } from '@/types/Filter';
-import TextLoader from '@/components/common/TextLoader.vue';
+import TextLoader from '@/components/common/loaders/TextLoader.vue';
 
 const popularBooks = ref<Book[]>([]);
 const recommendedBooks = ref<Book[]>([]);

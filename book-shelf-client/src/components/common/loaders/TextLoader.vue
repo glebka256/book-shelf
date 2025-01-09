@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
-import LoadingSpinner from '@/components/common/LoadingSpinner.vue';
+import LoadingSpinner from '@/components/common/loaders/LoadingSpinner.vue';
 
 const props = defineProps({
   loaderText: {

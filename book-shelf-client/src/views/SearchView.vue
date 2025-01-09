@@ -5,7 +5,7 @@ import SearchBar from '@/components/common/SearchBar.vue';
 import BookSkeleton from '@/components/book/BookSkeleton.vue';
 import BookGrid from '@/components/book/BookGrid.vue';
 import BookSidebar from '@/components/book/BookSidebar.vue';
-import TextLoader from '@/components/common/TextLoader.vue';
+import TextLoader from '@/components/common/loaders/TextLoader.vue';
 import baseInstance from '@/api/baseInstance';
 import { Book } from '@/types/Book';
 
