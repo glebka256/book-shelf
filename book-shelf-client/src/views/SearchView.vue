@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import SearchBar from '@/components/SearchBar.vue';
-import BookSkeleton from '@/components/BookSkeleton.vue';
-import BookGrid from '@/components/BookGrid.vue';
-import BookSidebar from '@/components/BookSidebar.vue';
-import TextLoader from '@/components/TextLoader.vue';
+import SearchBar from '@/components/common/SearchBar.vue';
+import BookSkeleton from '@/components/book/BookSkeleton.vue';
+import BookGrid from '@/components/book/BookGrid.vue';
+import BookSidebar from '@/components/book/BookSidebar.vue';
+import TextLoader from '@/components/common/TextLoader.vue';
 import baseInstance from '@/api/baseInstance';
 import { Book } from '@/types/Book';
 

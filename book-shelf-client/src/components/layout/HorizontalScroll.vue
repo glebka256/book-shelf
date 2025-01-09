@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, defineProps, PropType, defineEmits } from 'vue';
-import BookCard from './BookCard.vue';
+import BookCard from '@/components/book/BookCard.vue';
 import { Book } from '@/types/Book';
 
 defineProps({

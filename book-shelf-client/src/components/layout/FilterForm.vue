@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, reactive, defineExpose, defineEmits, nextTick, watch, onBeforeUnmount } from 'vue';
-import InputSelector from '@/components/InputSelector.vue';
-import IconButton from '@/components/IconButton.vue';
-import BookFilter from '@/components/BookFilter.vue';
+import InputSelector from '@/components/common/InputSelector.vue';
+import IconButton from '@/components/common/IconButton.vue';
+import BookFilter from '@/components/book/BookFilter.vue';
 import { FilterOptions, FilterGenre, FilterQuery, AcessOptions } from '@/types/Filter';
 import baseInstance from '@/api/baseInstance';
 import { calculateTextWidth } from '@/utils';

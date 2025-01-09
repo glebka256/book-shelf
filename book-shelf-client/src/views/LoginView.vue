@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import baseInstance from '@/api/baseInstance';
-import AuthForm from '@/components/AuthForm.vue';
+import AuthForm from '@/components/layout/AuthForm.vue';
 import { FormField } from '@/types/Auth';
 
 const displayMessage = ref<boolean>(false);

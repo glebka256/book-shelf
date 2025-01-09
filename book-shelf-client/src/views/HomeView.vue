@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue';
-import SearchBar from '@/components/SearchBar.vue';
-import BookSidebar from '@/components/BookSidebar.vue';
-import BookSkeleton from '@/components/BookSkeleton.vue';
-import CommonButton from '@/components/CommonButton.vue';
-import HorizontalScroll from '@/components/HorizontalScroll.vue';
-import IconButton from '@/components/IconButton.vue';
-import FilterForm from '@/components/FilterForm.vue';
-import BookGrid from '@/components/BookGrid.vue';
-import { Book } from '@/types/Book';
+import SearchBar from '@/components/common/SearchBar.vue';
+import BookSidebar from '@/components/book/BookSidebar.vue';
+import BookSkeleton from '@/components/book/BookSkeleton.vue';
+import CommonButton from '@/components/common/CommonButton.vue';
+import HorizontalScroll from '@/components/layout/HorizontalScroll.vue';
+import IconButton from '@/components/common/IconButton.vue';
+import FilterForm from '@/components/layout/FilterForm.vue';
+import BookGrid from '@/components/book/BookGrid.vue';
 import baseInstance from '@/api/baseInstance';
+import { Book } from '@/types/Book';
 import { FilterFormInstance, FilterQuery } from '@/types/Filter';
-import TextLoader from '@/components/TextLoader.vue';
+import TextLoader from '@/components/common/TextLoader.vue';
 
 const popularBooks = ref<Book[]>([]);
 const recommendedBooks = ref<Book[]>([]);

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BookCard from './BookCard.vue';
+import BookCard from '@/components/book/BookCard.vue';
 import { defineProps, defineEmits, PropType } from 'vue';
 import { Book } from '@/types/Book';
 

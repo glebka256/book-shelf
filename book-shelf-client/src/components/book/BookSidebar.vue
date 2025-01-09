@@ -2,9 +2,9 @@
 import baseInstance from '@/api/baseInstance';
 import { defineProps, onMounted, ref, computed } from 'vue';
 import { Book } from '@/types/Book';
-import CommonButton from './CommonButton.vue';
-import TextLoader from './TextLoader.vue';
-import IconButton from './IconButton.vue';
+import CommonButton from '@/components/common/CommonButton.vue';
+import TextLoader from '@/components/common/TextLoader.vue';
+import IconButton from '@/components/common/IconButton.vue';
 
 const props = defineProps({
   bookId: {
