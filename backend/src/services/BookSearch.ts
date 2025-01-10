@@ -39,3 +39,9 @@ export async function searchByQuery(query: string, start: number, limit: number)
         return null;
     }
 }
+
+export async function searchDownloadable(query: string, start: number, limit: number): Promise<StorageBook[] | null> {
+    const allBooks = await searchByQuery(query, start, limit);
+
+    return allBooks.filter((book) => book.link && book.link.downloadUrl);
+}

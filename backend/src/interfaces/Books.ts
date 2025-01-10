@@ -134,3 +134,9 @@ export interface BooksData {
     totalResults: number,
     currentPage: number,
 }
+
+export interface SearchParams {
+    query: string,
+    page: number,
+    pageSize: number
+}

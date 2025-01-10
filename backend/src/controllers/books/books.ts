@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { ClientBook } from "@app/interfaces/Books";
+import { ClientBook, SearchParams, StorageBook } from "@app/interfaces/Books";
 import { Languages } from "@app/interfaces/Util";
 import { RecommendService } from "@app/services/RecommendService";
 import bookManager from "@app/config/book-manager";
 import { BookFilter } from "@app/services/BookFilter";
 import { FilterQuery, FilterStatus } from "@app/interfaces/Filter";
-import { searchByQuery } from "@app/services/BookSearch";
+import { searchByQuery, searchDownloadable } from "@app/services/BookSearch";
 
 export const getGeneralPopular = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -85,25 +85,62 @@ export const lookupBookDetails = async (req: Request, res: Response): Promise<vo
     }
 }
 
-export const searchBook = async (req: Request, res: Response): Promise<void> => {
-    const query = req.params.query;
-    const page = Number(req.params.page);
-    const pageSize = 50;
+const mapParams = (params: any): SearchParams | null => {
+    if (!params.query || isNaN(params.page)) {
+        return null;
+    }
+    
+    return {
+        query: params.query,
+        page: Number(params.page),
+        pageSize: 50
+    }
+}
 
-    if (!query || isNaN(page)) {
+const calculateSkip = (params: SearchParams): number => {
+    return (params.page - 1) * params.pageSize;
+}
+
+/**
+ * Search status is used to inform server if all results have been fetched.
+ * By checking status client can prevent making unnecessary repetative requests.
+ */
+const calculateSearchStatus = (resultLength: number, params: SearchParams): boolean => {
+    return resultLength < params.page * params.pageSize ? true : false;
+}
+
+/**
+ * Handles the search operation for books.
+ * @param req - The request object.
+ * @param res - The response object.
+ * @param searchFn - The search function to be used (e.g., searchByQuery, searchDownloadable).
+ */
+const handleSearch = async (
+    req: Request,
+    res: Response,
+    searchFn: (query: string, skip: number, pageSize: number) => Promise<StorageBook[]>
+) => {
+    const params = mapParams(req.params);
+
+    if (params === null) {
         res.status(400).json({ message: "Search query and page number are required." });
         return;
     }
 
-    const books = await searchByQuery(query, (page-1) * pageSize, pageSize);
-
-    // Search status is used to inform server if all results have been fetched.
-    // In such case client can prevent making unnecessary repetative requests.
-    const searchStatus = books.length < page * pageSize ? true : false;
+    const books = await searchFn(params.query, calculateSkip(params), params.pageSize);
+    const searchStatus = calculateSearchStatus(books.length, params);
 
     if (!books) {
-        res.status(400).json({ message: `Could not search book by query: ${query}` });
+        res.status(400).json({ message: `Could not search book by query: ${params.query}` });
     } else {
         res.status(200).json({ searchComplete: searchStatus, books: books });
     }
+}
+
+export const searchBook = async (req: Request, res: Response): Promise<void> => {
+    return handleSearch(req, res, searchByQuery);
+}
+
+export const searchDownloadableBook = async (req: Request, res: Response): Promise<void> => {
+    return handleSearch(req, res, searchDownloadable);
 }
