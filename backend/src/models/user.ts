@@ -7,7 +7,11 @@ const UserSchema = new mongoose.Schema({
         password: { type: String, required: true, select: false},
         sessionToken: { type: String, select: false },
     },
+    favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: "Book" }]
 });
+
+UserSchema.index({ email: 1 }, { unique: true });
+UserSchema.index({ favorites: 1 });
 
 export const UserModel = mongoose.model('User', UserSchema);
 
@@ -19,6 +23,8 @@ export const getUserBySessionToken = (sessionToken: string) => UserModel.findOne
     'authentication.sessionToken': sessionToken,
 });
 export const getUserById = (id : string) => UserModel.findById(id);
+export const getUserWithFavoritesById = (id: string) =>
+    UserModel.findById(id).populate("favorites");
 export const createUser = (values: Record<string, any>) => new UserModel(values)
     .save().then((user) => user.toObject());
 export const deleteUserById = (id: string) => UserModel.findOneAndDelete({ _id: id });
