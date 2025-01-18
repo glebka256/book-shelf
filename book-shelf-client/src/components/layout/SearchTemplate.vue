@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, PropType, onMounted, onBeforeUnmount, ref, watch } from 'vue';
+import { defineProps, PropType, defineEmits, onMounted, onBeforeUnmount, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import SearchBar from '@/components/common/SearchBar.vue';
 import BookSkeleton from '@/components/book/BookSkeleton.vue';
@@ -15,6 +15,8 @@ const props = defineProps({
     required: true
   }
 })
+
+const emit = defineEmits(['results-loaded']);
 
 const searchType = {
   all: {
@@ -78,6 +80,7 @@ async function updateSearch(query: string) {
   } finally {
     isPageLoading.value = false;
   }
+  emit('results-loaded', books.value.length);
 }
 
 async function loadMore() {
@@ -160,7 +163,7 @@ onBeforeUnmount(() => {
     <book-skeleton :skeleton-type="'vertical'" />
   </div>
   <book-grid 
-    v-else
+    v-else-if="books.length > 0"
     class="search-content" 
     :books="books"
     @select-book="openSidebar" 
