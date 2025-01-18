@@ -2,11 +2,16 @@
 import { defineProps, defineEmits, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-defineProps({
+const props = defineProps({
   placeholder: {
     type: String,
     required: false,
     default: "Search by title, author, subject, etc."
+  },
+  submitPath: {
+    type: String,
+    required: false,
+    default: '/search'
   }
 });
 
@@ -38,7 +43,7 @@ async function submitSearch() {
     emit('submit', query.value);
     
     router.push({
-      path: '/search',
+      path: props.submitPath.toString(),
       query: { q: query.value.trim() }
     });
   }
