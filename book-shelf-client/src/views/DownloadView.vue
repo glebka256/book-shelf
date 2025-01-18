@@ -3,8 +3,8 @@ import SearchTemplate from '@/components/layout/SearchTemplate.vue';
 </script>
 
 <template>
- <div class="search-view"> 
-  <SearchTemplate search-type="all"/>
+ <div class="download-view"> 
+  <SearchTemplate search-type="downloadable"/>
  </div>
 </template>
 
