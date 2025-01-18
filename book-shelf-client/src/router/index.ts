@@ -6,6 +6,7 @@ import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import LogoutView from "@/views/LogoutView.vue";
 import SearchView from "@/views/SearchView.vue";
+import DownloadView from "@/views/DownloadView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -17,6 +18,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/search",
     name: "search",
     component: SearchView
+  },
+  {
+    path: "/search/downloadable",
+    name: "downloadable",
+    component: DownloadView
   },
   {
     path: "/about",
