@@ -1,9 +1,16 @@
 import { Router } from 'express';
 
-import { getAllUsers, deleteUser } from '@app/controllers/users';
+import { 
+    getAllUsers, 
+    deleteUser, 
+    getAllFavorites, 
+    updateFavorites 
+} from '@app/controllers/users';
 import { isAccountOwner, isAuthenticated } from '@app/middlewares';
 
 export default (router: Router): void => {
     router.get('/users/', isAuthenticated, getAllUsers);
-    router.post('/users/:id', isAuthenticated, isAccountOwner, deleteUser);
+    router.delete('/users/:id', isAuthenticated, isAccountOwner, deleteUser);
+    router.get('/users/favorites/', isAuthenticated, getAllFavorites);
+    router.put('/users/favorites/', isAuthenticated, updateFavorites);
 }
