@@ -1,4 +1,6 @@
 import { defineStore } from "pinia";
+import baseInstance, { getLoginStatus } from "@/api/baseInstance";
+import { Book } from '@/types/Book';
 
 export const useFavoritesStore = defineStore('favorites', {
   state: () => ({
@@ -11,6 +13,19 @@ export const useFavoritesStore = defineStore('favorites', {
   },
 
   actions: {
+    async fetchFavorites() {
+      try {
+        if (await getLoginStatus()) {
+          const response = await baseInstance.get('/users/favorites');
+          const favoriteBooks = response.data as Book[];
+          this.favoriteBooksIds = favoriteBooks.map((favoriteBook) => favoriteBook._id);
+        } else {
+          this.favoriteBooksIds = this.getLocalFavorites();
+        }
+      } catch (error) {
+        console.error("Could not retrieve user's favorite books.");
+      }
+    },
     addFavorite(id: string) {
       if (!this.favoriteBooksIds.includes(id)) {
         this.favoriteBooksIds.push(id);
@@ -25,6 +40,18 @@ export const useFavoritesStore = defineStore('favorites', {
       } else {
         this.addFavorite(id);
       }
+    },
+    getLocalFavorites() {
+      const localData = localStorage.getItem('favorites');
+      return localData ? JSON.parse(localData): [];
+    },
+    addLocalFavorite(id: string) {
+      const localFavorites = this.getLocalFavorites()
+        .filter((itemId: string) => itemId !== id);
+      localStorage.setItem('favorites', JSON.stringify(localFavorites));
+    },
+    clearLocalFavorites() {
+      localStorage.removeItem('favorites');
     }
   }
 });

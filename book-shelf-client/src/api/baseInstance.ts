@@ -6,3 +6,17 @@ const baseInstance = axios.create({
 });
 
 export default baseInstance;
+
+export const getLoginStatus = async () => {
+    try {
+        const response = await baseInstance.get('/auth/user');
+        return true;
+    } catch (error: any) {
+        if (error.response && error.response.status === 403) {
+            return false;
+        } else {
+            console.error("Error checking login status.");
+        }
+        return false;
+    }
+}
