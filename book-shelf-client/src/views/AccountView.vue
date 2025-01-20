@@ -15,8 +15,8 @@ async function fetchUserData() {
     } else {
       errorMessage.value = 'Could not get user credentials.';
     }
-  } catch (error: any) {
-    console.log("Could not retrive user data.");
+  } catch (error) {
+    // user variable handles bad response
   }
 }
 

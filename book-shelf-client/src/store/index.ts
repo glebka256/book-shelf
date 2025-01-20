@@ -52,6 +52,9 @@ export const useFavoritesStore = defineStore('favorites', {
     },
     clearLocalFavorites() {
       localStorage.removeItem('favorites');
+    },
+    overwriteLocalFavorites(favoritesIds: string[]) {
+      localStorage.setItem('favorites', JSON.stringify(favoritesIds));
     }
   }
 });

@@ -9,3 +9,8 @@ export const calculateTextWidth = (text: string, fontSize: number, fontFamily='A
     }
     return 0;
 }
+
+export const mergeArrays = (array1: string[], array2: string[]) => {
+    const mergedArray = new Set([...array1, ...array2]);
+    return Array.from(mergedArray);
+}
