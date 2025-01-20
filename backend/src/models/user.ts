@@ -22,12 +22,27 @@ export const getUserCreditentialsByEmail = (email: String) =>
 export const getUserBySessionToken = (sessionToken: string) => UserModel.findOne({
     'authentication.sessionToken': sessionToken,
 });
+
 export const getUserById = (id : string) => UserModel.findById(id);
 export const getUserWithFavoritesById = (id: string) =>
     UserModel.findById(id).populate("favorites");
+
 export const createUser = (values: Record<string, any>) => new UserModel(values)
     .save().then((user) => user.toObject());
 export const deleteUserById = (id: string) => UserModel.findOneAndDelete({ _id: id });
 export const updateUserById = async (id: string, values: Record<string, any>) => {
     return await UserModel.findByIdAndUpdate(id, values, { new: true}).exec();
+}
+export const updateUserFavoritesById = async (id: string, bookIds: mongoose.Types.ObjectId[]) => {
+    const updatedUser = await UserModel.findByIdAndUpdate(
+        id,
+        { favorites: bookIds },
+        { new: true, select: "favorites" }
+    ).exec();
+
+    if (!updatedUser) {
+        throw new Error("User not found");
+    }
+
+    return updatedUser.favorites;
 }
