@@ -24,6 +24,8 @@ export const getUserBySessionToken = (sessionToken: string) => UserModel.findOne
 });
 
 export const getUserById = (id : string) => UserModel.findById(id);
+export const getUserWithFavoritesIds = (userId: string) => 
+    UserModel.findById(userId).select("favorites").exec();
 export const getUserWithFavoritesById = (id: string) =>
     UserModel.findById(id).populate("favorites");
 
