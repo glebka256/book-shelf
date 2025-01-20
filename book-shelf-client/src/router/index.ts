@@ -1,12 +1,13 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import AboutView from "../views/AboutView.vue";
+import SearchView from "@/views/SearchView.vue";
+import DownloadView from "@/views/DownloadView.vue";
+import FavoritesView from "@/views/FavoritesView.vue";
 import AccountView from "@/views/AccountView.vue";
 import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import LogoutView from "@/views/LogoutView.vue";
-import SearchView from "@/views/SearchView.vue";
-import DownloadView from "@/views/DownloadView.vue";
+import AboutView from "../views/AboutView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -23,6 +24,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/search/downloadable",
     name: "downloadable",
     component: DownloadView
+  },
+  {
+    path: "/favorites",
+    name: "favorites",
+    component: FavoritesView
   },
   {
     path: "/about",
