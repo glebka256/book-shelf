@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { get } from 'lodash';
-import { deleteUserById, getUsers, getUserWithFavoritesById } from '@app/models/user';
+import { deleteUserById, getUsers, getUserWithFavoritesById, updateUserFavoritesById } from '@app/models/user';
 
 export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -43,7 +43,7 @@ export const getAllFavorites = async (req: Request, res: Response): Promise<void
 }
 
 /** Adds or removes bookId from favorites based on it's presence given user and bookId. */
-export const updateFavorites = async (req: Request, res: Response): Promise<void> => {
+export const toggleFavorite = async (req: Request, res: Response): Promise<void> => {
     try {
         const userId = get(req, 'identity._id') as string;
         const { bookId } = req.body;
@@ -56,7 +56,7 @@ export const updateFavorites = async (req: Request, res: Response): Promise<void
         const populatedUser = await getUserWithFavoritesById(userId);
 
         if (!populatedUser) {
-            res.status(404).json({ message: "User not found" });
+            res.status(404).json({ message: "Current user not found" });
             return;
         }
 
@@ -70,7 +70,34 @@ export const updateFavorites = async (req: Request, res: Response): Promise<void
 
         res.status(200).json({ favorites: populatedUser.favorites });
     } catch (error) {
-        console.error("Error updating favorite book for user. Error: ", error);
+        console.error("Error toggling favorite book for user by ID. Error: ", error);
         res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+/** Overwrites all ID entries for user's bookId array. */
+export const updateFavorites = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const userId = get(req, 'identity._id') as string;
+        const { bookIds } = req.body;
+
+        if (!bookIds || bookIds.length <= 0) {
+            res.status(400).json({ message: "At least one book ID is required" });
+            return;
+        }
+
+        const populatedUser = await getUserWithFavoritesById(userId);
+
+        if (!populatedUser) {
+            res.status(404).json({ message: "Current user not found" });
+            return;
+        }
+
+        const newFavorites = await updateUserFavoritesById(userId, bookIds);
+
+        res.status(200).json({ favorites: newFavorites });
+    } catch (error) {
+        console.error("Error updating favorite book IDs for user. Error: ", error);
+        res.status(400).json({ message: "Could not update users favorites." });
     }
 }
