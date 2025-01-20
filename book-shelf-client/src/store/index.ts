@@ -1,6 +1,4 @@
 import { defineStore } from "pinia";
-import baseInstance, { getLoginStatus } from "@/api/baseInstance";
-import { Book } from '@/types/Book';
 
 export const useFavoritesStore = defineStore('favorites', {
   state: () => ({
@@ -13,26 +11,15 @@ export const useFavoritesStore = defineStore('favorites', {
   },
 
   actions: {
-    async fetchFavorites() {
-      try {
-        if (await getLoginStatus()) {
-          const response = await baseInstance.get('/users/favorites');
-          const favoriteBooks = response.data as Book[];
-          this.favoriteBooksIds = favoriteBooks.map((favoriteBook) => favoriteBook._id);
-        } else {
-          this.favoriteBooksIds = this.getLocalFavorites();
-        }
-      } catch (error) {
-        console.error("Could not retrieve user's favorite books.");
-      }
-    },
     addFavorite(id: string) {
       if (!this.favoriteBooksIds.includes(id)) {
         this.favoriteBooksIds.push(id);
+        this.addLocalFavorite(id);
       }
     },
     removeFavorite(id: string) {
       this.favoriteBooksIds.filter((itemId) => itemId !== id);
+      this.removeLocalFavorite(id);
     },
     toggleFavorite(id: string) {
       if (this.isFavorite(id)) {
@@ -45,7 +32,20 @@ export const useFavoritesStore = defineStore('favorites', {
       const localData = localStorage.getItem('favorites');
       return localData ? JSON.parse(localData): [];
     },
+    toggleLocalFavorite(id: string) {
+      const localFavorites = this.getLocalFavorites();
+      if (localFavorites.includes(id)) {
+        this.removeLocalFavorite(id);
+      } else {
+        this.addLocalFavorite(id);
+      }
+    },
     addLocalFavorite(id: string) {
+      const localFavorites = this.getLocalFavorites();
+      localFavorites.push(id);
+      localStorage.setItem('favorites', JSON.stringify(localFavorites));
+    },
+    removeLocalFavorite(id: string) {
       const localFavorites = this.getLocalFavorites()
         .filter((itemId: string) => itemId !== id);
       localStorage.setItem('favorites', JSON.stringify(localFavorites));

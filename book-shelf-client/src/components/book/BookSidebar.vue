@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import baseInstance from '@/api/baseInstance';
 import { defineProps, onMounted, ref, computed } from 'vue';
+import { useFavoritesStore } from '@/store';
 import { Book } from '@/types/Book';
 import CommonButton from '@/components/common/buttons/CommonButton.vue';
 import TextLoader from '@/components/common/loaders/TextLoader.vue';
 import IconButton from '@/components/common/buttons/IconButton.vue';
+
+const favoritesStore = useFavoritesStore();
 
 const props = defineProps({
   bookId: {
@@ -47,6 +50,10 @@ const bookCover = computed(() => {
   return bookDetails.value.coverUrl || require('@/assets/cover_placeholder.png');
 });
 
+function addFavoriteBook() {
+  favoritesStore.addFavorite(props.bookId);
+}
+
 function openUrl(url: string) {
   window.open(url, "_blank");
 }
@@ -80,7 +87,7 @@ onMounted(async () => {
       <span class="detail-text"><i class="fas fa-heart"></i></span>
       <span class="detail-text" id="rating">4.7</span>
       <span class="detail-text">Add to favorites</span>
-      <IconButton :icon-type="'add'" :icon-size="1.8"/>
+      <IconButton :icon-type="'add'" @click="addFavoriteBook" :icon-size="1.8"/>
     </div>
     <div class="info-row">
       <CommonButton v-if="readable" @click="openUrl(bookDetails.link.readUrl)">Read</CommonButton>

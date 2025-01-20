@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { defineProps, PropType, defineEmits, computed, ref } from 'vue';
+import { useFavoritesStore } from '@/store';
 import { Book } from '@/types/Book';
+
+const favoritesStore = useFavoritesStore();
 
 const props = defineProps({
   book: {
@@ -9,8 +12,7 @@ const props = defineProps({
   }
 });
 
-// Emits sends bookId up the ierarchy to the HomeView
-// I dont like it but it stays
+// emit sends bookId up the ierarchy to the HomeView
 const emit = defineEmits(['selectBook']);
 
 const bookCover = computed(() => {
@@ -53,6 +55,10 @@ function handleMouseLeave() {
 function handleBookClick() {
   emit('selectBook', props.book._id);
 }
+
+function handleLikeClick() {
+  favoritesStore.toggleFavorite(props.book._id);
+}
 </script>
 
 <template>
@@ -60,13 +66,14 @@ function handleBookClick() {
   <div class="book-container" 
     @mouseenter="handleMouseEnter" 
     @mouseleave="handleMouseLeave"
-    @click="handleBookClick">
+    >
     <div v-if="!isImageLoaded" class="skeleton-loader"></div>
     <div class="image-cover">
       <img
         v-show="isImageLoaded" 
         :src="bookCover"
         @load="handleImageLoad"
+        @click="handleBookClick"
         alt="Book Cover">
     </div>
     <div class="image-props">
@@ -75,7 +82,7 @@ function handleBookClick() {
     </div>
     <div v-if="isHovered" class="hover-content">
       <span class="rating">{{ bookRating }}</span>
-      <div class="like-button"><i class="fas fa-heart"></i></div>
+      <div class="like-button" @click="handleLikeClick"><i class="fas fa-heart"></i></div>
     </div>
   </div>
  </div>
