@@ -76,7 +76,7 @@ export const toggleFavorite = async (req: Request, res: Response): Promise<void>
             return;
         }
 
-        const populatedUser = await getUserWithFavoritesById(userId);
+        const populatedUser = await getUserWithFavoritesIds(userId);
 
         if (!populatedUser) {
             res.status(404).json({ message: "Current user not found" });
