@@ -7,8 +7,6 @@ import CommonButton from '@/components/common/buttons/CommonButton.vue';
 import TextLoader from '@/components/common/loaders/TextLoader.vue';
 import IconButton from '@/components/common/buttons/IconButton.vue';
 
-const favoritesStore = useFavoritesStore();
-
 const props = defineProps({
   bookId: {
     type: String,
@@ -25,6 +23,7 @@ const bookAuthor = ref<string>();
 const downloadable = ref<boolean>(false);
 const readable = ref<boolean>(false);
 const purchasable = ref<boolean>(false);
+const favorite = ref<boolean>(false);
 
 const isLoading = ref<boolean>(false);
 
@@ -50,8 +49,11 @@ const bookCover = computed(() => {
   return bookDetails.value.coverUrl || require('@/assets/cover_placeholder.png');
 });
 
-function addFavoriteBook() {
-  favoritesStore.addFavorite(props.bookId);
+const favoritesStore = useFavoritesStore();
+
+function toggleFavorite() {
+  favoritesStore.toggleFavorite(props.bookId);
+  favorite.value = favoritesStore.isFavorite(props.bookId);
 }
 
 function openUrl(url: string) {
@@ -68,6 +70,8 @@ onMounted(async () => {
     readable.value = bookDetails.value.link.readUrl ? true : false;
     purchasable.value = bookDetails.value.link.buyUrl ? true : false;
   }
+
+  favorite.value = favoritesStore.isFavorite(props.bookId);
 });
 </script>
 
@@ -87,7 +91,18 @@ onMounted(async () => {
       <span class="detail-text"><i class="fas fa-heart"></i></span>
       <span class="detail-text" id="rating">4.7</span>
       <span class="detail-text">Add to favorites</span>
-      <IconButton :icon-type="'add'" @click="addFavoriteBook" :icon-size="1.8"/>
+      <IconButton 
+        v-if="favorite"
+        icon-type="remove" 
+        @click="toggleFavorite" 
+        :icon-size="1.8"
+      />
+      <IconButton 
+        v-else
+        icon-type="add" 
+        @click="toggleFavorite" 
+        :icon-size="1.8"
+      />
     </div>
     <div class="info-row">
       <CommonButton v-if="readable" @click="openUrl(bookDetails.link.readUrl)">Read</CommonButton>
