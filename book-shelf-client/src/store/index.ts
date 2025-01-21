@@ -14,13 +14,11 @@ export const useFavoritesStore = defineStore('favorites', {
 
   actions: {
     async addFavorite(id: string) {
-      if (!this.favoriteBooksIds.includes(id)) {
-        this.favoriteBooksIds.push(id);
-        this.addLocalFavorite(id);
-        
-        if (await getLoginStatus()) {
-          await this.toggleServerFavorite(id);
-        }
+      this.favoriteBooksIds.push(id);
+      this.addLocalFavorite(id);
+      
+      if (await getLoginStatus()) {
+        await this.toggleServerFavorite(id);
       }
     },
 
@@ -33,11 +31,11 @@ export const useFavoritesStore = defineStore('favorites', {
       }
     },
 
-    toggleFavorite(id: string) {
+    async toggleFavorite(id: string) {
       if (this.isFavorite(id)) {
-        this.removeFavorite(id);
+        await this.removeFavorite(id);
       } else {
-        this.addFavorite(id);
+        await this.addFavorite(id);
       }
     },
 
