@@ -4,7 +4,6 @@ import baseInstance from '@/api/baseInstance';
 import { useFavoritesStore } from '@/store';
 import AuthForm from '@/components/layout/AuthForm.vue';
 import { FormField } from '@/types/Auth';
-import { mergeArrays } from '@/utils';
 
 const displayMessage = ref<boolean>(false);
 const message = ref<string>('');
@@ -16,7 +15,8 @@ const loginFields: FormField[] = [
 
 async function handleLogin(formData: Record<string, string>) {
   await login(formData);
-  await syncFavorites();
+  const favoritesStore = useFavoritesStore();
+  favoritesStore.syncFavorites();
 }
 
 interface LoginQuery {
@@ -51,44 +51,6 @@ async function login(formData: Record<string, string>) {
     } else {
       message.value = error.message || 'An unexpected error occured.';
     }
-  }
-}
-
-const favoritesStore = useFavoritesStore();
-
-async function syncFavorites() {
-  try {
-    const serverFavoritesIds: string[] = await fetchFavoriteBookIds();
-    const localFavoritesIds: string[] = favoritesStore.getLocalFavorites();
-
-    const mergedIds = mergeArrays(serverFavoritesIds, localFavoritesIds);
-    favoritesStore.overwriteLocalFavorites(mergedIds);
-    updateFavoriteBookIds(mergedIds);
-  } catch (error) {
-    console.error("Could not sync favorite books selection with the server.", error);
-  }
-}
-
-async function fetchFavoriteBookIds(): Promise<string[]> {
-  try {
-    const response = await baseInstance.get<{ favorites: string[] }>('users/favorites');
-
-    if (!response.data) {
-      return [];
-    }
-
-    return response.data.favorites;
-  } catch (error) {
-    console.error("Could not get User's favorite books from server.");
-    return [];
-  }
-}
-
-async function updateFavoriteBookIds(ids: string[]): Promise<void> {
-  try {
-    await baseInstance.post('users/favorites', { bookIds: ids }); 
-  } catch (error) {
-    console.error("Could not update User's favorite book on the server.");
   }
 }
 </script>
