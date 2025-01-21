@@ -5,6 +5,7 @@ import {
     deleteBook,
     getAllBooks,
     getBook, 
+    retrieveByIds, 
     updateBook
 } from '@app/controllers/books/storageBooks';
 
@@ -14,4 +15,5 @@ export default (router: Router): void => {
     router.post('/books/', createNewBook);
     router.put('/books/:id', updateBook);
     router.delete('/books/:id', deleteBook);
+    router.post('/books/batch', retrieveByIds);
 }

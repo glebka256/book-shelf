@@ -4,8 +4,10 @@ import {
     deleteBookById, 
     getBookById, 
     getBooks, 
-    updateBookById 
+    updateBookById ,
+    queryBooks
 } from "@app/models/book";
+import { ClientBook } from "@app/interfaces/Books";
 
 export const getBook = async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id;
@@ -69,5 +71,24 @@ export const deleteBook = async (req: Request, res: Response): Promise<void> => 
         const errorMessage = "Could not update book with specified id";
         console.error(`${errorMessage}: `, error);
         res.status(400).json({ message: `${errorMessage}.` });
+    }
+}
+
+export const retrieveByIds = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { bookIds } = req.body;
+
+        if (!Array.isArray(bookIds) || bookIds.length === 0) {
+            res.status(400).json({ message: "IDs array is required" });
+            return;
+        }
+
+        const books = await queryBooks({ _id: { $in: bookIds } });
+
+        res.status(200).json(books as ClientBook[]);
+    } catch (error) {
+        const errorMessage = "Could not retrieve books by specified IDs";
+        console.error(`${errorMessage}: `, error);
+        res.status(500).json({ message: `${errorMessage}.` });
     }
 }
