@@ -1,5 +1,12 @@
 <script setup lang="ts">
+import { onMounted } from 'vue';
+import { useFavoritesStore } from './store';
 import AppBar from '@/components/layout/AppBar.vue';
+
+onMounted(() => {
+  const favoritesStore = useFavoritesStore();
+  favoritesStore.initialize();
+});
 </script>
 
 <template>

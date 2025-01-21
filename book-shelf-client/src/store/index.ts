@@ -39,6 +39,14 @@ export const useFavoritesStore = defineStore('favorites', {
       }
     },
 
+    async initialize() {
+      this.favoriteBooksIds = this.getLocalFavorites();
+
+      if (await getLoginStatus()) {
+        await this.syncFavorites();
+      }
+    },
+
     getLocalFavorites() {
       const localData = localStorage.getItem('favorites');
       return localData ? JSON.parse(localData): [];
