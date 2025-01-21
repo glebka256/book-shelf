@@ -4,6 +4,7 @@ import baseInstance from '@/api/baseInstance';
 import { useFavoritesStore } from '@/store';
 import AuthForm from '@/components/layout/AuthForm.vue';
 import { FormField } from '@/types/Auth';
+import { getResponseErrorMessage } from '@/utils';
 
 const displayMessage = ref<boolean>(false);
 const message = ref<string>('');
@@ -16,7 +17,7 @@ const loginFields: FormField[] = [
 async function handleLogin(formData: Record<string, string>) {
   await login(formData);
   const favoritesStore = useFavoritesStore();
-  favoritesStore.syncFavorites();
+  favoritesStore.initialize();
 }
 
 interface LoginQuery {
@@ -42,15 +43,9 @@ async function login(formData: Record<string, string>) {
     } else {
       message.value = `Logged in with email: ${query.email}`;
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     displayMessage.value = true;
-
-    if (error.response && error.response.data) {
-      const serverError = error.response.data;
-      message.value = serverError.message || 'An error occured on the server.';
-    } else {
-      message.value = error.message || 'An unexpected error occured.';
-    }
+    message.value = getResponseErrorMessage(error);
   }
 }
 </script>

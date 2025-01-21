@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import baseInstance from '@/api/baseInstance';
+import { getResponseErrorMessage } from '@/utils';
 import AuthForm from '@/components/layout/AuthForm.vue';
 import { FormField } from '@/types/Auth';
 
@@ -93,15 +94,9 @@ async function register(formData: Record<string, string>) {
     } else {
       message.value = `Registered with email: ${query.email}`;
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     displayMessage.value = true;
-
-    if (error.response && error.response.data) {
-      const serverError = error.response.data;
-      message.value = serverError.error || 'An error occured on the server.';
-    } else {
-      message.value = error.message || 'An unexpected error occured.';
-    }
+    message.value = getResponseErrorMessage(error);
   }
 }
 </script>
