@@ -1,5 +1,5 @@
 import baseInstance from "./baseInstance";
-import { AuthError, User, RegisterQuery, AuthResult } from '@/types/Auth'; 
+import { AuthError, User, RegisterQuery, AuthResult, LoginQuery } from '@/types/Auth'; 
 import { getResponseError } from "./main";
 
 export const getLoginStatus = async () => {
@@ -34,6 +34,22 @@ export const requestRegister = async (query: RegisterQuery): Promise<AuthResult>
         return {
             status: true,
             message: `Registered with email: ${query.email}`
+        };
+    } catch (error: unknown) {
+        return {
+            status: false,
+            message: getResponseError(error)
+        }
+    }
+}
+
+export const requestLogin = async (query: LoginQuery): Promise<AuthResult> => {
+    try {
+        const response = await baseInstance.post('auth/login', query); 
+
+        return {
+            status: true,
+            message: `${response.data.message}: ${response.data.user}`
         };
     } catch (error: unknown) {
         return {

@@ -1,5 +1,5 @@
-import { requestRegister } from "@/api/auth";
-import { AuthResult, RegisterQuery } from "@/types/Auth";
+import { requestLogin, requestRegister } from "@/api/auth";
+import { AuthResult, LoginQuery, RegisterQuery } from "@/types/Auth";
 
 const OK_MESSAGE = 'OK';
 
@@ -54,7 +54,7 @@ const validatePasswordMatch = (
     return null;
 };
 
-const getValidationMessage = (formData: Record<string, string>): string => {
+const getRegisterValidation = (formData: Record<string, string>): string => {
     const { username, email, password, ['pass-match']: passMatch } = formData;
 
     return (
@@ -64,6 +64,20 @@ const getValidationMessage = (formData: Record<string, string>): string => {
         validatePasswordMatch(password, passMatch) ||
         OK_MESSAGE
     );
+};
+
+const getLoginValidation = (formData: Record<string, string>): string => {
+    const { email, password } = formData;
+    
+    if (!email) {
+        return 'Email is required!';
+    }
+
+    if (!password) {
+        return 'Password is required!';
+    }
+
+    return OK_MESSAGE;
 };
 
 /** Handles user registration on the server.
@@ -77,7 +91,7 @@ const getValidationMessage = (formData: Record<string, string>): string => {
  * @returns Promise showing completion status and fail/success message.
 */
 export const register = async (formData: Record<string, string>): Promise<AuthResult> => {
-    const validationMessage = getValidationMessage(formData);
+    const validationMessage = getRegisterValidation(formData);
 
     if (validationMessage === OK_MESSAGE) {
         const query: RegisterQuery = {
@@ -87,6 +101,32 @@ export const register = async (formData: Record<string, string>): Promise<AuthRe
         }
 
         return await requestRegister(query);
+    } else {
+        return {
+            status: false,
+            message: validationMessage
+        }
+    }
+}
+
+/** Handles user login on the server.
+ * Validates data then sends to server and formats result message.
+ * @param {Record<string, string>} formData - Login data from HTML form. Valid form includes:
+ * - 'email'
+ * - 'password'
+ * 
+ * @returns Promise showing completion status and fail/success message.
+*/
+export const login = async (formData: Record<string, string>): Promise<AuthResult> => {
+    const validationMessage = getLoginValidation(formData);
+
+    if (validationMessage === OK_MESSAGE) {
+        const query: LoginQuery = {
+            email: formData.email,
+            password: formData.password
+        }
+
+        return await requestLogin(query);
     } else {
         return {
             status: false,

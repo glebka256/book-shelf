@@ -1,55 +1,25 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import baseInstance from '@/api/baseInstance';
 import { useFavoritesStore } from '@/store/favoritesStore';
 import AuthForm from '@/components/layout/AuthForm.vue';
 import { FormField } from '@/types/Auth';
-import { getResponseErrorMessage } from '@/utils';
 import { sendInteractions } from '@/services/interactionService';
-
-const displayMessage = ref<boolean>(false);
-const message = ref<string>('');
+import { login } from '@/services/authService';
 
 const loginFields: FormField[] = [
   { name: 'email', label: 'Email', type: 'email', placeholder: 'Enter your email' },
   { name: 'password', label: 'Password', type: 'password', placeholder: 'Enter your password' }
 ];
 
+const message = ref<string>('');
+
 async function handleLogin(formData: Record<string, string>) {
-  await login(formData);
+  message.value = (await login(formData)).message;
+
   const favoritesStore = useFavoritesStore();
   await favoritesStore.initialize();
 
   sendInteractions();
-}
-
-interface LoginQuery {
-  email: string,
-  password: string
-}
-
-async function login(formData: Record<string, string>) {
-  // Message keeps track of login execution state. No message means OK
-  message.value = '';
-  
-  const query: LoginQuery = {
-    email: formData.email,
-    password: formData.password
-  }
-
-  try {
-    const response = await baseInstance.post('auth/login', query);
-
-    displayMessage.value = true;
-    if (!response.data) {
-      message.value = 'Could not connect to server.'
-    } else {
-      message.value = `Logged in with email: ${query.email}`;
-    }
-  } catch (error: unknown) {
-    displayMessage.value = true;
-    message.value = getResponseErrorMessage(error);
-  }
 }
 </script>
 
@@ -63,7 +33,7 @@ async function login(formData: Record<string, string>) {
   >
     <router-link to="/register">Don't have an account? Register</router-link>
   </AuthForm>
-  <div v-if="displayMessage" class="error">{{ message }}</div>
+  <div v-if="message" class="error">{{ message }}</div>
  </div>
 </template>
 
