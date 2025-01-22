@@ -1,28 +1,15 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import baseInstance from '@/api/baseInstance';
 import AuthForm from '@/components/layout/AuthForm.vue';
 import { FormField } from '@/types/Auth';
-
-const displayMessage = ref<boolean>(false);
-const message = ref<string>('');
+import { logout } from '@/services/authService';
 
 const logoutFields: FormField[] = [];
 
-function handleLogout(formData: Record<string, string>) {
-  logout(formData);
-}
+const message = ref<string>('');
 
-async function logout(formData: Record<string, string>) {
-  try {
-    const response = await baseInstance.post('auth/logout');
-
-    displayMessage.value = true;
-    message.value = `Logged out from account`;
-  } catch (error: any) {
-    displayMessage.value = true;
-    message.value = 'Could not connect to the server.';
-  }
+async function handleLogout() {
+  message.value = (await logout()).message;
 }
 </script>
 
@@ -36,7 +23,7 @@ async function logout(formData: Record<string, string>) {
   >
     <router-link to="/register">Want to create a new account? Register</router-link>
   </AuthForm>
-  <div v-if="displayMessage" class="error">{{ message }}</div>
+  <div v-if="message" class="error">{{ message }}</div>
  </div>
 </template>
 

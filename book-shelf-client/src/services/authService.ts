@@ -1,4 +1,4 @@
-import { requestLogin, requestRegister } from "@/api/auth";
+import { requestLogin, requestLogout, requestRegister } from "@/api/auth";
 import { AuthResult, LoginQuery, RegisterQuery } from "@/types/Auth";
 
 const OK_MESSAGE = 'OK';
@@ -133,4 +133,8 @@ export const login = async (formData: Record<string, string>): Promise<AuthResul
             message: validationMessage
         }
     }
+}
+
+export const logout = async (): Promise<AuthResult> => {
+    return await requestLogout();
 }

@@ -1,6 +1,6 @@
 import baseInstance from "./baseInstance";
 import { AuthError, User, RegisterQuery, AuthResult, LoginQuery } from '@/types/Auth'; 
-import { getResponseError } from "./main";
+import { BasicErrors, getResponseError } from "./main";
 
 export const getLoginStatus = async () => {
     try {
@@ -55,6 +55,22 @@ export const requestLogin = async (query: LoginQuery): Promise<AuthResult> => {
         return {
             status: false,
             message: getResponseError(error)
+        }
+    }
+}
+
+export const requestLogout = async (): Promise<AuthResult> => {
+    try {
+        await baseInstance.post('auth/logout');
+
+        return {
+            status: true,
+            message: "Logged out from account"
+        }
+    } catch (error: unknown) {
+        return {
+            status: false,
+            message: BasicErrors.Network
         }
     }
 }
