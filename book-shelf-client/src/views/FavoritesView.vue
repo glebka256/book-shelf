@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, reactive } from 'vue';
-import { useFavoritesStore } from '@/store';
+import { useFavoritesStore } from '@/store/favoritesStore';
 import { Book } from '@/types/Book';
 import BookGrid from '@/components/book/BookGrid.vue';
 import BookSidebar from '@/components/book/BookSidebar.vue';

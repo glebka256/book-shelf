@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineProps, PropType, defineEmits, computed, ref } from 'vue';
-import { useFavoritesStore } from '@/store';
+import { useFavoritesStore } from '@/store/favoritesStore';
 import { Book } from '@/types/Book';
 
 const favoritesStore = useFavoritesStore();

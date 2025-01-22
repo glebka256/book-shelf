@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import baseInstance from '@/api/baseInstance';
-import { useFavoritesStore } from '@/store';
+import { useFavoritesStore } from '@/store/favoritesStore';
 import AuthForm from '@/components/layout/AuthForm.vue';
 import { FormField } from '@/types/Auth';
 import { getResponseErrorMessage } from '@/utils';

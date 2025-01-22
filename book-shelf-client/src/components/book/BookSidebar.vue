@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import baseInstance from '@/api/baseInstance';
 import { defineProps, onMounted, ref, computed } from 'vue';
-import { useFavoritesStore } from '@/store';
+import { useFavoritesStore } from '@/store/favoritesStore';
 import { Book } from '@/types/Book';
 import CommonButton from '@/components/common/buttons/CommonButton.vue';
 import TextLoader from '@/components/common/loaders/TextLoader.vue';
