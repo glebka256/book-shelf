@@ -1,13 +1,16 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import SearchView from "@/views/SearchView.vue";
-import DownloadView from "@/views/DownloadView.vue";
 import FavoritesView from "@/views/FavoritesView.vue";
+
+import SearchView from "@/views/search/SearchView.vue";
+import DownloadView from "@/views/search/DownloadView.vue";
+
 import AccountView from "@/views/AccountView.vue";
-import LoginView from "@/views/LoginView.vue";
-import RegisterView from "@/views/RegisterView.vue";
-import LogoutView from "@/views/LogoutView.vue";
-import AboutView from "../views/AboutView.vue";
+import LoginView from "@/views/auth/LoginView.vue";
+import RegisterView from "@/views/auth/RegisterView.vue";
+import LogoutView from "@/views/auth/LogoutView.vue";
+
+import AboutView from "@/views/AboutView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -41,17 +44,17 @@ const routes: Array<RouteRecordRaw> = [
     component: AccountView,
   },
   {
-    path: "/login",
+    path: "/auth/login",
     name: "login",
     component: LoginView,
   },
   {
-    path: "/register",
+    path: "/auth/register",
     name: "register",
     component: RegisterView,
   },
   {
-    path: "/logout",
+    path: "/auth/logout",
     name: "logout",
     component: LogoutView,
   },

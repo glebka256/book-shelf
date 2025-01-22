@@ -11,7 +11,7 @@
       <li><router-link to="/favorites"><i class="fas fa-heart"></i> <span class="router-link-text">Favorites</span></router-link></li>
       <li><router-link to="/"><i class="fas fa-robot"></i> <span class="router-link-text">Suggest</span></router-link></li>
       <li><router-link to="/account"><i class="fas fa-user"></i> <span class="router-link-text">Profile</span></router-link></li>
-      <li><router-link to="/logout"><i class="fas fa-sign-out-alt"></i> <span class="router-link-text">Logout</span></router-link></li>
+      <li><router-link to="/auth/logout"><i class="fas fa-sign-out-alt"></i> <span class="router-link-text">Logout</span></router-link></li>
       <li><router-link to="/about"><i class="fas fa-question-circle"></i> <span class="router-link-text">About</span></router-link></li>
     </ul>
   </nav>
