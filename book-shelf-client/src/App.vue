@@ -2,7 +2,7 @@
 import { onMounted, onUnmounted } from 'vue';
 import { useFavoritesStore } from './store/favoritesStore';
 import AppBar from '@/components/layout/AppBar.vue';
-import { getLoginStatus } from './api/baseInstance';
+import { getLoginStatus } from './api/auth';
 import { sendInteractions } from './services/interactionService';
 
 let intervalId: number;
