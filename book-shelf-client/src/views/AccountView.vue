@@ -1,27 +1,20 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { User } from '@/types/Auth';
-import baseInstance from '@/api/baseInstance';
+import { getUserCredentials } from '@/api/auth';
 
 const user = ref<User>();
 const errorMessage = ref<string>();
 
-async function fetchUserData() {
-  try {
-    const response = await baseInstance.get('auth/user');
+onMounted(async () => {
+  const response = await getUserCredentials();
 
-    if (response.data) {
-      user.value = response.data as User;
-    } else {
-      errorMessage.value = 'Could not get user credentials.';
-    }
-  } catch (error) {
-    // user variable handles bad response
+  if ('error' in response) {
+    errorMessage.value = response.error;
+  } else {
+    user.value = response;
+    errorMessage.value = undefined;
   }
-}
-
-onMounted(() => {
-  fetchUserData();
 });
 </script>
 
