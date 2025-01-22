@@ -8,6 +8,8 @@ import BookSidebar from '@/components/book/BookSidebar.vue';
 import TextLoader from '@/components/common/loaders/TextLoader.vue';
 import baseInstance from '@/api/baseInstance';
 import { Book } from '@/types/Book';
+import { useInteractionStore } from '@/store/interactionStore';
+import { InteractionTypes } from '@/types/User';
 
 const props = defineProps({
   searchType: {
@@ -103,6 +105,13 @@ async function loadMore() {
 const selectedBookId = ref<string>('');
 const isSidebarOpen = ref<boolean>(false);
 
+async function handleBookSelect(bookId: string) {
+  await openSidebar(bookId);
+
+  const interactionStore = useInteractionStore();
+  interactionStore.saveInteraction(InteractionTypes.Searched, bookId);
+}
+
 async function openSidebar(bookId: string) {
   if (isSidebarOpen.value) {
     closeSidebar();
@@ -166,7 +175,7 @@ onBeforeUnmount(() => {
     v-else-if="books.length > 0"
     class="search-content" 
     :books="books"
-    @select-book="openSidebar" 
+    @select-book="handleBookSelect" 
   />
   <book-sidebar 
     v-if="isSidebarOpen"

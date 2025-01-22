@@ -1,11 +1,25 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, onUnmounted } from 'vue';
 import { useFavoritesStore } from './store/favoritesStore';
 import AppBar from '@/components/layout/AppBar.vue';
+import { getLoginStatus } from './api/baseInstance';
+import { sendInteractions } from './services/interactionService';
 
-onMounted(() => {
+let intervalId: number;
+
+onMounted(async () => {
   const favoritesStore = useFavoritesStore();
   favoritesStore.initialize();
+
+  intervalId = setInterval(async () => {
+    if (await getLoginStatus()) {
+      sendInteractions();
+    }
+  }, 30000);  // 30 sec
+});
+
+onUnmounted(() => {
+  clearInterval(intervalId)
 });
 </script>
 

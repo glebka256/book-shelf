@@ -5,6 +5,7 @@ import { useFavoritesStore } from '@/store/favoritesStore';
 import AuthForm from '@/components/layout/AuthForm.vue';
 import { FormField } from '@/types/Auth';
 import { getResponseErrorMessage } from '@/utils';
+import { sendInteractions } from '@/services/interactionService';
 
 const displayMessage = ref<boolean>(false);
 const message = ref<string>('');
@@ -17,7 +18,9 @@ const loginFields: FormField[] = [
 async function handleLogin(formData: Record<string, string>) {
   await login(formData);
   const favoritesStore = useFavoritesStore();
-  favoritesStore.initialize();
+  await favoritesStore.initialize();
+
+  sendInteractions();
 }
 
 interface LoginQuery {

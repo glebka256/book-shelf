@@ -12,6 +12,8 @@ import baseInstance from '@/api/baseInstance';
 import { Book } from '@/types/Book';
 import { FilterFormInstance, FilterQuery } from '@/types/Filter';
 import TextLoader from '@/components/common/loaders/TextLoader.vue';
+import { useInteractionStore } from '@/store/interactionStore';
+import { InteractionTypes } from '@/types/User';
 
 const popularBooks = ref<Book[]>([]);
 const recommendedBooks = ref<Book[]>([]);
@@ -57,6 +59,13 @@ async function handleRecommendationReset() {
 
 const selectedBookId = ref<string>('');
 const isSidebarOpen = ref<boolean>(false);
+
+async function handleBookSelect(bookId: string) {
+  openSidebar(bookId);
+
+  const interactionStore = useInteractionStore();
+  interactionStore.saveInteraction(InteractionTypes.Cover, bookId);
+}
 
 async function openSidebar(bookId: string) {
   if (isSidebarOpen.value) {
@@ -204,7 +213,7 @@ onBeforeUnmount(() => {
     <div class="book-skeleton" v-if="isPageLoading || isRecommendedLoading">
       <book-skeleton :skeleton-type="'horizontal'" />
     </div>
-    <horizontal-scroll v-else :books="recommendedBooks" @select-book="openSidebar"/>
+    <horizontal-scroll v-else :books="recommendedBooks" @select-book="handleBookSelect"/>
   </div>
   <div class="book-skeleton" v-if="isPageLoading && isDiscoverLoading">
     <book-skeleton :skeleton-type="'vertical'" />
@@ -223,7 +232,7 @@ onBeforeUnmount(() => {
     <div class="book-skeleton" v-if="isDiscoverLoading || isPageLoading">
       <book-skeleton :skeleton-type="'vertical'" />
     </div>
-    <book-grid v-else :books="filteredBooks" @select-book="openSidebar"/>
+    <book-grid v-else :books="filteredBooks" @select-book="handleBookSelect"/>
     <div v-if="moreLoading" class="load-more">
       <TextLoader loader-text="Loading more books..."/>
     </div>
