@@ -9,3 +9,7 @@ export interface FormField {
     type: 'text' | 'number' | 'date' | 'email' | 'password',
     placeholder: string
 }
+
+export interface AuthError {
+    error: string
+}
