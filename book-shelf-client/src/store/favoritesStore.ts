@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
-import { getLoginStatus, toggleServerFavorite } from "@/api/user";
+import { getLoginStatus } from "@/api/auth";
+import { toggleServerFavorite } from "@/api/user";
 import {
   addLocalFavorite, 
   getLocalFavorites, 

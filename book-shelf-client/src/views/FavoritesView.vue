@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, reactive } from 'vue';
-import { useFavoritesStore } from '@/store/favoritesStore';
 import { Book } from '@/types/Book';
 import BookGrid from '@/components/book/BookGrid.vue';
 import BookSidebar from '@/components/book/BookSidebar.vue';
+import { useFavoritesStore } from '@/store/favoritesStore';
 import baseInstance from '@/api/baseInstance';
+import { getLocalFavorites } from '@/services/favoritesService';
 
 const favoritesStore = useFavoritesStore();
 
@@ -18,7 +19,7 @@ const messages = reactive({
 
 async function fetchBooksByIds(): Promise<Book[]> {
   messages.error = '';
-  const localFavorites = favoritesStore.getLocalFavorites(); 
+  const localFavorites = getLocalFavorites(); 
 
   if (localFavorites.length === 0) {
     messages.general = "You do not have favorite books yet.";
