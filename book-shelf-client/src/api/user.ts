@@ -1,31 +1,5 @@
 import baseInstance from "./baseInstance";
-import { AuthError, User } from '@/types/Auth'; 
-import { getResponseError, replaceBasicError } from "@/api/main";
-
-export const getLoginStatus = async () => {
-    try {
-        await baseInstance.get('/auth/user');
-        return true;
-    } catch (error: unknown) {
-        return false;
-    }
-}
-
-export const getUserData = async (): Promise<User | AuthError> => {
-    try {
-        const response = await baseInstance.get('auth/user');
-  
-        if (response.data) {
-            return response.data as User;
-        } else {
-            return {
-                error: response.data.message || 'Retrieved empty user credentials.'
-            };
-        }
-    } catch (error: unknown) {
-        return { error: getResponseError(error) };
-    }
-}
+import { replaceBasicError } from "@/api/main";
 
 export const getFavoriteBookIds = async (): Promise<string[]> => {
     try {

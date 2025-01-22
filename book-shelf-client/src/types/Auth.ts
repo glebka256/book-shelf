@@ -13,3 +13,14 @@ export interface FormField {
 export interface AuthError {
     error: string
 }
+
+export interface RegisterQuery {
+    username: string,
+    email: string,
+    password: string
+}
+
+export interface AuthResult {
+    status: boolean,
+    message: string
+}
