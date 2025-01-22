@@ -9,11 +9,13 @@ const errorMessage = ref<string>();
 onMounted(async () => {
   const response = await getUserCredentials();
 
-  if ('error' in response) {
-    errorMessage.value = response.error;
-  } else {
+  if (!('error' in response)) {
     user.value = response;
     errorMessage.value = undefined;
+
+    // Suggest unauthorized users to sign in instead of showing the error.
+  } else if (response.error !== 'Unauthorized') {
+    errorMessage.value = response.error;
   }
 });
 </script>
@@ -29,8 +31,8 @@ onMounted(async () => {
      <p>{{ errorMessage }}</p>
    </div>
    <div v-else class="not-signed-in">
-     <p>You are not signed in. <router-link to="/login">Sign in</router-link></p>
-     <p>Do not have an account? <router-link to="/login">Register</router-link></p>
+     <p>You are not signed in. <router-link to="/auth/login">Sign in</router-link></p>
+     <p>Do not have an account? <router-link to="/auth/register">Register</router-link></p>
    </div>
   </div>
 </template>
