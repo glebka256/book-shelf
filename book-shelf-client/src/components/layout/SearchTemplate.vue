@@ -1,105 +1,79 @@
 <script setup lang="ts">
-import { defineProps, PropType, defineEmits, onMounted, onBeforeUnmount, ref, watch } from 'vue';
+import { defineProps, PropType, defineEmits, onMounted, onBeforeUnmount, ref, watch, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 import SearchBar from '@/components/common/SearchBar.vue';
 import BookSkeleton from '@/components/book/BookSkeleton.vue';
 import BookGrid from '@/components/book/BookGrid.vue';
 import BookSidebar from '@/components/book/BookSidebar.vue';
 import TextLoader from '@/components/common/loaders/TextLoader.vue';
-import baseInstance from '@/api/baseInstance';
-import { Book } from '@/types/Book';
+import { Book, SearchMethods, SearchMethod } from '@/types/Book';
 import { useInteractionStore } from '@/store/interactionStore';
 import { InteractionTypes } from '@/types/User';
+import { getSearchResults } from '@/api/book';
 
 const props = defineProps({
   searchType: {
-    type: String as PropType<'all' | 'downloadable'>,
+    type: String as PropType<keyof typeof SearchMethods>,
     required: true
   }
 })
 
 const emit = defineEmits(['results-loaded']);
 
-const searchType = {
-  all: {
-    title: "Search Results",
-    endpoint: "/search"
-  },
-  downloadable: {
-    title: "Downloadable Results",
-    endpoint: "/search/downloadable"
-  }
-}
+const searchType: SearchMethod = SearchMethods[props.searchType];
 
-const selectedType = searchType[props.searchType];
+const loading = reactive({
+  page: false,
+  more: false,
+  complete: false
+});
 
-const isPageLoading = ref<boolean>(false);
-const isMoreLoading = ref<boolean>(false);
-const isPageComplete = ref<boolean>(false);
 const page = ref<number>(1);
 
 const route = useRoute();
 const books = ref<Book[]>([]);
 
-interface SearchResponse {
-  searchComplete: boolean,
-  books: Book[]
-}
-
 async function fetchSearchResult(query: string): Promise<Book[]> {
+  if (!query.trim()) {
+    return [];
+  }
+  
   try {
-    const response = await baseInstance.get<SearchResponse>(
-      `books${selectedType.endpoint}/${query}/${page.value}`
-    );
-
-    if (!response.data) {
-      throw new Error("Invalid search response.");
-    }
-
+    const results = await getSearchResults(query, page.value, searchType);
     page.value += 1;
-    isPageComplete.value = response.data.searchComplete;
 
-    return response.data.books as Book[];
+    loading.complete = results.searchComplete;
+    return results.data as Book[];
   } catch (error) {
-    console.error(`Could not fetch search results by query: ${query}`);
+    console.error(`Could not fetch search results by query: ${query}\nError: ${error}`);
     return [];
   }
 }
 
 async function updateSearch(query: string) {
   page.value = 1;
-  const searchQuery = query;
+  loading.page = true;
 
-  if (!searchQuery.trim()) {
-    books.value = [];
-    return;
-  }
+  console.log("books: ", books.value);
 
-  isPageLoading.value = true;
+  // Overwrites books with new search query result.
+  books.value = await fetchSearchResult(query);
+  page.value += 1;
 
-  try {
-    books.value = await fetchSearchResult(searchQuery);
-  } finally {
-    isPageLoading.value = false;
-  }
+  console.log("books: ", books.value);
+
+  loading.page = false;
   emit('results-loaded', books.value.length);
 }
 
-async function loadMore() {
-  const searchQuery = (route.query.q as string) || '';
+async function loadMore(query: string) {
+  loading.more = true;
 
-  if (!searchQuery.trim()) {
-    return;
-  }
+  // Loads more books with the same search query.
+  const moreBooks = await fetchSearchResult(query);
+  books.value = [...books.value, ...moreBooks];
 
-  isMoreLoading.value = true;
-
-  try {
-    const moreBooks = await fetchSearchResult(searchQuery);
-    books.value = [...books.value, ...moreBooks];
-  } finally {
-    isMoreLoading.value = false;
-  }
+  loading.more = false;
 }
 
 const selectedBookId = ref<string>('');
@@ -130,23 +104,20 @@ function closeSidebar() {
 
 // Watch the query parameter for changes
 watch(() => route.query.q, async () => {
-  await updateSearch((route.query.q) as string);
+  await updateSearch((route.query.q) as string || '');
 });
 
 const bottomObserver = ref<IntersectionObserver | null>(null);
 const bottomRef = ref<HTMLDivElement>();
 
 onMounted(async () => {
-  await updateSearch((route.query.q) as string);
+  await updateSearch((route.query.q) as string || '');
 
   bottomObserver.value = new IntersectionObserver((entries) => {
-    if (
-      entries[0].isIntersecting 
-      && !isMoreLoading.value 
-      && !isPageLoading.value
-      && !isPageComplete.value
-    ) {
-      loadMore();
+    const isLoading = Object.values(loading).some((value) => value);
+
+    if (entries[0].isIntersecting && !isLoading) {
+      loadMore((route.query.q) as string || '');      
     }
   });
 
@@ -166,9 +137,9 @@ onBeforeUnmount(() => {
 <template>
 <div class="search-template">
   <div class="empty-top"></div>
-  <search-bar @submit="updateSearch" :submitPath="selectedType.endpoint" />
-  <h2 class="view-title">{{ selectedType.title }}</h2>
-  <div v-if="isPageLoading" class="book-skeleton">
+  <search-bar @submit="updateSearch" :submitPath="searchType.path" />
+  <h2 class="view-title">{{ searchType.title }}</h2>
+  <div v-if="loading.page" class="book-skeleton">
     <book-skeleton :skeleton-type="'vertical'" />
   </div>
   <book-grid 
@@ -182,7 +153,7 @@ onBeforeUnmount(() => {
     :bookId="selectedBookId"
     @close="closeSidebar"
   />
-  <div v-if="isMoreLoading" class="load-more">
+  <div v-if="loading.more" class="load-more">
     <TextLoader loader-text="Loading more books..."/>
   </div>
   <div ref="bottomRef" class="bottom-observer"></div>
