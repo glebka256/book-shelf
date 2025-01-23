@@ -47,8 +47,10 @@ async function handleRecommendationReset() {
   }
 }
 
-const selectedBookId = ref<string>('');
-const isSidebarOpen = ref<boolean>(false);
+const sidebar = reactive({
+  open: false,
+  bookId: '',
+});
 
 async function handleBookSelect(bookId: string) {
   openSidebar(bookId);
@@ -58,19 +60,19 @@ async function handleBookSelect(bookId: string) {
 }
 
 async function openSidebar(bookId: string) {
-  if (isSidebarOpen.value) {
+  if (sidebar.open) {
     closeSidebar();
 
     // Delay to make sure sidebar closes before opening a new one. 
     await setTimeout(() => {/* */}, 0);
   }
 
-  selectedBookId.value = bookId;
-  isSidebarOpen.value = true;
+  sidebar.bookId = bookId;
+  sidebar.open = true;
 }
 
 function closeSidebar() {
-  isSidebarOpen.value = false;
+  sidebar.open = false;
 }
 
 const filterFormRef = ref<FilterFormInstance>();
@@ -225,8 +227,8 @@ onBeforeUnmount(() => {
     <div ref="bottomRef" class="bottom-observer"></div>
   </div>
   <book-sidebar 
-    v-if="isSidebarOpen"
-    :bookId="selectedBookId"
+    v-if="sidebar.open"
+    :bookId="sidebar.bookId"
     @close="closeSidebar"
   />
  </div>
