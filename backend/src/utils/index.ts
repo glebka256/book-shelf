@@ -59,7 +59,7 @@ export const extractBookFromDoc = (bookDoc: any[]): StorageBook[] => {
 /**
  * Splits string fileSize into value and metric. Defaults to bytes if no metric provided.
  * @param fileSize - combined string of value and metric
- * @returns - numric size with it's metric as string 
+ * @returns - numeric size with it's metric as string 
  */
 export const splitFileSize = (fileSize: string): { value: number, metric: FileSizeMetric } => {
     for (const metric of Object.values(FileSizeMetric)) {
