@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted, onBeforeUnmount, reactive } from 'vue';
 import SearchBar from '@/components/common/SearchBar.vue';
 import BookSidebar from '@/components/book/BookSidebar.vue';
 import BookSkeleton from '@/components/book/BookSkeleton.vue';
@@ -20,26 +20,27 @@ const popularBooks = ref<Book[]>([]);
 const recommendedBooks = ref<Book[]>([]);
 const filteredBooks = ref<Book[]>([]);
 
-const isPageLoading = ref(false);
-const isRecommendedLoading = ref(false);
-const isDiscoverLoading = ref(false);
-const moreLoading = ref(false);
-
-const errorMessage = ref<string | null>(null);
+const loading = reactive({
+  page: false,
+  recommended: false,
+  discover: false,
+  more: false,
+  errorMessage: ''
+});
 
 async function handleRecommendationReset() {
   // Set with popular for now.
   // TODO: update to recommended request when it's implemented on server.
-  isRecommendedLoading.value = true;
+  loading.recommended = true;
 
-  errorMessage.value = null;
+  loading.errorMessage = '';
   try {
     popularBooks.value = await getPopularBooks(1, 50);
   } catch (error) {
-    errorMessage.value = "Could not fetch popular books. Error: ", error;
+    loading.errorMessage = "Could not fetch popular books. Error: ", error;
+  } finally {
+    loading.recommended = false;
   }
-
-  isRecommendedLoading.value = false;
   
   if (popularBooks.value.length > 0) {
     recommendedBooks.value = popularBooks.value;
@@ -110,7 +111,7 @@ async function fetchFiltred(page: number, query: FilterQuery): Promise<Book[]> {
 }
 
 async function applyFilters(query: FilterQuery): Promise<void> {
-  isDiscoverLoading.value = true;
+  loading.discover = true;
   filterPage.value = 1;
   
   try {
@@ -120,14 +121,13 @@ async function applyFilters(query: FilterQuery): Promise<void> {
     filterPage.value += 1;
   } catch (error) {
     console.error(`Could not get books by filters applied. Error: ${error}`);
-    isDiscoverLoading.value = false;
   } finally {
-    isDiscoverLoading.value = false;
+    loading.discover = false;
   }
 }
 
 async function loadFiltered(query: FilterQuery): Promise<void> {
-  moreLoading.value = true;
+  loading.more = true;
   try {
     filterPage.value += 1;
 
@@ -136,7 +136,7 @@ async function loadFiltered(query: FilterQuery): Promise<void> {
   } catch (error) {
     console.error(`Could not load more filtered books. Error: ${error}`);
   } finally {
-    moreLoading.value = false;
+    loading.more = false;
   }
 }
 
@@ -151,21 +151,21 @@ const bottomObserver = ref<IntersectionObserver | null>(null);
 const bottomRef = ref<HTMLDivElement>();
 
 onMounted(async () => {
-  isPageLoading.value = true;
+  loading.page = true;
 
   const [popular, filtered] = await Promise.all([
     handleRecommendationReset(),
     handleFilterSubmit(),
   ]);
 
-  isPageLoading.value = false;
+  loading.page = false;
 
   // For now populate recommended with just popular.
   recommendedBooks.value = popularBooks.value || [];
   filteredBooks.value = filteredBooks.value || [];
 
   bottomObserver.value = new IntersectionObserver((entries) => {
-    if (entries[0].isIntersecting && !moreLoading.value) {
+    if (entries[0].isIntersecting && !loading.more) {
       loadMoreBooks();
     }
   });
@@ -199,15 +199,12 @@ onBeforeUnmount(() => {
         </div>
       </div>
     </div>
-    <div class="book-skeleton" v-if="isPageLoading || isRecommendedLoading">
+    <div class="book-skeleton" v-if="loading.page || loading.recommended">
       <book-skeleton :skeleton-type="'horizontal'" />
     </div>
     <horizontal-scroll v-else :books="recommendedBooks" @select-book="handleBookSelect"/>
   </div>
-  <div class="book-skeleton" v-if="isPageLoading && isDiscoverLoading">
-    <book-skeleton :skeleton-type="'vertical'" />
-  </div>
-  <div v-else class="search-view">
+  <div class="search-view">
     <div class="view-heading">
       <div class="heading-row">
         <h2 class="view-title">Discover new</h2>
@@ -218,11 +215,11 @@ onBeforeUnmount(() => {
       </div>
       <filter-form ref="filterFormRef"/>
     </div>
-    <div class="book-skeleton" v-if="isDiscoverLoading || isPageLoading">
+    <div class="book-skeleton" v-if="loading.page || loading.discover">
       <book-skeleton :skeleton-type="'vertical'" />
     </div>
     <book-grid v-else :books="filteredBooks" @select-book="handleBookSelect"/>
-    <div v-if="moreLoading" class="load-more">
+    <div v-if="loading.more" class="load-more">
       <TextLoader loader-text="Loading more books..."/>
     </div>
     <div ref="bottomRef" class="bottom-observer"></div>
