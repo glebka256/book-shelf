@@ -8,13 +8,12 @@ import HorizontalScroll from '@/components/layout/HorizontalScroll.vue';
 import IconButton from '@/components/common/buttons/IconButton.vue';
 import FilterForm from '@/components/layout/FilterForm.vue';
 import BookGrid from '@/components/book/BookGrid.vue';
-import baseInstance from '@/api/baseInstance';
+import TextLoader from '@/components/common/loaders/TextLoader.vue';
 import { Book } from '@/types/Book';
 import { FilterFormInstance, FilterQuery } from '@/types/Filter';
-import TextLoader from '@/components/common/loaders/TextLoader.vue';
-import { useInteractionStore } from '@/store/interactionStore';
 import { InteractionTypes } from '@/types/User';
-import { getPopularBooks } from '@/api/book';
+import { useInteractionStore } from '@/store/interactionStore';
+import { getFilteredBooks, getPopularBooks } from '@/api/book';
 
 const popularBooks = ref<Book[]>([]);
 const recommendedBooks = ref<Book[]>([]);
@@ -92,60 +91,38 @@ function handleFilterSubmit() {
   }
 }
 
-async function fetchFiltred(page: number, query: FilterQuery): Promise<Book[]> {
-  try {
-    const body = {
-      'query': query,
-      'page': page
-    }
-
-    const response = await baseInstance.post(
-      `/books/filter/`,
-      body
-    );
-
-    const books = await response.data.books as Book[];
-    return books;
-  } catch (error) {
-    console.error(`Could not fetch filtered books. Page ${page}, Error: ${error}`);
-    return [];
-  }
-}
-
+// Used to overwrite previous filter results and populate them from page 1.
 async function applyFilters(query: FilterQuery): Promise<void> {
   loading.discover = true;
   filterPage.value = 1;
   
   try {
-    const books = await fetchFiltred(1, query);
-    filteredBooks.value = books;
+    filteredBooks.value = await getFilteredBooks(1, query);
 
     filterPage.value += 1;
   } catch (error) {
-    console.error(`Could not get books by filters applied. Error: ${error}`);
+    console.error(`Could not get books by filters applied. Page: ${filterPage.value} Error: ${error}`);
   } finally {
     loading.discover = false;
   }
 }
 
-async function loadFiltered(query: FilterQuery): Promise<void> {
-  loading.more = true;
-  try {
-    filterPage.value += 1;
-
-    const books = await fetchFiltred(filterPage.value, query); 
-    filteredBooks.value = [...filteredBooks.value, ...books];
-  } catch (error) {
-    console.error(`Could not load more filtered books. Error: ${error}`);
-  } finally {
-    loading.more = false;
-  }
-}
-
-const loadMoreBooks = () => {
+// Used to add more pages of results for the same filter query.
+const loadFiltered = async () => {
   if (filterFormRef.value) {
-    const selectedFilters: FilterQuery = filterFormRef.value.selectedOptions;
-    loadFiltered(selectedFilters);
+    const query: FilterQuery = filterFormRef.value.selectedOptions;
+    
+    loading.more = true;
+    try {
+      const books = await getFilteredBooks(filterPage.value, query); 
+      filteredBooks.value = [...filteredBooks.value, ...books];
+
+      filterPage.value += 1;
+    } catch (error) {
+      console.error(`Could not load more filtered books. Page: ${filterPage.value} Error: ${error}`);
+    } finally {
+      loading.more = false;
+    }
   }
 }
 
@@ -168,7 +145,7 @@ onMounted(async () => {
 
   bottomObserver.value = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting && !loading.more) {
-      loadMoreBooks();
+      loadFiltered();
     }
   });
 

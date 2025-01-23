@@ -1,12 +1,13 @@
 import { FetchResponse, Book, SearchResponse, SearchMethod } from "@/types/Book";
 import baseInstance from "./baseInstance"
-import { getResponseError } from "./main";
+import { getResponseError, serviceError } from "./main";
 import { trimSlash } from "@/utils";
+import { FilterQuery } from "@/types/Filter";
 
 export const getBooksByIds = async (ids: string[]): Promise<FetchResponse> => {
     try {
         const response = await baseInstance.post<Book[]>(
-            '/books/batch/', 
+            '/books/batch/',
             { bookIds: ids }
         );
 
@@ -25,8 +26,8 @@ export const getBooksByIds = async (ids: string[]): Promise<FetchResponse> => {
 }
 
 export const getSearchResults = async (
-    query: string, 
-    page: number, 
+    query: string,
+    page: number,
     method: SearchMethod
 ): Promise<SearchResponse> => {
     try {
@@ -35,7 +36,7 @@ export const getSearchResults = async (
         );
 
         if (!response.data.searchComplete || !response.data.books) {
-            throw new Error("Invalid search service response data.");
+            throw new Error(serviceError('search'));
         }
 
         return {
@@ -54,10 +55,32 @@ export const getPopularBooks = async (page: number, limit: number): Promise<Book
         );
 
         if (!response.data) {
-            throw new Error('Invalid recommendation service response data.');
+            throw new Error(serviceError('recommendation'));
         }
 
         return response.data;
+    } catch (error) {
+        throw new Error(getResponseError(error));
+    }
+}
+
+export const getFilteredBooks = async (page: number, query: FilterQuery): Promise<Book[]> => {
+    const body = {
+        'query': query,
+        'page': page
+    }
+
+    try {
+        const response = await baseInstance.post(
+            `/books/filter/`,
+            body
+        );
+    
+        if (!response.data.books) {
+            throw new Error(serviceError('filter'));
+        }
+    
+        return await response.data.books as Book[];
     } catch (error) {
         throw new Error(getResponseError(error));
     }

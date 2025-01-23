@@ -35,3 +35,7 @@ export const replaceBasicError = (error: unknown, fallback: string): string => {
 
     return isBasicError(responseError) ? fallback : responseError;
 }
+
+export const serviceError = (service: string): string => {
+    return `Invalid ${service} service response data.`;
+}
