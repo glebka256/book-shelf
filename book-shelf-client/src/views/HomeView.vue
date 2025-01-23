@@ -132,6 +132,7 @@ const bottomRef = ref<HTMLDivElement>();
 onMounted(async () => {
   loading.page = true;
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [popular, filtered] = await Promise.all([
     handleRecommendationReset(),
     handleFilterSubmit(),
