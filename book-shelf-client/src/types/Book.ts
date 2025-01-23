@@ -21,3 +21,9 @@ export interface BookLink {
     }
     buyUrl: string,
 }
+
+export interface FetchResponse {
+    success: boolean,
+    message: string,
+    data: Book[]
+}

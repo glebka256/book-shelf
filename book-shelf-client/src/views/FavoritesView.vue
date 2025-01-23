@@ -4,41 +4,40 @@ import { Book } from '@/types/Book';
 import BookGrid from '@/components/book/BookGrid.vue';
 import BookSidebar from '@/components/book/BookSidebar.vue';
 import { useFavoritesStore } from '@/store/favoritesStore';
-import baseInstance from '@/api/baseInstance';
 import { getLocalFavorites } from '@/services/favoritesService';
+import { getBooksByIds } from '@/api/book';
 
 const favoritesStore = useFavoritesStore();
 
 const books = ref<Book[]>([]);
 
+// Handles interaction with user. If message should not be displayed it is made empty.
 const messages = reactive({
   general: '',
   instruction: '',
   error: ''
 });
 
-async function fetchBooksByIds(): Promise<Book[]> {
+async function populateFavoriteBooks() {
   messages.error = '';
-  const localFavorites = getLocalFavorites(); 
+  const localFavorites = getLocalFavorites();
 
   if (localFavorites.length === 0) {
     messages.general = "You do not have favorite books yet.";
     messages.instruction = "CLick 'heart' or 'plus' icon to add a favorite book.";
-    return [];
+    return;
   }
 
-  try {
-    // Books are fetched from '/books/batch/' route instead of /favorites/ dedicated to the feature.
-    // This is done because we want to include favorites from local storage for unauthorized users.
-    const response = await baseInstance.post<Book[]>(
-      '/books/batch/', 
-      { bookIds: localFavorites }
-    );
+  // Books are fetched from '/books' api instead of '/favorites/' 
+  // because we want to include favorites from local storage for unauthorized users.
+  const response = await getBooksByIds(localFavorites);
 
-    return response.data;
-  } catch (error) {
-    messages.error = "Could not retrieve favorite books data from server.";
-    return [];
+  if (response.success) {
+    messages.general = '';
+    messages.instruction = '';
+    books.value = response.data;
+  } else {
+    messages.error = response.message;
   }
 }
 
@@ -65,13 +64,13 @@ function closeSidebar() {
 watch(
   () => favoritesStore.favoriteBooksIds,
   async () => {
-    books.value = await fetchBooksByIds();
+    await populateFavoriteBooks();
   },
   { immediate: true }
 );
 
 onMounted(async () => {
-  books.value = await fetchBooksByIds();  
+  await populateFavoriteBooks();  
 });
 
 </script>
