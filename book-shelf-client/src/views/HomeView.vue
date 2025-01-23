@@ -14,6 +14,7 @@ import { FilterFormInstance, FilterQuery } from '@/types/Filter';
 import TextLoader from '@/components/common/loaders/TextLoader.vue';
 import { useInteractionStore } from '@/store/interactionStore';
 import { InteractionTypes } from '@/types/User';
+import { getPopularBooks } from '@/api/book';
 
 const popularBooks = ref<Book[]>([]);
 const recommendedBooks = ref<Book[]>([]);
@@ -26,30 +27,18 @@ const moreLoading = ref(false);
 
 const errorMessage = ref<string | null>(null);
 
-async function fetchPopularBooks(page: number, limit: number): Promise<Book[]> {
-  errorMessage.value = null;
-
-  try {
-    const response = await baseInstance.get<Book[]>(
-      `/books/popular/${page}/${limit}`
-    );
-    
-    if (!response.data) {
-      throw new Error('Invalid recommended response data.');
-    }
-
-    return response.data as Book[];
-  } catch (error) {
-    errorMessage.value = `Could not fetch popular books. Error: ${error}`;
-    return [];
-  }
-}
-
 async function handleRecommendationReset() {
   // Set with popular for now.
   // TODO: update to recommended request when it's implemented on server.
   isRecommendedLoading.value = true;
-  popularBooks.value = await fetchPopularBooks(1, 50);
+
+  errorMessage.value = null;
+  try {
+    popularBooks.value = await getPopularBooks(1, 50);
+  } catch (error) {
+    errorMessage.value = "Could not fetch popular books. Error: ", error;
+  }
+
   isRecommendedLoading.value = false;
   
   if (popularBooks.value.length > 0) {
