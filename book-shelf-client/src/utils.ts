@@ -14,3 +14,7 @@ export const mergeArrays = (array1: string[], array2: string[]) => {
     const mergedArray = new Set([...array1, ...array2]);
     return Array.from(mergedArray);
 }
+
+export const trimSlash = (text: string): string => {
+    return text.replace(/^\/|\/$/g, '');
+}

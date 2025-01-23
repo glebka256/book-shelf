@@ -27,3 +27,23 @@ export interface FetchResponse {
     message: string,
     data: Book[]
 }
+
+export interface SearchResponse {
+    searchComplete: boolean,
+    data: Book[]
+}
+
+export const SearchMethods = {
+    all: {
+        title: 'Search Results',
+        method: 'all',
+        path: '/search'
+    },
+    downloadable: {
+        title: 'Downloadable Results',
+        method: 'downloadable',
+        path: '/search/downloadable'
+    }
+} as const;
+
+export type SearchMethod = typeof SearchMethods[keyof typeof SearchMethods];
