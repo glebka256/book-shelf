@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import baseInstance from '@/api/baseInstance';
 import { defineProps, onMounted, ref, computed } from 'vue';
-import { useFavoritesStore } from '@/store/favoritesStore';
-import { Book } from '@/types/Book';
 import CommonButton from '@/components/common/buttons/CommonButton.vue';
 import TextLoader from '@/components/common/loaders/TextLoader.vue';
 import IconButton from '@/components/common/buttons/IconButton.vue';
+import { useFavoritesStore } from '@/store/favoritesStore';
+import { useInteractionStore } from '@/store/interactionStore';
+import { Book } from '@/types/Book';
+import { InteractionTypes } from '@/types/User';
 
 const props = defineProps({
   bookId: {
@@ -54,6 +56,9 @@ const favoritesStore = useFavoritesStore();
 function toggleFavorite() {
   favoritesStore.toggleFavorite(props.bookId);
   favorite.value = favoritesStore.isFavorite(props.bookId);
+
+  const interactionStore = useInteractionStore();
+  interactionStore.saveInteraction(InteractionTypes.Like, props.bookId);
 }
 
 function openUrl(url: string) {

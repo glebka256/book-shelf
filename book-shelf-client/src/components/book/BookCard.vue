@@ -2,6 +2,8 @@
 import { defineProps, PropType, defineEmits, computed, ref } from 'vue';
 import { useFavoritesStore } from '@/store/favoritesStore';
 import { Book } from '@/types/Book';
+import { useInteractionStore } from '@/store/interactionStore';
+import { InteractionTypes } from '@/types/User';
 
 const favoritesStore = useFavoritesStore();
 
@@ -58,6 +60,9 @@ function handleBookClick() {
 
 function handleLikeClick() {
   favoritesStore.toggleFavorite(props.book._id);
+
+  const interactionStore = useInteractionStore();
+  interactionStore.saveInteraction(InteractionTypes.Like, props.book._id);
 }
 </script>
 
