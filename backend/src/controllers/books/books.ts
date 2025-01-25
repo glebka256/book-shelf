@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
+import { get } from 'lodash';
 import { ClientBook, SearchParams, StorageBook } from "@app/interfaces/Books";
+import { FilterQuery, FilterStatus } from "@app/interfaces/Filter";
 import { Languages } from "@app/interfaces/Util";
 import { RecommendService } from "@app/services/RecommendService";
-import bookManager from "@app/config/book-manager";
 import { BookFilter } from "@app/services/BookFilter";
-import { FilterQuery, FilterStatus } from "@app/interfaces/Filter";
 import { searchByQuery, searchDownloadable } from "@app/services/BookSearch";
+import bookManager from "@app/config/book-manager";
 
 export const getGeneralPopular = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -143,4 +144,14 @@ export const searchBook = async (req: Request, res: Response): Promise<void> => 
 
 export const searchDownloadableBook = async (req: Request, res: Response): Promise<void> => {
     return handleSearch(req, res, searchDownloadable);
+}
+
+export const getRecommendations = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const userId = get(req, 'identity._id') as string;
+
+
+    } catch (error) {
+        console.error(error);
+    }
 }

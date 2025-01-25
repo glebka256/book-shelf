@@ -17,6 +17,6 @@ export default (router: Router): void => {
     router.get('/users/favorites/', isAuthenticated, getFavoritesIds);
     router.get('/users/favorites/populated', isAuthenticated, getAllFavorites);
     router.put('/users/favorites/', isAuthenticated, toggleFavorite);
-    router.post('/users/favorites/', isAuthenticated, updateFavorites)
+    router.post('/users/favorites/', isAuthenticated, updateFavorites);
     router.post('/users/interactions/', isAuthenticated, storeInteractions);
 }
