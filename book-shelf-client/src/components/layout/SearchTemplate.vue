@@ -54,13 +54,9 @@ async function updateSearch(query: string) {
   page.value = 1;
   loading.page = true;
 
-  console.log("books: ", books.value);
-
   // Overwrites books with new search query result.
   books.value = await fetchSearchResult(query);
   page.value += 1;
-
-  console.log("books: ", books.value);
 
   loading.page = false;
   emit('results-loaded', books.value.length);
