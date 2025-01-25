@@ -6,6 +6,10 @@ export const useInteractionStore = defineStore('interaction', {
         interactions: [] as UserInteraction[],
     }),
 
+    getters: {
+        interactionCount: (state) => state.interactions.length,
+    },
+
     actions: {
         saveInteraction(type: InteractionTypes, bookId: string) {
             this.interactions.push({
