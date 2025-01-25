@@ -1,0 +1,14 @@
+import { loadRelations, saveRelations } from "./serialization"
+
+async function main() {
+    const testTable = {
+        "object1ID:object2ID": 0.85,
+        "object2ID:object1ID": 0.56,
+        "object1ID:object3ID": 0.89,
+        "object3ID:object1ID": 0.34
+    }
+
+    await saveRelations('test', '1', testTable);
+}
+
+main();
