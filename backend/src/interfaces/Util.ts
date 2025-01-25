@@ -22,3 +22,8 @@ export enum Languages {
     Polish = 'pol',
     Ukrainian = 'ukr'
 }
+
+export interface ValidationResponse {
+    status: boolean,
+    message: string
+}
