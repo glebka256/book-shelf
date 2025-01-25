@@ -6,7 +6,8 @@ import {
     getAllFavorites, 
     toggleFavorite,
     updateFavorites,
-    getFavoritesIds
+    getFavoritesIds,
+    storeInteractions
 } from '@app/controllers/users';
 import { isAccountOwner, isAuthenticated } from '@app/middlewares';
 
@@ -17,4 +18,5 @@ export default (router: Router): void => {
     router.get('/users/favorites/populated', isAuthenticated, getAllFavorites);
     router.put('/users/favorites/', isAuthenticated, toggleFavorite);
     router.post('/users/favorites/', isAuthenticated, updateFavorites)
+    router.post('/users/interactions/', isAuthenticated, storeInteractions);
 }

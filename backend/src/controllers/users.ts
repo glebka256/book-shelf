@@ -1,12 +1,14 @@
 import { Request, Response } from 'express';
 import { get } from 'lodash';
-import { 
-    deleteUserById, 
-    getUserWithFavoritesIds, 
-    getUsers, 
-    getUserWithFavoritesById, 
-    updateUserFavoritesById 
+import {
+    deleteUserById,
+    getUserWithFavoritesIds,
+    getUsers,
+    getUserWithFavoritesById,
+    updateUserFavoritesById
 } from '@app/models/user';
+import { UserInteraction, InteractionTypes } from '@app/interfaces/User';
+import { isISO8601 } from '@app/utils';
 
 export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -122,5 +124,66 @@ export const updateFavorites = async (req: Request, res: Response): Promise<void
     } catch (error) {
         console.error("Error updating favorite book IDs for user. Error: ", error);
         res.status(400).json({ message: "Could not update users favorites." });
+    }
+}
+
+interface ValidationResponse {
+    status: boolean,
+    message: string
+}
+
+const validateInteractions = (interactions: UserInteraction[]): ValidationResponse => {
+    if (!Array.isArray(interactions)) {
+        return {
+            status: false,
+            message: "Invalid data: Invalid interactions data array."
+        }
+    }
+
+    for (const interaction of interactions) {
+        if (!Object.values(InteractionTypes).includes(interaction.type)) {
+            return {
+                status: false,
+                message: "Invalid data: Invalid interaction type value."
+            }
+        }
+
+        if (!interaction.bookId) {
+            return {
+                status: false,
+                message: "Missing data: Invalid bookId value."
+            }
+        }
+
+        if (!interaction.timestamp || !isISO8601(interaction.timestamp)) {
+            return {
+                status: false,
+                message: "Invalid data: Invalid interaction timestamp value. Should be ISO8601 String."
+            }
+        }
+    }
+
+    return {
+        status: true,
+        message: "Interaction validated successfully"
+    }
+}
+
+export const storeInteractions = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const interactions: UserInteraction[] = req.body.interactions;
+        const validation: ValidationResponse = validateInteractions(interactions);
+
+        console.log(interactions);
+
+        if (!validation.status) {
+            res.status(400).json({ message: validation.message });
+            return;
+        }
+
+        res.status(200).json({ message: "Interactions stored successfully." });
+    } catch (error) {
+        console.error("Error storing interactions: ", error);
+        res.status(500).json({ message: "Internal server error" });
     }
 }
