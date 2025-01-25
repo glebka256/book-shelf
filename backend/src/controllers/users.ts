@@ -9,7 +9,7 @@ import {
 } from '@app/models/user';
 import { UserInteraction } from '@app/interfaces/User';
 import { ValidationResponse } from '@app/interfaces/Util';
-import { validateInteractions } from '@app/services/InteractionService';
+import { InteractionService } from '@app/services/InteractionService';
 
 export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -130,15 +130,18 @@ export const updateFavorites = async (req: Request, res: Response): Promise<void
 
 export const storeInteractions = async (req: Request, res: Response): Promise<void> => {
     try {
+        const userId = get(req, 'identity._id') as string;
         const interactions: UserInteraction[] = req.body.interactions;
-        const validation: ValidationResponse = validateInteractions(interactions);
 
-        console.log(interactions);
+        const interactionManager = new InteractionService(userId);
+        const validation: ValidationResponse = interactionManager.validate(interactions);
 
         if (!validation.status) {
             res.status(400).json({ message: validation.message });
             return;
         }
+
+        await interactionManager.save(interactions);
 
         res.status(200).json({ message: "Interactions stored successfully." });
     } catch (error) {

@@ -23,6 +23,6 @@ export enum InteractionTypes {
 
 export interface UserInteraction {
     type: InteractionTypes,
-    bookId: string, 
-    timestamp: string
+    bookId: string,
+    timestamp: Date
 }
