@@ -1,6 +1,6 @@
-import { table } from 'console';
 import fs from 'fs';
 import path from 'path';
+import { ScoreTableChunk, ScoreTable } from './main';
 
 const DIRPATH = "../../data/relation/";
 
@@ -10,20 +10,24 @@ function getFilePath(subject: string, chunk: string): string {
     return path.join(__dirname, DIRPATH.concat(filename));
 }
 
-export async function saveRelations(subject: string, chunk: string, table: Record<string, number>) {
-    const filepath = getFilePath(subject, chunk);
+export async function saveRelations(table: ScoreTableChunk): Promise<void> {
+    const filepath = getFilePath(table.subject, table.chunk);
 
-    await fs.promises.writeFile(filepath, JSON.stringify(table, null, 2), "utf8");
+    await fs.promises.writeFile(filepath, JSON.stringify(table.data, null, 2), "utf8");
     
-    console.log(`Table: '${subject}_${chunk}' saved to path: ${filepath}.`);
+    console.log(`Table: '${table.subject}_${table.chunk}' saved to path: ${filepath}.`);
 }
 
-export async function loadRelations(subject: string, chunk: string): Promise<Record<string, number>> {
+export async function loadRelations(subject: string, chunk: string): Promise<ScoreTableChunk> {
     const filepath = getFilePath(subject, chunk);
 
     try {
         const data = await fs.promises.readFile(filepath, 'utf-8');
-        return JSON.parse(data);
+        return {
+            subject: subject,
+            chunk: chunk,
+            data: JSON.parse(data)
+        }
     } catch (error) {
         console.error("Error loading relation table from path: ", filepath);
         return null;
@@ -35,18 +39,10 @@ export async function loadBookRelations(
     chunk: string, 
     id: string
 ): Promise<Record<string, number>> {
-    const relations = await loadRelations(subject, chunk);
-    if (!relations) return null;
-    
-    let result: Record<string, number> = {};
+    const relations: ScoreTableChunk = await loadRelations(subject, chunk);
+    if (!relations.data) return null;
 
-    for (const [key, value] of Object.entries(relations)) {
-        if (key.includes(id)) {
-            result[key] = value;
-        }
-    }
-
-    return result;
+    return relations.data[id];
 }
 
 export async function loadAllBookRelations(subject: string, id: string): Promise<Record<string, number>> {
@@ -59,9 +55,10 @@ export async function loadAllBookRelations(subject: string, id: string): Promise
         for (const file of subjectFiles) {
             const filepath = path.join(DIRPATH, file);
             const data = await fs.promises.readFile(filepath, 'utf-8');
-            const table: Record<string, number> = JSON.parse(data);
+            const table: ScoreTable = JSON.parse(data);
+            const idRelated = table[id];
 
-            for (const [key, value] of Object.entries(table)) {
+            for (const [key, value] of Object.entries(idRelated)) {
                 if (key.includes(id)) {
                     result[key] = value;
                 }

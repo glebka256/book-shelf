@@ -52,6 +52,22 @@ export const dynamicLog = (() => {
     };
 })();
 
+/**
+ * Displays message with static and dynamic parts while overwriting the line above it.
+ */
+export const dynamicOverwriteLog = (() => {
+    let lastLines: number = 0;
+
+    return (staticMessage: string, dynamicMessage: string): void => {
+        readline.cursorTo(process.stdout, 0);
+        readline.clearLine(process.stdout, 0);
+
+        process.stdout.write(staticMessage + dynamicMessage);
+
+        lastLines++;
+    };
+})();
+
 export const extractBookFromDoc = (bookDoc: any[]): StorageBook[] => {
     return bookDoc.map((book) => book._doc as StorageBook);
 }

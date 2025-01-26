@@ -23,3 +23,6 @@ yarn-error.log*
 # OS specific files
 .DS_Store
 Thumbs.db
+
+# Exclude relation .json data
+src/data/relation
