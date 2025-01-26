@@ -23,11 +23,11 @@ export const getUrlSearchParams = (query: Object):string  => {
  */
 export const dynamicLoader = (message: string, delay: number = 100) => {
     const spinnerFrames = ['|', '/', '-', '\\'];
-    let currenFrame = 0;
+    let currentFrame = 0;
 
     const interval = setInterval(() => {
-        process.stdout.write(`\r${message} ${spinnerFrames[currenFrame]}`);
-        currenFrame = (currenFrame + 1) % spinnerFrames.length;
+        process.stdout.write(`\r${message} ${spinnerFrames[currentFrame]}`);
+        currentFrame = (currentFrame + 1) % spinnerFrames.length;
     }, delay);
 
     return () => {
