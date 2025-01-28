@@ -4,13 +4,13 @@ import { ScoreTableChunk, ScoreTable } from './main';
 
 const DIRPATH = "../../data/relation/";
 
-function getFilePath(subject: string, chunk: string): string {
+const getFilePath = (subject: string, chunk: string): string => {
     const filename = `${subject}_${chunk}.json`;
 
     return path.join(__dirname, DIRPATH.concat(filename));
 }
 
-export async function saveRelations(table: ScoreTableChunk): Promise<void> {
+export const saveRelations = async (table: ScoreTableChunk): Promise<void> => {
     const filepath = getFilePath(table.subject, table.chunk);
 
     await fs.promises.writeFile(filepath, JSON.stringify(table.data, null, 2), "utf8");
@@ -18,7 +18,7 @@ export async function saveRelations(table: ScoreTableChunk): Promise<void> {
     console.log(`Table: '${table.subject}_${table.chunk}' saved to path: ${filepath}.`);
 }
 
-export async function loadRelations(subject: string, chunk: string): Promise<ScoreTableChunk> {
+export const loadRelations = async (subject: string, chunk: string): Promise<ScoreTableChunk> => {
     const filepath = getFilePath(subject, chunk);
 
     try {
@@ -34,18 +34,18 @@ export async function loadRelations(subject: string, chunk: string): Promise<Sco
     }
 }
 
-export async function loadBookRelations(
+export const loadBookRelations = async (
     subject: string, 
     chunk: string, 
     id: string
-): Promise<Record<string, number>> {
+): Promise<Record<string, number>> => {
     const relations: ScoreTableChunk = await loadRelations(subject, chunk);
     if (!relations.data) return null;
 
     return relations.data[id];
 }
 
-export async function loadAllBookRelations(subject: string, id: string): Promise<Record<string, number>> {
+export const loadAllBookRelations = async (subject: string, id: string): Promise<Record<string, number>> => {
     let result: Record<string, number> = {};
 
     try {

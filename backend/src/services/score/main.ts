@@ -7,6 +7,7 @@ import { ScrapingTypes } from '@app/interfaces/Data';
 import { dynamicLoader, dynamicOverwriteLog } from '@app/utils';
 import { loadRelations, saveRelations } from './serialization';
 
+// Interfaces
 interface ScoreBook {
     id: string,
     title: string,
@@ -28,6 +29,59 @@ export interface ScoreTableChunk {
     data: ScoreTable
 }
 
+// Main
+async function main() {
+    console.log("Setting up environment...");
+    
+    await setup();
+
+    console.log("Retrieving books from the DB...");
+
+    const subjects: string[] = DataSerializer.getParsingSubjects(ScrapingTypes.All);
+    const books: ScoreBook[] = (await getDBbooks()).slice(0, 100);  // slice for testing purposes
+
+    const stopLoader1 = dynamicLoader("Scoring books");
+
+    let completeTable: ScoreTable = {};
+
+    for (let i = 0; i < books.length; i++) {
+        for (let j = i; j < books.length; j++) {
+
+            if (!completeTable[books[i].id]) {
+                completeTable[books[i].id] = {};
+            }
+            if (!completeTable[books[j].id]) {
+                completeTable[books[j].id] = {};
+            }
+
+            const score = scoreBooks(books[i], books[j]);
+            completeTable[books[i].id][books[j].id] = score;
+            completeTable[books[j].id][books[i].id] = score;
+
+            const nOfRecords = i * books.length + j;
+            if (nOfRecords % 100 === 0) {
+                dynamicOverwriteLog('Processed records: ', nOfRecords.toString());
+            }
+        }
+    }
+
+    stopLoader1();
+
+    const testChunk: ScoreTableChunk = {
+        subject: "test",
+        chunk: "test",
+        data: completeTable
+    }
+
+    await saveRelations(testChunk);
+    
+    const loaded = await loadRelations('test', 'test');
+    console.log(loaded);
+
+    process.exit(0);
+}
+
+// Functions
 async function setup(): Promise<void> {
     dotenv.config();    
     await connectDB();
@@ -86,55 +140,5 @@ function scoreBooks(book1: ScoreBook, book2: ScoreBook): number {
     return score;
 }
 
-async function main() {
-    console.log("Setting up environment...");
-    
-    await setup();
-
-    console.log("Retrieving books from the DB...");
-
-    const subjects: string[] = DataSerializer.getParsingSubjects(ScrapingTypes.All);
-    const books: ScoreBook[] = (await getDBbooks()).slice(0, 100);  // slice for testing purposes
-
-    const stopLoader1 = dynamicLoader("Scoring books");
-
-    let completeTable: ScoreTable = {};
-
-    for (let i = 0; i < books.length; i++) {
-        for (let j = i; j < books.length; j++) {
-
-            if (!completeTable[books[i].id]) {
-                completeTable[books[i].id] = {};
-            }
-            if (!completeTable[books[j].id]) {
-                completeTable[books[j].id] = {};
-            }
-
-            const score = scoreBooks(books[i], books[j]);
-            completeTable[books[i].id][books[j].id] = score;
-            completeTable[books[j].id][books[i].id] = score;
-
-            const nOfRecords = i * books.length + j;
-            if (nOfRecords % 100 === 0) {
-                dynamicOverwriteLog('Processed records: ', nOfRecords.toString());
-            }
-        }
-    }
-
-    stopLoader1();
-
-    const testChunk: ScoreTableChunk = {
-        subject: "test",
-        chunk: "test",
-        data: completeTable
-    }
-
-    await saveRelations(testChunk);
-    
-    const loaded = await loadRelations('test', 'test');
-    console.log(loaded);
-
-    process.exit(0);
-}
-
+// Execute
 main();
