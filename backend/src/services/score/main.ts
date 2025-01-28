@@ -4,8 +4,16 @@ import { StorageBook } from '@app/interfaces/Books';
 import { DataSerializer } from '../DataSerializer';
 import { getBooks } from '@app/models/book';
 import { ScrapingTypes } from '@app/interfaces/Data';
-import { dynamicLoader, dynamicOverwriteLog } from '@app/utils';
-import { loadRelations, saveRelations } from './serialization';
+import { saveRelations } from './serialization';
+
+const WEIGHTS = {
+    "title": 10,
+    "author": 40,
+    "subject": 30,
+    "rating": 20,
+    "year": 10,
+}
+const MAX_WEIGHT = Object.values(WEIGHTS).reduce((sum, weight) => sum + weight, 0);
 
 // Interfaces
 interface ScoreBook {
@@ -40,32 +48,36 @@ async function main() {
     const subjects: string[] = DataSerializer.getParsingSubjects(ScrapingTypes.All);
     const books: ScoreBook[] = (await getDBbooks()).slice(0, 100);  // slice for testing purposes
 
-    const stopLoader1 = dynamicLoader("Scoring books");
-
+    console.log("Scoring books...");
     let completeTable: ScoreTable = {};
 
     for (let i = 0; i < books.length; i++) {
         for (let j = i; j < books.length; j++) {
+            const main = books[i];
+            const compared = books[j];
 
-            if (!completeTable[books[i].id]) {
-                completeTable[books[i].id] = {};
+            if (!completeTable[main.id]) {
+                completeTable[main.id] = {};
             }
-            if (!completeTable[books[j].id]) {
-                completeTable[books[j].id] = {};
+            if (!completeTable[compared.id]) {
+                completeTable[compared.id] = {};
             }
 
-            const score = scoreBooks(books[i], books[j]);
-            completeTable[books[i].id][books[j].id] = score;
-            completeTable[books[j].id][books[i].id] = score;
+            if (main.id !== compared.id) {
+                const score = scoreBooks(main, compared);
+                completeTable[main.id][compared.id] = score;
+                completeTable[compared.id][main.id] = score;
+            }
 
-            const nOfRecords = i * books.length + j;
-            if (nOfRecords % 100 === 0) {
-                dynamicOverwriteLog('Processed records: ', nOfRecords.toString());
+            // Log for each thousand
+            const processedScores = i * books.length + j;
+            if (processedScores % 1000 === 999) {
+                console.log(`Calculated ${processedScores + 1} scores.`);
             }
         }
     }
 
-    stopLoader1();
+    console.log(`Processed ${books.length} books total.`);
 
     const testChunk: ScoreTableChunk = {
         subject: "test",
@@ -74,9 +86,6 @@ async function main() {
     }
 
     await saveRelations(testChunk);
-    
-    const loaded = await loadRelations('test', 'test');
-    console.log(loaded);
 
     process.exit(0);
 }
@@ -100,7 +109,39 @@ async function getDBbooks(): Promise<ScoreBook[]> {
     }));
 }
 
-// For now this method seems ok, change to some library if needed in future.
+function scoreBooks(book1: ScoreBook, book2: ScoreBook): number {
+    let score = 0;
+
+    const titleSimilarity = areTitlesSimilar(book1.title, book2.title) ? 1 : 0;
+    score += titleSimilarity * WEIGHTS.title;
+
+    score += scoreArray(book1.authors, book2.authors, WEIGHTS.author);
+    score += scoreArray(book1.subjects, book2.subjects, WEIGHTS.subject);
+
+    score += scoreYearDifference(book1.year, book2.year);
+    score += book1.rating * Math.min(1, WEIGHTS.rating);
+
+    // Normalize in range 0 to 1
+    return score / MAX_WEIGHT;
+}
+
+function scoreArray(array1: string[], array2: string[], weight: number): number {
+    const matches = array1.filter(author => array2.includes(author));
+    const maximumMatches = Math.max(array1.length, array2.length);
+    
+    // Normalizes score by the maximim number of possible mathces
+    // This should prevent significant overlap for books with many subjects.
+    return (matches.length / maximumMatches) * weight;
+}
+
+function scoreYearDifference(year1: number, year2: number): number {
+    const yearDifference = Math.abs(year1 - year2);
+
+    // Assumes that maximum meaningful difference is provided in WEIGHTS.year, 10 for ex
+    return Math.max(0, WEIGHTS.year - yearDifference);
+}
+
+// For now this method seems ok, change to some library if needed in future
 function areTitlesSimilar(title1: string, title2: string): boolean {
     const normalize = (title: string) => title.toLowerCase().replace(/[^a-z0-9]/g, "");
     const normalizedTitle1 = normalize(title1);
@@ -110,34 +151,6 @@ function areTitlesSimilar(title1: string, title2: string): boolean {
         normalizedTitle1.includes(normalizedTitle2) ||
         normalizedTitle2.includes(normalizedTitle1)
     );
-}
-
-function scoreBooks(book1: ScoreBook, book2: ScoreBook): number {
-    let score = 0;
-
-    const weights = {
-        "title": 10,
-        "author": 40,
-        "subject": 30,
-        "rating": 20,
-        "year": 10,
-    }
-
-    const titleSimilarity = areTitlesSimilar(book1.title, book2.title) ? 1 : 0;
-    score += titleSimilarity * weights.title;
-
-    const authorMatches = book1.authors.filter(author => book2.authors.includes(author));
-    score += authorMatches.length * weights.author;
-
-    const subjectMatches = book1.subjects.filter(subject => book2.subjects.includes(subject));
-    score += subjectMatches.length * weights.subject;
-
-    const yearDifference = Math.abs(book1.year - book2.year);
-    score += Math.max(0, weights.year - yearDifference);
-
-    score += book1.rating * Math.min(1, weights.rating);
-
-    return score;
 }
 
 // Execute
