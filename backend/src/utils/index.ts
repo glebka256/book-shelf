@@ -32,7 +32,7 @@ export const dynamicLoader = (message: string, delay: number = 100) => {
 
     return () => {
         clearInterval(interval);
-        process.stdout.write('r');
+        process.stdout.write('\r');
     }
 }
 
@@ -42,27 +42,19 @@ export const dynamicLoader = (message: string, delay: number = 100) => {
 export const dynamicLog = (() => {
     let lastLines: number = 0;
 
-    return (staticMessage: string, dynamicMessage: string): void => {
+    if (!process.stdout.isTTY) {
+        console.warn("Dynamic logging is not supported in this environment!");
+    }
+
+    return (staticMessage: string, dynamicMessage: string, overwrite=false): void => {
         readline.cursorTo(process.stdout, 0);
         readline.clearLine(process.stdout, 0);
 
-        process.stdout.write(`${staticMessage}${dynamicMessage}\n`);
-
-        lastLines++;
-    };
-})();
-
-/**
- * Displays message with static and dynamic parts while overwriting the line above it.
- */
-export const dynamicOverwriteLog = (() => {
-    let lastLines: number = 0;
-
-    return (staticMessage: string, dynamicMessage: string): void => {
-        readline.cursorTo(process.stdout, 0);
-        readline.clearLine(process.stdout, 0);
-
-        process.stdout.write(staticMessage + dynamicMessage);
+        if (overwrite) {
+            process.stdout.write(staticMessage + dynamicMessage + '\n');
+        } else {
+            process.stdout.write(staticMessage + dynamicMessage);
+        }
 
         lastLines++;
     };
