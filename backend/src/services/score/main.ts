@@ -205,21 +205,28 @@ function getMostFrequent(array: string[]): string {
  */
 function calculateScores(books: ScoreBook[]): ScoreTable {
     let completeTable: ScoreTable = {};
+    const score_threshold = 0.05;
 
     for (let i = 0; i < books.length; i++) {
         for (let j = i; j < books.length; j++) {
             const main = books[i];
             const compared = books[j];
 
-            if (!completeTable[main.id]) {
-                completeTable[main.id] = {};
-            }
-            if (!completeTable[compared.id]) {
-                completeTable[compared.id] = {};
-            }
-
             if (main.id !== compared.id) {
                 const score = scoreBooks(main, compared);
+
+                // Scores less than threshold are irrelevant
+                if (score < score_threshold) {
+                    break;
+                }
+
+                if (!completeTable[main.id]) {
+                    completeTable[main.id] = {};
+                }
+                if (!completeTable[compared.id]) {
+                    completeTable[compared.id] = {};
+                }
+
                 completeTable[main.id][compared.id] = score;
                 completeTable[compared.id][main.id] = score;
             }
@@ -261,7 +268,7 @@ function scoreYearDifference(year1: number, year2: number): number {
     return Math.max(0, WEIGHTS.year - yearDifference);
 }
 
-// For now this method seems ok, change to some library if needed in future
+// TODO: replace with string-similarity library implementation
 function areTitlesSimilar(title1: string, title2: string): boolean {
     const normalize = (title: string) => title.toLowerCase().replace(/[^a-z0-9]/g, "");
     const normalizedTitle1 = normalize(title1);
