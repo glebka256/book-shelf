@@ -6,7 +6,7 @@ import { StorageBook } from '@app/interfaces/Books';
 import { DataSerializer } from '../DataSerializer';
 import { getBooks } from '@app/models/book';
 import { saveRelations } from './serialization';
-import { toWhitespace } from '@app/utils';
+import { toUnderscore, toWhitespace } from '@app/utils';
 
 const WEIGHTS = {
     "title": 10,
@@ -73,7 +73,7 @@ async function main() {
 
         const chunkTable: ScoreTable = calculateScores(Array.from(chunk.books));
         const chunkRecord: ScoreTableChunk = { 
-            subject: chunk.genre, 
+            subject: toUnderscore(chunk.genre), 
             chunk: String(i), 
             data: chunkTable 
         };
@@ -239,7 +239,7 @@ function calculateScores(books: ScoreBook[]): ScoreTable {
 function scoreBooks(book1: ScoreBook, book2: ScoreBook): number {
     let score = 0;
 
-    const titleSimilarity = areTitlesSimilar(book1.title, book2.title) ? 1 : 0;
+    const titleSimilarity = stringSimiliarity.compareTwoStrings(book1.title, book2.title);
     score += titleSimilarity * WEIGHTS.title;
 
     score += scoreArray(book1.authors, book2.authors, WEIGHTS.author);
@@ -266,18 +266,6 @@ function scoreYearDifference(year1: number, year2: number): number {
 
     // Assumes that maximum meaningful difference is provided in WEIGHTS.year, 10 for ex
     return Math.max(0, WEIGHTS.year - yearDifference);
-}
-
-// TODO: replace with string-similarity library implementation
-function areTitlesSimilar(title1: string, title2: string): boolean {
-    const normalize = (title: string) => title.toLowerCase().replace(/[^a-z0-9]/g, "");
-    const normalizedTitle1 = normalize(title1);
-    const normalizedTitle2 = normalize(title2);
-
-    return (
-        normalizedTitle1.includes(normalizedTitle2) ||
-        normalizedTitle2.includes(normalizedTitle1)
-    );
 }
 
 // Execute
