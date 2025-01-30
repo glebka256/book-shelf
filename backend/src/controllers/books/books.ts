@@ -149,8 +149,13 @@ export const searchDownloadableBook = async (req: Request, res: Response): Promi
 export const getRecommendations = async (req: Request, res: Response): Promise<void> => {
     try {
         const userId = get(req, 'identity._id') as string;
+        const recommendation = new RecommendService();
+        await recommendation.setUser(userId);
 
+        const recommendedBooks = await recommendation.getRecommended(50);
+        console.log('recommended books: ', recommendedBooks);
 
+        res.status(200).json(recommendedBooks);
     } catch (error) {
         console.error(error);
     }

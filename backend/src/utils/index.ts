@@ -98,7 +98,6 @@ export const setArrayWhitespace = (array: string[], type: 'whitespace' | 'unders
     }
 }
 
-export const isISO8601 = (timestamp: string): boolean => {
-    const datetime = new Date(timestamp);
-    return !isNaN(datetime.getTime()) && timestamp === datetime.toISOString();
+export const isISO8601 = (datetime: Date): boolean => {
+    return !isNaN(datetime.getTime()) && (datetime.toISOString() !== undefined);
 }

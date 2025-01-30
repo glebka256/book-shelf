@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { InteractionTypes, UserInteraction } from "@app/interfaces/User";
+import { interactionTypes, StorageInteraction, UserInteraction } from "@app/interfaces/User";
 
 const UserSchema = new mongoose.Schema({
     username: { type: String, required: true },
@@ -11,7 +11,8 @@ const UserSchema = new mongoose.Schema({
     favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: "Book" }],
     interactions: [
         {
-            type: { type: String, enum: Object.values(InteractionTypes), required: true },
+            type: { type: String, required: true },
+            priority: { type: Number, required: true },
             bookId: { type: mongoose.Schema.Types.ObjectId, ref: "Book", required: true },
             timestamp: { type: Date, required: true }
         }
@@ -72,7 +73,7 @@ export const updateUserFavoritesById = async (id: string, bookIds: mongoose.Type
 export const getUserInteractions = (userId: string) =>
     UserModel.findById(userId).select("interactions").exec();
 
-export const updateUserInteractions = async (userId: string, interactions: UserInteraction[]) => {
+export const updateUserInteractions = async (userId: string, interactions: StorageInteraction[]) => {
     const updatedUser = await UserModel.findByIdAndUpdate(
         userId, 
         { interactions },

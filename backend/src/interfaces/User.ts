@@ -13,16 +13,57 @@ export interface DecodedJWT {
     exp: number
 }
 
-export enum InteractionTypes {
-    Like = 'like-clicked',          // Like is only for click itself. Does not care if book is currently liked.
-    Read = 'read-clicked',
-    Buy = 'buy-clicked',
-    Cover = 'cover-clicked',        // Registers if cover was clicked to open book details.
-    Searched = 'clicked-in-search'  // Same as Cover but when on the Search Page
+export interface ClientInteraction {
+    type: string,
+    bookId: string,
+    timestamp: string   // ISO 8601 String
 }
 
+export interface StorageInteraction {
+    type: string,
+    priority: number,
+    bookId: string,
+    timestamp: Date
+}
+
+export const interactionTypes = {
+    // Like is only for click itself. Does not care if book is currently liked.
+    like: {
+        tag: 'like-clicked',
+        priority: 3
+    },
+    read: {
+        tag: 'read-clicked',
+        priority: 2,
+    },
+    buy: {
+        tag: 'buy-clicked',
+        priority: 2,
+    },
+
+    // Registers if cover was clicked to open book details.
+    cover: {
+        tag: 'cover-clicked',
+        priority: 1,    
+    },
+
+    // Same as Cover but when on the Search Page
+    search: {
+        tag: 'clicked-in-search',
+        priority: 2,
+    },
+    favorite: {
+        tag: 'selected-favorite',
+        priority: 4
+    }
+} as const;
+
+export type InteractionTypes = typeof interactionTypes;
+
+export type InteractionEntry = typeof interactionTypes[keyof typeof interactionTypes];
+
 export interface UserInteraction {
-    type: InteractionTypes,
+    type: InteractionEntry
     bookId: string,
     timestamp: Date
 }

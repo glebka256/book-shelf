@@ -7,7 +7,7 @@ import {
     getUserWithFavoritesById,
     updateUserFavoritesById
 } from '@app/models/user';
-import { UserInteraction } from '@app/interfaces/User';
+import { ClientInteraction, UserInteraction } from '@app/interfaces/User';
 import { ValidationResponse } from '@app/interfaces/Util';
 import { InteractionService } from '@app/services/InteractionService';
 
@@ -131,11 +131,12 @@ export const updateFavorites = async (req: Request, res: Response): Promise<void
 export const storeInteractions = async (req: Request, res: Response): Promise<void> => {
     try {
         const userId = get(req, 'identity._id') as string;
-        const interactions: UserInteraction[] = req.body.interactions;
+        const clientInteractions: ClientInteraction[] = req.body.interactions;
 
         const interactionManager = new InteractionService(userId);
-        const validation: ValidationResponse = interactionManager.validate(interactions);
+        const interactions: UserInteraction[] = interactionManager.parseInteractionArray(clientInteractions);
 
+        const validation: ValidationResponse = interactionManager.validate(interactions);
         if (!validation.status) {
             res.status(400).json({ message: validation.message });
             return;
