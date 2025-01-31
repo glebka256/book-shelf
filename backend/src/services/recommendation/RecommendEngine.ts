@@ -1,13 +1,13 @@
 import * as genreService from '@app/services/recommendation/genreService';
 import { getBooks, getBookById } from '@app/models/book';
 import { loadBookRelationsSubject } from '../score/serialization';
-import { sortNumericRecord } from '@app/utils';
+import { extractBookFromDoc, sortNumericRecord } from '@app/utils';
 import { UserInteraction } from '@app/interfaces/User';
 import { StorageBook } from '@app/interfaces/Books';
 
 export class RecommendEngine {
     async getPopularBooks(): Promise<StorageBook[]> {
-        const books = await getBooks() as StorageBook[];
+        const books = extractBookFromDoc(await getBooks());
 
         return books
             .map(book => ({
