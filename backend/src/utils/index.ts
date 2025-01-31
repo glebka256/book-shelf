@@ -101,3 +101,34 @@ export const setArrayWhitespace = (array: string[], type: 'whitespace' | 'unders
 export const isISO8601 = (datetime: Date): boolean => {
     return !isNaN(datetime.getTime()) && (datetime.toISOString() !== undefined);
 }
+
+export const sortNumericRecord = (
+    record: Record<string, number>, 
+    type: 'des' | 'asc' = 'des'
+): Record<string, number> => {
+    return Object.fromEntries(
+        Object.entries(record).sort(([, a], [, b]) => 
+            type === 'asc' ? a - b : b - a
+        )
+    );
+}
+
+export const sliceMap = (
+    map: Map<string, string[]>, 
+    slice: number
+): Map<string, string[]> => {
+    const slicedMap = new Map<string, string[]>();
+
+    const iterator = map.entries();
+    let count = 0;
+    let next = iterator.next();
+
+    while (!next.done && count < slice) {
+        const [key, value] = next.value;
+        slicedMap.set(key, value);
+        count++;
+        next = iterator.next();
+    }
+
+    return slicedMap;
+}
