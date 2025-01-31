@@ -85,6 +85,16 @@ export class InteractionService {
         }
     }
 
+    async load(): Promise<UserInteraction[]> {
+        try {
+            const user = await getUserInteractions(this.userId);
+            return this.mapFromStorage(user.interactions);
+        } catch (error) {
+            console.error("Error retrieving user interactions from DB: ", error);
+            return [];
+        }
+    }
+
     mapToStorage(interactions: UserInteraction[]): StorageInteraction[] {
         return interactions.map((interaction) => ({
             type: interaction.type.tag,
