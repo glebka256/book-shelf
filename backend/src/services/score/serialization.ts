@@ -1,6 +1,6 @@
-import fs from 'fs';
+import fs, { Dir } from 'fs';
 import path from 'path';
-import { ScoreTableChunk, ScoreTable } from './main';
+import { ScoreTable, ScoreTableChunk } from './interfaces';
 
 const DIRPATH = "../../data/relation/";
 
@@ -49,7 +49,7 @@ export const loadAllBookRelations = async (subject: string, id: string): Promise
     let result: Record<string, number> = {};
 
     try {
-        const files = await fs.promises.readdir(DIRPATH);
+        const files = await fs.promises.readdir(path.join(__dirname, DIRPATH));
         const subjectFiles = files.filter((file) => file.startsWith(subject) && file.endsWith(".json"));
 
         for (const file of subjectFiles) {
