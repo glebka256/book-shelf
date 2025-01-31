@@ -1,6 +1,7 @@
-import fs, { Dir } from 'fs';
+import fs from 'fs';
 import path from 'path';
-import { ScoreTable, ScoreTableChunk } from './interfaces';
+import { ScoreTableChunk } from './interfaces';
+import { toUnderscore } from '@app/utils';
 
 const DIRPATH = "../../data/relation/";
 
@@ -45,28 +46,37 @@ export const loadBookRelations = async (
     return relations.data[id];
 }
 
-export const loadAllBookRelations = async (subject: string, id: string): Promise<Record<string, number>> => {
-    let result: Record<string, number> = {};
+const loadSubjectRelations = async (subject: string): Promise<ScoreTableChunk> => {
+    const filepath = path.join(__dirname, DIRPATH.concat(`${subject}.json`));
 
     try {
-        const files = await fs.promises.readdir(path.join(__dirname, DIRPATH));
-        const subjectFiles = files.filter((file) => file.startsWith(subject) && file.endsWith(".json"));
-
-        for (const file of subjectFiles) {
-            const filepath = path.join(DIRPATH, file);
-            const data = await fs.promises.readFile(filepath, 'utf-8');
-            const table: ScoreTable = JSON.parse(data);
-            const idRelated = table[id];
-
-            for (const [key, value] of Object.entries(idRelated)) {
-                if (key.includes(id)) {
-                    result[key] = value;
-                }
-            }
+        const data = await fs.promises.readFile(filepath, 'utf-8');
+        return {
+            subject: subject,
+            chunk: '-1',
+            data: JSON.parse(data)
         }
     } catch (error) {
-        console.error("Error loading relation tables from path: ", DIRPATH);
+        console.error("Error loading subject relation table from path: ", filepath);
+        return null;
     }
+}
 
-    return result;
+export const loadBookRelationsSubject = async (
+    subject: string, 
+    bookId: string
+): Promise<Record<string, number>> => {
+    const subjectTable = await loadSubjectRelations(toUnderscore(subject));
+
+    const data = Object.entries(subjectTable.data)
+        .filter(([key, value]) => key === bookId)
+        .map(([key, value]) => value)
+        .reduce((acc, obj) => {
+            Object.entries(obj).forEach(([innerKey, innerValue]) => {
+                acc[innerKey] = innerValue;
+            });
+            return acc;
+        }, {} as Record<string, number>);
+
+    return data;
 }
