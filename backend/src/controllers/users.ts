@@ -9,7 +9,7 @@ import {
 } from '@app/models/user';
 import { ClientInteraction, UserInteraction } from '@app/interfaces/User';
 import { ValidationResponse } from '@app/interfaces/Util';
-import { InteractionService } from '@app/services/InteractionService';
+import { InteractionService } from '@app/services/recommendation/InteractionService';
 
 export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
     try {

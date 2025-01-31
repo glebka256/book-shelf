@@ -1,8 +1,8 @@
 import dotenv from 'dotenv';
 import * as stringSimiliarity from 'string-similarity';
+import * as genreService from '../recommendation/genreService';
 import { connectDB } from '@app/config/db';
 import { getBooks } from '@app/models/book';
-import { retrieveGenres, getBookGenre } from '../genreService';
 import { saveRelations } from './serialization';
 import { toUnderscore} from '@app/utils';
 import { StorageBook } from '@app/interfaces/Books';
@@ -79,11 +79,11 @@ async function getDBbooks(): Promise<ScoreBook[]> {
  * @returns An array of chunks containing genre and unique books
 */
 function divideBooksByGenre(books: ScoreBook[]): ScoreBookChunk[] {
-    const allGenres = retrieveGenres();
+    const allGenres = genreService.retrieveGenres();
     let result: ScoreBookChunk[] = [];
 
     for (const book of books) {
-        const genre = getBookGenre(book.subjects, allGenres);
+        const genre = genreService.getBookGenre(book.subjects, allGenres);
 
         let chunk = result.find(chunk => chunk.genre === genre);
 

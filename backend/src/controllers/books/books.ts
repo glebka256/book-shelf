@@ -3,7 +3,7 @@ import { get } from 'lodash';
 import { ClientBook, SearchParams, StorageBook } from "@app/interfaces/Books";
 import { FilterQuery, FilterStatus } from "@app/interfaces/Filter";
 import { Languages } from "@app/interfaces/Util";
-import { RecommendService } from "@app/services/RecommendService";
+import { RecommendService } from "@app/services/recommendation/RecommendService";
 import { BookFilter } from "@app/services/BookFilter";
 import { searchByQuery, searchDownloadable } from "@app/services/BookSearch";
 import bookManager from "@app/config/book-manager";

@@ -40,6 +40,7 @@ export const getBooks = () => BookModel.find();
 export const queryBooks = (query: Object) => BookModel.find(query);
 export const aggreageBooks = (aggregator: Array<any>) => BookModel.aggregate(aggregator);
 export const getBookById = (id: String) => BookModel.findById(id);
+export const getBooksByIds = (bookIds: String[]) => queryBooks({ _id: { $in: bookIds } });
 export const getBookByTitle = (title: String) => BookModel.findOne({ title });
 
 export const getBooksByGenres = (genres: [String]) => {
