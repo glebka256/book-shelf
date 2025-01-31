@@ -152,8 +152,7 @@ export const getRecommendations = async (req: Request, res: Response): Promise<v
         const recommendation = new RecommendService();
         await recommendation.setUser(userId);
 
-        const recommendedBooks = await recommendation.getRecommended(50);
-        console.log('recommended books: ', recommendedBooks);
+        const recommendedBooks = await recommendation.formRecommendations(50);
 
         res.status(200).json(recommendedBooks);
     } catch (error) {

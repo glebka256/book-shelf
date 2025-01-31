@@ -56,9 +56,10 @@ export class RecommendService {
     }
 
     async getRecommendedIds(limit: number = 10): Promise<Map<string, string[]>> {
-        const userInteractions = this.user.getAllInteractions();
         const recommedationIds = new Map<string, string[]>();
         const allGenres = retrieveGenres();
+        let userInteractions = this.user.getAllInteractions();
+        userInteractions = this.user.sortInteractions(userInteractions);
 
         for (const interaction of userInteractions) {
             const book = await getBookById(interaction.bookId);
@@ -113,5 +114,15 @@ class RecommendationUser {
         }
 
         return [...favoritesInteractions, ...this.interactions];
+    }
+
+    sortInteractions(interactions: UserInteraction[]): UserInteraction[] {
+        return interactions.sort((a, b) => {
+            if (b.type.priority !== a.type.priority) {
+                return b.type.priority - a.type.priority;
+            }
+            // If priorities are the same, most recent to the top
+            return b.timestamp.getTime() - a.timestamp.getTime();
+        });
     }
 }
