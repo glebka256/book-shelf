@@ -6,22 +6,82 @@ import { UserInteraction } from '@app/interfaces/User';
 import { StorageBook } from '@app/interfaces/Books';
 
 export class RecommendEngine {
-    async getPopularBooks(shuffleChunk = 100): Promise<StorageBook[]> {
-        // Sort all books by rating
+    async getPopularBooks(): Promise<StorageBook[]> {
         const books = extractBookFromDoc(await getBooks());
-        const sortedBooks = books
-            .map(book => ({
-                ...book,
-                score: book.rating
-            }))
-            .sort((a, b) => b.score - a.score);
+        return this.getCategoryMixedBooks(books);
+    }
 
-        // Shuffle popular books in some chunks to immitate randomness
+    // TODO: remove some occasional repetition
+    async getCategoryMixedBooks(initial: StorageBook[]): Promise<StorageBook[]> {
+        const books = [...initial];
+
+        // Categorize by rating
+        const categorizedBooks: {[key: string]: StorageBook[]} = {
+            top: [],
+            mid: [],
+            bottom: []
+        }
+
+        const categoryBounds = {
+            top: 4.0,
+            mid: 3.0,
+            bottom: 0
+        }
+
+        books.forEach(book => {
+            const score = book.rating;
+            if (score >= categoryBounds.top) { 
+                categorizedBooks.top.push({ ...book });
+            } else if (score >= categoryBounds.mid) {
+                categorizedBooks.mid.push({ ...book });
+            } else {
+                categorizedBooks.bottom.push({ ...book });
+            }
+        });
+
+        // Shuffle each category
+        Object.keys(categorizedBooks).forEach(key => {
+            categorizedBooks[key] = this.shuffleArray(categorizedBooks[key]);
+        });
+
+        // Build result with mixed categories
         const result: StorageBook[] = [];
-        for (let i = 0; i < sortedBooks.length; i+= shuffleChunk) {
-            const chunk: StorageBook[] = sortedBooks.slice(i, i + shuffleChunk);
-            const shuffled = this.shuffleArray<StorageBook>(chunk);
-            result.push(...shuffled);
+        const maxBooks = books.length;
+
+        // Weights represent probability to pick of selecting book from category
+        const weights = {
+            top: 0.65,
+            mid: 0.25,
+            bottom: 0.1
+        }
+
+        // Probabalistic selection algorithm
+        while ( result.length < maxBooks) {
+            const rand = Math.random();
+            // Start from highest priority category
+            let category = 'top';
+            let weightCumulation = 0;
+
+            for (const [cat, weight] of Object.entries(weights)) {
+                weightCumulation += weight;
+                if (rand < weightCumulation) {
+                    category = cat;
+                    break;
+                }
+            }
+
+            if (categorizedBooks[category].length > 0) {
+                result.push(categorizedBooks[category].shift()!);
+            } else {
+                // Category exhausted, redistribute probabilities
+                weights[category as keyof typeof weights] = 0;
+                const total = Object.values(weights).reduce((sum, w) => sum + w, 0);
+                for (const cat of Object.keys(weights) as Array<keyof typeof weights>) {
+                    if (weights[cat] > 0) {
+                        weights[cat] = weights[cat] / total;
+                    }
+                }
+            }
         }
 
         return result;

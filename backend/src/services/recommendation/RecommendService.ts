@@ -1,7 +1,7 @@
+import { extractBookFromDoc, sliceMap } from "@app/utils";
 import { RecommendationUser } from "./RecommendationUser";
 import { RecommendEngine } from "./RecommendEngine";
 import { getBooksByIds } from "@app/models/book";
-import { extractBookFromDoc, sliceMap } from "@app/utils";
 import { StorageBook } from "@app/interfaces/Books";
 import { Languages } from "@app/interfaces/Util";
 import { Logger } from "@app/utils/Logger";
@@ -9,6 +9,7 @@ import { Logger } from "@app/utils/Logger";
 export class RecommendService {
     private user: RecommendationUser;
     private engine: RecommendEngine;
+    private popularBooks: StorageBook[];
     
     // preferedLanguages are handled for unauthorized users as well
     preferredLanguages: string[];
@@ -36,9 +37,11 @@ export class RecommendService {
     async getPopularBooks(page: number, limit: number): Promise<StorageBook[]> {
         const skip = (page - 1) * limit;
 
-        const books = await this.engine.getPopularBooks();
+        if (!this.popularBooks || this.popularBooks.length < skip) {
+            this.popularBooks = await this.engine.getPopularBooks();
+        }
 
-        const filteredBooks = books.filter((book) =>  
+        const filteredBooks = this.popularBooks.filter((book) =>  
             book.language.some(lang => this.preferredLanguages.includes(lang))
         );
 
