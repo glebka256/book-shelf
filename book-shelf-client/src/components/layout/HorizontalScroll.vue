@@ -10,7 +10,7 @@ defineProps({
   }
 });
 
-const emit = defineEmits(['select-book']);
+const emit = defineEmits(['select-book'], ['scroll-end']);
 
 function onBookSelect(bookId: string) {
   emit('select-book', bookId);
@@ -53,6 +53,25 @@ const scroll = (direction: 'left' | 'right') => {
   updateGap();
 }
 
+// Emit when scroll ends
+let scrollTimeout: number | undefined;
+
+const onScroll = () => {
+  if (!scrollView.value) return;
+  if (scrollTimeout) clearTimeout(scrollTimeout);
+
+  scrollTimeout = window.setTimeout(() => {
+    const el = scrollView.value;
+    const scrollLeft = el.scrollLeft;
+    const maxScrollLeft = el.scrollWidth - el.clientWidth;
+
+    // Idk why 20px, just a guess
+    if (scrollLeft >= maxScrollLeft - 20) {
+      emit('scroll-end')
+    }
+  }, 100);
+}
+
 onMounted(() => {
   window.addEventListener('resize', updateGap);
   updateGap();
@@ -68,7 +87,7 @@ onBeforeUnmount(() => {
   <button class="scroll-button left" @click="scroll('left')"><i class="fa-solid fa-chevron-left"></i></button>
   <button class="scroll-button right" @click="scroll('right')"><i class="fa-solid fa-chevron-right"></i></button>
   <div class="scroll-view-wrapper">
-    <div class="scroll-view" ref="scrollView">
+    <div class="scroll-view" ref="scrollView" @scroll="onScroll">
       <book-card 
         v-for="book in books" 
         :key="book._id" 
