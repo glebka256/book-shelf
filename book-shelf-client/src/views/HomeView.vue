@@ -56,16 +56,29 @@ function closeSidebar() {
 }
 
 // Recommended
+const recommendedPage = ref(1);
+const recommendedPageSize = 50;
+
 async function handleRecommendationReset() {
   loading.recommended = true;
   loading.errorMessage = '';
 
   try {
-    recommendedBooks.value = await loadRecommended();
+    recommendedBooks.value = await loadRecommended(recommendedPage.value, recommendedPageSize);
   } catch (error) {
     loading.errorMessage = error;
   } finally {
     loading.recommended = false;
+  }
+}
+
+async function handleRecommendedEnd() {
+  recommendedPage.value++;
+  try {
+    const moreBooks = await loadRecommended(recommendedPage.value, recommendedPageSize);
+    recommendedBooks.value.push(...moreBooks);
+  } catch (error) {
+    console.warn("Failed to load more recommended books", error);
   }
 }
 
@@ -88,10 +101,10 @@ async function loadPopular(page: number, pageSize: number): Promise<Book[]> {
   }
 }
 
+// Filter
 const filterFormRef = ref<FilterFormInstance>();
 const filterPage = ref(1);
 
-// Filter
 function handleFilterReset() {
   if (filterFormRef.value) {
     filterFormRef.value.resetOptions();
@@ -198,7 +211,11 @@ onBeforeUnmount(() => {
     <div class="book-skeleton" v-if="loading.page || loading.recommended">
       <book-skeleton :skeleton-type="'horizontal'" />
     </div>
-    <horizontal-scroll v-else :books="recommendedBooks" @select-book="handleBookSelect"/>
+    <horizontal-scroll v-else 
+      :books="recommendedBooks" 
+      @select-book="handleBookSelect"
+      @scroll-end="handleRecommendedEnd"
+    />
   </div>
   <div class="search-view">
     <div class="view-heading">
