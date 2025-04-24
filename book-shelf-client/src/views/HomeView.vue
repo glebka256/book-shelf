@@ -13,9 +13,8 @@ import { Book } from '@/types/Book';
 import { FilterFormInstance, FilterQuery } from '@/types/Filter';
 import { InteractionTypes } from '@/types/User';
 import { useInteractionStore } from '@/store/interactionStore';
-import { getFilteredBooks, getPopularBooks } from '@/api/book';
+import { getFilteredBooks, getPopularBooks, getRecommendedBooks } from '@/api/book';
 
-const popularBooks = ref<Book[]>([]);
 const recommendedBooks = ref<Book[]>([]);
 const filteredBooks = ref<Book[]>([]);
 
@@ -27,30 +26,12 @@ const loading = reactive({
   errorMessage: ''
 });
 
-async function handleRecommendationReset() {
-  // Set with popular for now.
-  // TODO: update to recommended request when it's implemented on server.
-  loading.recommended = true;
-
-  loading.errorMessage = '';
-  try {
-    popularBooks.value = await getPopularBooks(1, 50);
-  } catch (error) {
-    loading.errorMessage = "Could not fetch popular books. Error: ", error;
-  } finally {
-    loading.recommended = false;
-  }
-  
-  if (popularBooks.value.length > 0) {
-    recommendedBooks.value = popularBooks.value;
-  }
-}
-
 const sidebar = reactive({
   open: false,
   bookId: '',
 });
 
+// Sidebar
 async function handleBookSelect(bookId: string) {
   openSidebar(bookId);
 
@@ -74,9 +55,43 @@ function closeSidebar() {
   sidebar.open = false;
 }
 
+// Recommended
+async function handleRecommendationReset() {
+  loading.recommended = true;
+  loading.errorMessage = '';
+
+  try {
+    recommendedBooks.value = await loadRecommended();
+  } catch (error) {
+    loading.errorMessage = error;
+  } finally {
+    loading.recommended = false;
+  }
+}
+
+// Recommended has no pagination, it is displayed in slider of 50 elements max
+async function loadRecommended(page = 1, pageSize = 50): Promise<Book[]> {
+  try {
+    return await getRecommendedBooks(page);
+  } catch (error) {
+    const popularBooks = await loadPopular(page, pageSize);
+    if (popularBooks.length > 1) return popularBooks;
+    return [];
+  }
+}
+
+async function loadPopular(page: number, pageSize: number): Promise<Book[]> {
+  try {
+    return await getPopularBooks(page, pageSize);
+  } catch (error) {
+    throw new Error(`Could not load popular books. ${error}`);
+  }
+}
+
 const filterFormRef = ref<FilterFormInstance>();
 const filterPage = ref(1);
 
+// Filter
 function handleFilterReset() {
   if (filterFormRef.value) {
     filterFormRef.value.resetOptions();
@@ -126,6 +141,7 @@ const loadFiltered = async () => {
   }
 }
 
+// Hooks
 const bottomObserver = ref<IntersectionObserver | null>(null);
 const bottomRef = ref<HTMLDivElement>();
 
@@ -140,8 +156,8 @@ onMounted(async () => {
 
   loading.page = false;
 
-  // For now populate recommended with just popular.
-  recommendedBooks.value = popularBooks.value || [];
+  // Initial reset as load
+  handleRecommendationReset();
   filteredBooks.value = filteredBooks.value || [];
 
   bottomObserver.value = new IntersectionObserver((entries) => {
