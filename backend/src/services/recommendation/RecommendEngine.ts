@@ -6,14 +6,25 @@ import { UserInteraction } from '@app/interfaces/User';
 import { StorageBook } from '@app/interfaces/Books';
 
 export class RecommendEngine {
-    async getPopularBooks(): Promise<StorageBook[]> {
+    async getPopularBooks(shuffleChunk = 100): Promise<StorageBook[]> {
+        // Sort all books by rating
         const books = extractBookFromDoc(await getBooks());
-        return books
+        const sortedBooks = books
             .map(book => ({
                 ...book,
                 score: book.rating
             }))
             .sort((a, b) => b.score - a.score);
+
+        // Shuffle popular books in some chunks to immitate randomness
+        const result: StorageBook[] = [];
+        for (let i = 0; i < sortedBooks.length; i+= shuffleChunk) {
+            const chunk: StorageBook[] = sortedBooks.slice(i, i + shuffleChunk);
+            const shuffled = this.shuffleArray<StorageBook>(chunk);
+            result.push(...shuffled);
+        }
+
+        return result;
     }
 
     async getRecommendedIds(
