@@ -132,3 +132,16 @@ export const sliceMap = (
 
     return slicedMap;
 }
+
+// Copied from: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+export const shuffleArray = <T>(array: T[]): T[] => {
+    // Return value not reference, dont modify original array
+    const arr = [...array];
+
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+
+    return arr;
+}

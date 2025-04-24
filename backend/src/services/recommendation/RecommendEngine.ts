@@ -1,20 +1,21 @@
 import * as genreService from '@app/services/recommendation/genreService';
 import { getBooks, getBookById } from '@app/models/book';
 import { loadBookRelationsSubject } from '../score/serialization';
-import { extractBookFromDoc, sortNumericRecord } from '@app/utils';
+import { extractBookFromDoc, shuffleArray, sortNumericRecord } from '@app/utils';
 import { UserInteraction } from '@app/interfaces/User';
 import { StorageBook } from '@app/interfaces/Books';
 
 export class RecommendEngine {
     async getPopularBooks(): Promise<StorageBook[]> {
         const books = extractBookFromDoc(await getBooks());
-
-        return books
+        const sortedBooks = books
             .map(book => ({
                 ...book,
                 score: book.rating
             }))
             .sort((a, b) => b.score - a.score);
+
+        return this.shuffleBooks(sortedBooks);
     }
 
     async getRecommendedIds(
@@ -34,5 +35,20 @@ export class RecommendEngine {
         }
 
         return recommedationIds;
+    }
+
+    shuffleBooks(books: StorageBook[]): StorageBook[] {
+        const seen = new Set<string>();
+        const unique = books.filter(book => {
+            if (seen.has(book.id)) return false;
+            seen.add(book.id);
+            return true;
+        });
+
+        return shuffleArray<StorageBook>(unique);
+    }
+
+    shuffleIds(bookIds: string[]): string[] {
+        return shuffleArray<string>(bookIds);
     }
 }

@@ -4,6 +4,7 @@ import { getBooksByIds } from "@app/models/book";
 import { extractBookFromDoc, sliceMap } from "@app/utils";
 import { StorageBook } from "@app/interfaces/Books";
 import { Languages } from "@app/interfaces/Util";
+import { Logger } from "@app/utils/Logger";
 
 export class RecommendService {
     private user: RecommendationUser;
@@ -52,7 +53,8 @@ export class RecommendService {
         recommedationIds = sliceMap(recommedationIds, limit);
 
         const aggregatedIds = Array.from(recommedationIds.values()).flat();
-        const resultBooks = await getBooksByIds(aggregatedIds);
+        const shuffledIds = this.engine.shuffleIds(aggregatedIds);
+        const resultBooks = await getBooksByIds(shuffledIds);
 
         return extractBookFromDoc(resultBooks);
     }
