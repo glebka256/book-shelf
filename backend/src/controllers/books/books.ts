@@ -148,11 +148,17 @@ export const searchDownloadableBook = async (req: Request, res: Response): Promi
 
 export const getRecommendations = async (req: Request, res: Response): Promise<void> => {
     try {
+        const endPage = parseInt(req.params.page);
+        const beginPage = endPage - 1;
+        const pageSize = 50;
+        const limit = endPage * pageSize;
+
         const userId = get(req, 'identity._id') as string;
         const recommendation = new RecommendService();
         await recommendation.setUser(userId);
 
-        const recommendedBooks = await recommendation.formRecommendations(50);
+        let recommendedBooks = await recommendation.formRecommendations(limit);
+        recommendedBooks = recommendedBooks.slice(beginPage * pageSize, endPage * pageSize);
 
         res.status(200).json(recommendedBooks);
     } catch (error) {
