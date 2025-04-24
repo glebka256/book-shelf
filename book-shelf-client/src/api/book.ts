@@ -85,3 +85,23 @@ export const getFilteredBooks = async (page: number, query: FilterQuery): Promis
         throw new Error(getResponseError(error));
     }
 }
+
+export const getRecommendedBooks = async (page: number): Promise<Book[]> => {
+    try {
+        const response = await baseInstance.get<Book[]>(
+            `/books/user/recommended/${page}`
+        );
+
+        if (response.status === 403) {
+            throw new Error("Forbidden. Login to view recommendations");
+        }
+
+        if (!response.data) {
+            throw new Error(serviceError('recommendation'));
+        }
+
+        return response.data;
+    } catch (error) {
+        throw new Error(getResponseError(error));
+    }
+}
