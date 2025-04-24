@@ -50,8 +50,8 @@ export class RecommendEngine {
 
         // Weights represent probability to pick of selecting book from category
         const weights = {
-            top: 0.65,
-            mid: 0.25,
+            top: 0.7,
+            mid: 0.2,
             bottom: 0.1
         }
 
