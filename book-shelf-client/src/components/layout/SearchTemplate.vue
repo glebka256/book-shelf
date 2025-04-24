@@ -40,9 +40,9 @@ async function fetchSearchResult(query: string): Promise<Book[]> {
   
   try {
     const results = await getSearchResults(query, page.value, searchType);
+    loading.complete = results.searchComplete;
     page.value += 1;
 
-    loading.complete = results.searchComplete;
     return results.data as Book[];
   } catch (error) {
     console.error(`Could not fetch search results by query: ${query}\nError: ${error}`);
@@ -56,7 +56,6 @@ async function updateSearch(query: string) {
 
   // Overwrites books with new search query result.
   books.value = await fetchSearchResult(query);
-  page.value += 1;
 
   loading.page = false;
   emit('results-loaded', books.value.length);
@@ -111,6 +110,7 @@ onMounted(async () => {
 
   bottomObserver.value = new IntersectionObserver((entries) => {
     const isLoading = Object.values(loading).some((value) => value);
+    console.log("is loading: ", isLoading)
 
     if (entries[0].isIntersecting && !isLoading) {
       loadMore((route.query.q) as string || '');      

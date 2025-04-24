@@ -35,7 +35,7 @@ export const getSearchResults = async (
             `books/${trimSlash(method.path)}/${query}/${page}`
         );
 
-        if (!response.data.searchComplete || !response.data.books) {
+        if (!response.data.books) {
             throw new Error(serviceError('search'));
         }
 
