@@ -52,7 +52,8 @@ export class RecommendService {
         recommedationIds = sliceMap(recommedationIds, limit);
 
         const aggregatedIds = Array.from(recommedationIds.values()).flat();
-        const resultBooks = await getBooksByIds(aggregatedIds);
+        const shuffledIds = this.engine.shuffleArray<string>(aggregatedIds);
+        const resultBooks = await getBooksByIds(shuffledIds);
 
         return extractBookFromDoc(resultBooks);
     }

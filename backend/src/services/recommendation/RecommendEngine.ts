@@ -8,7 +8,6 @@ import { StorageBook } from '@app/interfaces/Books';
 export class RecommendEngine {
     async getPopularBooks(): Promise<StorageBook[]> {
         const books = extractBookFromDoc(await getBooks());
-
         return books
             .map(book => ({
                 ...book,
@@ -34,5 +33,18 @@ export class RecommendEngine {
         }
 
         return recommedationIds;
+    }
+
+    // Copied from: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+    shuffleArray <T>(array: T[]): T[] {
+        // Return value not reference, dont modify original array
+        const arr = [...array];
+    
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+    
+        return arr;
     }
 }
