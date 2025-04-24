@@ -6,7 +6,8 @@ import { UserInteraction } from '@app/interfaces/User';
 import { StorageBook } from '@app/interfaces/Books';
 
 export class RecommendEngine {
-    async getPopularBooks(): Promise<StorageBook[]> {
+    async getPopularBooks(shuffleChunk = 100): Promise<StorageBook[]> {
+        // Sort all books by rating
         const books = extractBookFromDoc(await getBooks());
         const sortedBooks = books
             .map(book => ({
@@ -15,7 +16,15 @@ export class RecommendEngine {
             }))
             .sort((a, b) => b.score - a.score);
 
-        return this.shuffleBooks(sortedBooks);
+        // Shuffle popular books in some chunks to immitate randomness
+        const result: StorageBook[] = [];
+        for (let i = 0; i < sortedBooks.length; i+= shuffleChunk) {
+            const chunk: StorageBook[] = sortedBooks.slice(i, i + shuffleChunk);
+            const shuffled = this.shuffleArray<StorageBook>(chunk);
+            result.push(...shuffled);
+        }
+
+        return result;
     }
 
     async getRecommendedIds(
@@ -37,18 +46,16 @@ export class RecommendEngine {
         return recommedationIds;
     }
 
-    shuffleBooks(books: StorageBook[]): StorageBook[] {
-        const seen = new Set<string>();
-        const unique = books.filter(book => {
-            if (seen.has(book.id)) return false;
-            seen.add(book.id);
-            return true;
-        });
-
-        return shuffleArray<StorageBook>(unique);
-    }
-
-    shuffleIds(bookIds: string[]): string[] {
-        return shuffleArray<string>(bookIds);
+    // Copied from: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+    shuffleArray <T>(array: T[]): T[] {
+        // Return value not reference, dont modify original array
+        const arr = [...array];
+    
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+    
+        return arr;
     }
 }
