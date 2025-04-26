@@ -10,7 +10,7 @@ import { connectDB } from '@app/config/db';
 import router from '@app/router';
 import { Logger } from './utils/Logger';
 
-Logger.enable();
+Logger.enableDebug();
 
 const app = express();
 
