@@ -1,86 +1,52 @@
-import { Request, Response } from "express";
+import { createControllerHandler } from "../controllerHandler";
+import { CustomError } from "@app/errors/CustomError";
 import bookManager from "@app/config/book-manager";
 import { BookSources } from "@app/interfaces/Books";
 import { Languages } from "@app/interfaces/Util";
 
-export const getGoodreadsBooks = async (req: Request, res: Response): Promise<void> => {
+const NAMESPACE = "THIRD-PARTY-BOOK-REQUEST";
+const controllerHandler = createControllerHandler(NAMESPACE);
+
+export const getGoodreadsBooks = controllerHandler(async (req, res) => {
     const searchQuery = req.params.query;
+    if (!searchQuery) throw new CustomError(400, "Search query missing from request parameters", false, NAMESPACE);
+
     const pageNumber = parseInt(req.params.page);
+    if (pageNumber <= 1) throw new CustomError(400, "Page number missing from request parameters", false, NAMESPACE);
 
-    if (!searchQuery || pageNumber < 1) {
-        res.status(400).json({ message: "Search query and fetch result page number are required." });
-        return;
-    }
+    const goodreadsBookData = await bookManager.fetchBooks(BookSources.Goodreads, searchQuery, pageNumber);
+    res.status(200).json(goodreadsBookData.books);
+});
 
-    try {
-        const goodreadsBookData = await bookManager.fetchBooks(BookSources.Goodreads, searchQuery, pageNumber);
-        
-        res.status(200).json(goodreadsBookData.books);
-        return;
-    } catch (error) {
-        res.status(400).json({ message: "Could not fetch books from Goodreads." });
-        return;
-    }
-}
-
-export const getAnnasArchiveBooks = async (req: Request, res: Response): Promise<void> => {
+export const getAnnasArchiveBooks = controllerHandler(async (req, res) => {
     const params = {
         query: req.params.query,
         author: req.params.author,
         category: req.params.cat
     }
+    if (!params.query) throw new CustomError(400, "query param is required for AnnasArchive search", false, NAMESPACE);
 
-    if (!params.query) {
-        res.status(400).json({ message: "Search query is required for Anna's Archive search." });
-        return;
-    }
+    const result = await bookManager.fetchBooks(BookSources.AnnasArchive, params);
+    res.status(200).json(result.books);
+});
 
-    try {
-        const result = await bookManager.fetchBooks(BookSources.AnnasArchive, params);
-        res.status(200).json(result.books);
-    } catch (error) {
-        res.status(400).json({ message: "Could not fetch books from Anna's Archive."})
-        return;
-    }
-}
-
-export const getBestBooksByGenre = async (req: Request, res: Response): Promise<void> => {
+export const getBestBooksByGenre = controllerHandler(async (req, res) => {
     const genre = req.params.genre;
+    if (!genre) throw new CustomError(400, 'genre param is required for "Best Books" API request', false, NAMESPACE);
 
-    if (!genre) {
-        res.status(400).json({ message: "Genre to get best books by must be provided." });
-        return;
-    }
+    const bestBooksData = await bookManager.fetchBooks(BookSources.GoodreadsBooks, genre);
+    res.status(200).json(bestBooksData.books);
+});
 
-    try {
-        const bestBooksData = await bookManager.fetchBooks(BookSources.GoodreadsBooks, genre);
-        res.status(200).json(bestBooksData.books);
-        return;
-    } catch (error) {
-        res.status(400).json({ message: "Could not fetch best books by genre." });
-        return;
-    }
-}
-
-export const searchBestBookById = async (req: Request, res: Response): Promise<void> => {
+export const searchBestBookById = controllerHandler(async (req, res) => {
     const id = req.params.id;
+    if (!id) throw new CustomError(400, 'Request missing id parameter for "Best Books" API', false, NAMESPACE);
 
-    if (!id) {
-        res.status(400).json({ message: "Id to search by was not recieved." });
-        return;
-    }
+    const bestBookdata = await bookManager.searchBookById(BookSources.GoodreadsBooks, id);
+    res.status(200).json(bestBookdata);
+});
 
-    try {
-        const bestBookdata = await bookManager.searchBookById(BookSources.GoodreadsBooks, id);
-        res.status(200).json(bestBookdata);
-        return;
-    } catch (error) {
-        res.status(400).json({ message: `Could not find best book by specified id: ${id}.` });
-        return;
-    }
-}
-
-export const getOpenLibraryBooks = async (req: Request, res: Response): Promise<void> => {
+export const getOpenLibraryBooks = controllerHandler(async (req, res) => {
     const params = {
         q: req.params.q !== 'none' ? req.params.q : undefined,
         author: req.params.author !== 'none' ? req.params.author : undefined,
@@ -89,35 +55,21 @@ export const getOpenLibraryBooks = async (req: Request, res: Response): Promise<
         language: req.params.lang !== 'none' ? req.params.lang as Languages : undefined
     }
 
-    try {
-        const bookData = await bookManager.fetchBooks(BookSources.OpenLibrary, params);
+    const bookData = await bookManager.fetchBooks(BookSources.OpenLibrary, params);
+    res.status(200).json(bookData);
+});
 
-        res.status(200).json(bookData);
-        return;
-    } catch (error) {
-        res.status(400).json({ message: `Could not fetch books from Open Library with specified params.` });
-        return;
-    }
-}
-
-export const getAllGutenbergBooks = async (req: Request, res: Response): Promise<void> => {
+export const getAllGutenbergBooks = controllerHandler(async (req, res) => {
     const params = { page: req.params.page || 1 }
 
-    try {
-        const bookData = await bookManager.fetchBooks(BookSources.ProjectGutenberg, params);
-        res.status(200).json(bookData);
-    } catch (error) {
-        res.status(400).json({ message: `Could not fetch books from Project Gutenberg.` });
-    }
-}
+    const bookData = await bookManager.fetchBooks(BookSources.ProjectGutenberg, params);
+    res.status(200).json(bookData);
+});
 
-export const getGutenbergBook = async (req: Request, res: Response): Promise<void> => {
+export const getGutenbergBook = controllerHandler(async (req, res) => {
     const id = req.params.id;
+    if (!id) throw new CustomError(400, 'Request missing id parameter for "ProjectGutenberg" API', false, NAMESPACE);
 
-    try {
-        const book = await bookManager.searchBookById(BookSources.ProjectGutenberg, id);
-        res.status(200).json(book);
-    } catch (error) {
-        res.status(400).json({ message: `Could not get book from Project Gutenberg with specified id: ${id}` });
-    }
-}
+    const book = await bookManager.searchBookById(BookSources.ProjectGutenberg, id);
+    res.status(200).json(book);
+});

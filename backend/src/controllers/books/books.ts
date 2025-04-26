@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+import { createControllerHandler } from "../controllerHandler";
+import { CustomError } from "@app/errors/CustomError";
 import { get } from 'lodash';
 import { ClientBook, SearchParams, StorageBook } from "@app/interfaces/Books";
 import { FilterQuery, FilterStatus } from "@app/interfaces/Filter";
@@ -8,83 +10,72 @@ import { BookFilter } from "@app/services/BookFilter";
 import { searchByQuery, searchDownloadable } from "@app/services/BookSearch";
 import bookManager from "@app/config/book-manager";
 
-export const getGeneralPopular = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const page = parseInt(req.params.page);
-        const limit = req.params.limit ? parseInt(req.params.limit) : 50;
+const NAMESPACE = "BOOKS-REQUEST";
+const controllerHandler = createControllerHandler(NAMESPACE);
 
-        const defaultRecommend = new RecommendService(); 
-        const popularBooks = await defaultRecommend.getPopularBooks(page, limit);
-        res.status(200).json(popularBooks);
-    } catch (error) {
-        const errorMessage = "Could not get most popular books of all subjects.";
-        console.error(`${errorMessage}: `, error);
-        res.status(400).json({ message: `${errorMessage}.` });
-    }
-}
+export const getGeneralPopular = controllerHandler(async (req, res) => {
+    const page = parseInt(req.params.page) || 1;
+    const limit = req.params.limit ? parseInt(req.params.limit) : 50;
 
-export const getFilterOptions = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const filters = BookFilter.submitOptions();
-        res.status(200).json(filters);
-    } catch (error) {
-        const errorMessage = "Could not submit filtering options.";
-        console.error(`${errorMessage} Error: `, error);
-        res.sendStatus(500);
-    }
-}
+    const defaultRecommend = new RecommendService(); 
+    const popularBooks = await defaultRecommend.getPopularBooks(page, limit);
+    res.status(200).json(popularBooks);
+});
 
-export const getFiltered = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const query = req.body.query as FilterQuery;
-        const endPage = parseInt(req.body.page);
-        const beginPage = endPage - 1;
+export const getFilterOptions = controllerHandler(async (req, res) => {
+    const filters = BookFilter.submitOptions();
+    if (!filters) throw new CustomError(500, "Could not retrieve any filtering options", false, NAMESPACE);
+    res.status(200).json(filters);
+});
 
-        const pageSize = 50;
-        const filtered = await BookFilter.getBooks(query, pageSize * endPage);
+export const getFiltered = controllerHandler(async (req, res) => {
+    // TODO: move all logic to service layer
+    const query = req.body.query as FilterQuery;
+    if (!query) throw new CustomError(400, "Request missing 'query' field from request body", false, NAMESPACE);
 
-        if (filtered.status === FilterStatus.Hard || filtered.status === FilterStatus.Soft) {
-            filtered.books = filtered.books.slice(beginPage * pageSize, endPage * pageSize);
-            
-            res.status(200).json(filtered)
-            return;
-        }
-        
-        const recommendation = new RecommendService();
+    const endPage = parseInt(req.body.page) || -1;
+    if (endPage === -1) throw new CustomError(400, "Request missing 'page' field from request body", false, NAMESPACE);
 
-        if (query.languages.length > 0) {
-            recommendation.updatePreferedLanguages(query.languages as Languages[]);
-        }
+    const beginPage = endPage - 1;
+    const pageSize = 50;
 
-        const retrieved = filtered.books.length;
-        const recommendationLimit = pageSize - retrieved;
-
-        const popularBooks = await recommendation.getPopularBooks(endPage, recommendationLimit);
-
+    const filtered = await BookFilter.getBooks(query, pageSize * endPage);
+    // Results with all required params are good to return
+    if (filtered.status === FilterStatus.Hard || filtered.status === FilterStatus.Soft) {
         filtered.books = filtered.books.slice(beginPage * pageSize, endPage * pageSize);
-        filtered.books = filtered.books.concat(popularBooks as ClientBook[]);
-        filtered.status = FilterStatus.Extend;
-
+        
         res.status(200).json(filtered)
-    } catch (error) {
-        const errorMessage = "Could not filter books by query provided in requst body."
-        console.error(errorMessage, `Error: ${error}`);
-        res.status(400).json({ message: errorMessage });
+        return;
     }
-}
+    
+    // Need to populate with more relaxed filtering
+    const recommendation = new RecommendService();
 
-export const lookupBookDetails = async (req: Request, res: Response): Promise<void> => {
+    // Still need hard filter on languages only
+    if (query.languages.length > 0) {
+        recommendation.updatePreferedLanguages(query.languages as Languages[]);
+    }
+
+    // After all fiters are exhausted, feed books from general recommendations
+    const retrieved = filtered.books.length;
+    const recommendationLimit = pageSize - retrieved;
+    const popularBooks = await recommendation.getPopularBooks(endPage, recommendationLimit);
+
+    filtered.books = filtered.books.slice(beginPage * pageSize, endPage * pageSize);
+    filtered.books = filtered.books.concat(popularBooks as ClientBook[]);
+    filtered.status = FilterStatus.Extend;
+
+    res.status(200).json(filtered)
+});
+
+export const lookupBookDetails = controllerHandler(async (req, res) => {
     const id = req.params.id;
+    if (!id) throw new CustomError(400, "Request missing id parameter", false, NAMESPACE);
 
-    try {
-        const book: ClientBook = await bookManager.lookupBook(id);
-        res.status(200).json(book);
-    } catch (error) {
-        const errorMessage = `Could not lookup book details by: ${id}.`;
-        console.error(`${errorMessage} Error: `, error);
-        res.status(400).json({ message: `${errorMessage}.` });
-    }
-}
+    const book: ClientBook = await bookManager.lookupBook(id);
+    if (!book) throw new CustomError(404, "Book not found", false, NAMESPACE);
+    res.status(200).json(book);
+});
 
 const mapParams = (params: any): SearchParams | null => {
     if (!params.query || isNaN(params.page)) {
@@ -138,30 +129,29 @@ const handleSearch = async (
     }
 }
 
-export const searchBook = async (req: Request, res: Response): Promise<void> => {
+export const searchBook = controllerHandler(async (req, res) => {
     return handleSearch(req, res, searchByQuery);
-}
+});
 
-export const searchDownloadableBook = async (req: Request, res: Response): Promise<void> => {
+export const searchDownloadableBook = controllerHandler(async (req, res) => {
     return handleSearch(req, res, searchDownloadable);
-}
+});
 
-export const getRecommendations = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const endPage = parseInt(req.params.page);
-        const beginPage = endPage - 1;
-        const pageSize = 50;
-        const limit = endPage * pageSize;
+export const getRecommendations = controllerHandler(async (req, res) => {
+    // TODO: lookup why pageSize is hardcoded
+    const endPage = parseInt(req.params.page) || 1;
+    const beginPage = endPage - 1;
+    const pageSize = 50;
+    const limit = endPage * pageSize;
 
-        const userId = get(req, 'identity._id') as string;
-        const recommendation = new RecommendService();
-        await recommendation.setUser(userId);
+    const userId = get(req, 'identity._id') as string;
+    if (!userId) throw new CustomError(400, "Request missing user identity", false, NAMESPACE);
+    
+    const recommendation = new RecommendService();
+    await recommendation.setUser(userId);
 
-        let recommendedBooks = await recommendation.formRecommendations(limit);
-        recommendedBooks = recommendedBooks.slice(beginPage * pageSize, endPage * pageSize);
+    let recommendedBooks = await recommendation.formRecommendations(limit);
+    recommendedBooks = recommendedBooks.slice(beginPage * pageSize, endPage * pageSize);
 
-        res.status(200).json(recommendedBooks);
-    } catch (error) {
-        console.error(error);
-    }
-}
+    res.status(200).json(recommendedBooks);
+});

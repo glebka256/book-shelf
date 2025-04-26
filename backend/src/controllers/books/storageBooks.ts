@@ -1,4 +1,5 @@
-import { Request, Response } from "express";
+import { createControllerHandler } from "../controllerHandler";
+import { CustomError } from "@app/errors/CustomError";
 import { 
     createBook, 
     deleteBookById, 
@@ -9,86 +10,59 @@ import {
 } from "@app/models/book";
 import { ClientBook } from "@app/interfaces/Books";
 
-export const getBook = async (req: Request, res: Response): Promise<void> => {
-    const id = req.params.id;
+const NAMESPACE = "STORAGE-BOOK-REQUEST";
+const controllerHandler = createControllerHandler(NAMESPACE);
+
+export const getBook = controllerHandler(async (req, res) => {
+    const bookId = req.params.id;
+    if (!bookId) throw new CustomError(400, "Request missing id parameter", false, NAMESPACE);
     
-    try {
-        const searchedBook = await getBookById(id);
-        res.status(200).json(searchedBook);
-    } catch (error) {
-        const errorMessage = `Could not get book with specified id.`;
-        console.error(`${errorMessage}: `, error);
-        res.status(400).json({ message: `${errorMessage}.` });
-    }
-}
+    const searchedBook = await getBookById(bookId);
+    if (!searchedBook) throw new CustomError(404, `Book with id: ${bookId} not found`, false, NAMESPACE);
+    res.status(200).json(searchedBook);
+});
 
-export const getAllBooks = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const books = await getBooks();
+export const getAllBooks = controllerHandler(async (req, res) => {
+    const books = await getBooks();
+    res.status(200).json(books);
+});
 
-        res.status(200).json(books);
-    } catch (error) {
-        const errorMessage = "Could not retrieve books";
-        console.error(`${errorMessage}: `, error);
-        res.status(400).json({ message: `${errorMessage}.` });
-    }
-}
+export const createNewBook = controllerHandler(async (req, res) => {
+    const bookData = req.body;
+    if (!bookData) throw new CustomError(400, "Request body missing bookData field", false, NAMESPACE);
 
-export const createNewBook = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const bookData = req.body;
+    const newBook = await createBook(bookData);
+    res.status(201).json(newBook);
+});
 
-        const newBook = await createBook(bookData);
-        res.status(201).json(newBook);
-    } catch (error) {
-        const errorMessage = "Could not create new book";
-        console.error(`${errorMessage}: `, error);
-        res.status(400).json({ message: `${errorMessage}.` });
-    }
-}
+export const updateBook = controllerHandler(async (req, res) => {   
+    const bookId = req.params.id;
+    if (!bookId) throw new CustomError(400, "Request missing bookId parameter", false, NAMESPACE);
 
-export const updateBook = async (req: Request, res: Response): Promise<void> => {   
-    try {
-        const bookData = req.body;
-        const bookId = req.params.id;
+    const bookData = req.body;
+    if (!bookData) throw new CustomError(400, "Request body missing bookData field", false, NAMESPACE);
 
-        const updatedBook = await updateBookById(bookId, bookData);
-        res.status(201).json(updatedBook);
-    } catch (error) {
-        const errorMessage = "Could not update book with specified id";
-        console.error(`${errorMessage}: `, error);
-        res.status(400).json({ message: `${errorMessage}.` });
-    }
-}
+    const updatedBook = await updateBookById(bookId, bookData);
+    res.status(201).json(updatedBook);
+});
 
-export const deleteBook = async (req: Request, res: Response): Promise<void> => {    
-    try {
-        const id = req.params.id;
+export const deleteBook = controllerHandler(async (req, res) => {    
+    const bookId = req.params.id;
+    if (!bookId) throw new CustomError(400, "Request missing bookId parameter", false, NAMESPACE);
 
-        const deletedBook = await deleteBookById(id);
-        res.status(201).json(deletedBook);
-    } catch (error) {
-        const errorMessage = "Could not update book with specified id";
-        console.error(`${errorMessage}: `, error);
-        res.status(400).json({ message: `${errorMessage}.` });
-    }
-}
+    const deletedBook = await deleteBookById(bookId);
+    if (!deleteBook) throw new CustomError(404, "Book with specified id not found", false, NAMESPACE);
 
-export const retrieveByIds = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { bookIds } = req.body;
+    res.status(201).json(deletedBook);
+});
 
-        if (!Array.isArray(bookIds) || bookIds.length === 0) {
-            res.status(400).json({ message: "IDs array is required" });
-            return;
-        }
+export const retrieveByIds = controllerHandler(async (req, res) => {
+    const { bookIds } = req.body;
 
-        const books = await queryBooks({ _id: { $in: bookIds } });
+    if (!Array.isArray(bookIds) || bookIds.length === 0)
+        throw new CustomError(400, "Missing bookIds array in request body", false, NAMESPACE);
 
-        res.status(200).json(books as ClientBook[]);
-    } catch (error) {
-        const errorMessage = "Could not retrieve books by specified IDs";
-        console.error(`${errorMessage}: `, error);
-        res.status(500).json({ message: `${errorMessage}.` });
-    }
-}
+    const books = await queryBooks({ _id: { $in: bookIds } });
+
+    res.status(200).json(books as ClientBook[]);
+});
