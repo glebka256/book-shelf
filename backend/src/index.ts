@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { ErrorRequestHandler } from 'express';
 import https from 'http';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
@@ -9,6 +9,7 @@ import cors from 'cors';
 import { connectDB } from '@app/config/db';
 import router from '@app/router';
 import { Logger } from './utils/Logger';
+import { errorHandler } from './middlewares/errors';
 
 Logger.enableDebug();
 
@@ -36,4 +37,5 @@ server.listen(port, () => {
     Logger.info(`Server running on ${host}`, "APP");
 });
 
-app.use('/', router())
+app.use('/', router());
+app.use(errorHandler as ErrorRequestHandler);
