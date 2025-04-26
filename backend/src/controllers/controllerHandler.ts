@@ -1,6 +1,5 @@
 import { CustomError } from '@app/errors/CustomError';
 import { Request, Response, NextFunction } from 'express';
-import { Logger } from '@app/utils/Logger';
 
 type ControllerHandler = (req: Request, res: Response, next: NextFunction) => Promise<void>;
 
