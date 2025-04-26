@@ -33,7 +33,7 @@ const port = process.env.PORT;
 const host = process.env.HOST;
 
 server.listen(port, () => {
-    console.log(`Server running on ${host}`);
+    Logger.info(`Server running on ${host}`, "APP");
 });
 
 app.use('/', router())

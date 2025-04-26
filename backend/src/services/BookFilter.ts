@@ -40,12 +40,6 @@ export class BookFilter {
         result.status = FilterStatus.Hard;
         result.books = filteredHard as ClientBook[];
 
-        Logger.disable();
-
-        Logger.log('Filtering...');
-        Logger.log('Filtered hard: ', filteredHard.length);
-        Logger.log('Filtered total: ', result.books.length);
-
         if (result.books.length >= requested) {
             return result;
         }
@@ -58,9 +52,6 @@ export class BookFilter {
 
         result.status = FilterStatus.Soft;
         result.books = BookMerger.findUnion(result.books as StorageBook[], filteredExtended) as ClientBook[];
-
-        Logger.log('Filtered extended: ', filteredExtended.length);
-        Logger.log('Filtered total: ', result.books.length);
 
         if (result.books.length >= requested) {
             return result;

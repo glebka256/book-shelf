@@ -1,10 +1,13 @@
 import mongoose from 'mongoose';
+import { Logger } from '@app/utils/Logger';
+
+const NAMESPACE = "DATABASE";
 
 export const connectDB = async (): Promise<void> => {
     const connectionURI = process.env.MONGO_URI;
 
     if (!connectionURI) {
-        console.log('Error: No URI specified for MongoDB connection.');
+        Logger.error('Error: No URI specified for MongoDB connection.', NAMESPACE);
         process.exit(1);
     }
 
@@ -12,10 +15,10 @@ export const connectDB = async (): Promise<void> => {
         mongoose.Promise = Promise;
         await mongoose.connect(connectionURI);
     } catch (error) {
-        console.log('Could not connect to DB: ', error);
+        Logger.error('Could not connect to DB: ', NAMESPACE, error);
     }
 
     mongoose.connection.on('error', (error: Error) => {
-        console.error('MongoDB connection error:', error);
+        Logger.error('MongoDB connection error:', NAMESPACE, error);
     });
 }
