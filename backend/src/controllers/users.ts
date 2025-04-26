@@ -1,4 +1,3 @@
-import { Request, Response } from 'express';
 import { createControllerHandler } from './controllerHandler';
 import { CustomError } from '@app/errors/CustomError';
 import { get } from 'lodash';
