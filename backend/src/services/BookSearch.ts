@@ -1,5 +1,6 @@
 import { StorageBook } from "@app/interfaces/Books";
 import { aggreageBooks } from "@app/models/book";
+import { Logger } from "@app/utils/Logger";
 
 export async function searchByQuery(query: string, start: number, limit: number): Promise<StorageBook[] | null> {
     try {
@@ -35,7 +36,7 @@ export async function searchByQuery(query: string, start: number, limit: number)
             
         return documents as StorageBook[];
     } catch (error) {
-        console.error("Error searching books: ", error);
+        Logger.error(`Error searching books by query '${query}':`, "SEARCH-QUERY", error);
         return null;
     }
 }

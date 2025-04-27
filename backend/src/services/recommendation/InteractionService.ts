@@ -2,6 +2,7 @@ import { UserInteraction, ClientInteraction, interactionTypes, StorageInteractio
 import { ValidationResponse } from "@app/interfaces/Util"
 import { getUserInteractions, updateUserInteractions } from "@app/models/user"
 import { isISO8601 } from "@app/utils"
+import { Logger } from "@app/utils/Logger";
 
 export class InteractionService {
     private userId: string;
@@ -90,7 +91,7 @@ export class InteractionService {
             const user = await getUserInteractions(this.userId);
             return this.mapFromStorage(user.interactions);
         } catch (error) {
-            console.error("Error retrieving user interactions from DB: ", error);
+            Logger.error("Error retrieving user interactions from DB:", "INTERACTION-SERVICE", error);
             return [];
         }
     }

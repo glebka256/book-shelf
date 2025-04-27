@@ -4,7 +4,6 @@ import { RecommendEngine } from "./RecommendEngine";
 import { getBooksByIds } from "@app/models/book";
 import { StorageBook } from "@app/interfaces/Books";
 import { Languages } from "@app/interfaces/Util";
-import { Logger } from "@app/utils/Logger";
 
 export class RecommendService {
     private user: RecommendationUser;

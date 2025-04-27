@@ -5,6 +5,9 @@ import { GutenbergAdapter } from "./adapters/GutenbergAdapter";
 import { ClientBook, StorageBook } from "@app/interfaces/Books";
 import { getBookById, addBookLinkProperty, updateBookCompleteStatus } from "@app/models/book";
 import { FileSizeMetric } from "@app/interfaces/Util";
+import { Logger } from "@app/utils/Logger";
+
+const NAMESPACE = "BOOK-MANAGER";
 
 export class BookManager {
     private adapters: Map<BookSources, IBookServiceAdapter>;
@@ -162,7 +165,7 @@ export class BookManager {
 
             await addBookLinkProperty(book.id, book.link);
         } catch (error) {
-            console.error(`Could not extend book with id: ${book.id}`);
+            Logger.error(`Could not extend book with id '${book.id}':`, NAMESPACE, error);
         }
     }
 
@@ -195,7 +198,7 @@ export class BookManager {
 
             return downloads;
         } catch (error) {
-            console.error("Error in getting downloads by title from Annas's Archive: ", error);
+            Logger.error("Error getting downloads by title from Annas's Archive: ", NAMESPACE, error);
             return null;
         }
     }
