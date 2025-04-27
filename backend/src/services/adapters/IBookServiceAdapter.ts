@@ -2,6 +2,8 @@ import { AxiosInstance, AxiosResponse } from "axios";
 
 import { BooksData } from "@app/interfaces/Books";
 
+export const ADAPTER_NAMESPACE = "BOOK-API-ADAPTER";
+
 export interface IBookServiceAdapter {
     apiClient: AxiosInstance;
 

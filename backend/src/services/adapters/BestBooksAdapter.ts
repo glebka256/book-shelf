@@ -18,9 +18,8 @@ export class BestBooksAdapter implements IBookServiceAdapter {
 
         const response = await this.apiClient.request(options);
 
-        if (!this.validFetchResponse(response)) {
+        if (!this.validFetchResponse(response))
             throw new Error("Invalid Best books API response");
-        }
 
         return {
             src: BookSources.GoodreadsBooks,
@@ -38,9 +37,8 @@ export class BestBooksAdapter implements IBookServiceAdapter {
 
         const response = await  this.apiClient.request(options);
 
-        if (!response.data) {
-            throw new Error("Could not search book by id on Best books API.")
-        }
+        if (!response.data)
+            throw new Error("Missing data from Best books API response.")
 
         return this.mapBook(response.data);
     }

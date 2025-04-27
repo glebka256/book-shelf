@@ -22,9 +22,8 @@ export class GoodreadsAdapter implements IBookServiceAdapter {
 
         const response = await this.apiClient.request(options);
 
-        if (!this.validFetchResponse(response)) {
+        if (!this.validFetchResponse(response))
             throw new Error("Invalid Goodreads API response");
-        }
 
         return {
             src: BookSources.Goodreads,

@@ -1,7 +1,8 @@
 import { AxiosInstance, AxiosResponse } from "axios";
 import { projectGutenbergClient } from "../apiClients";
-import { IBookServiceAdapter } from "./IBookServiceAdapter";
+import { ADAPTER_NAMESPACE, IBookServiceAdapter } from "./IBookServiceAdapter";
 import { BookSources, BooksData, ProjectGutenbergBook } from "@app/interfaces/Books";
+import { Logger } from "@app/utils/Logger";
 
 export class GutenbergAdapter implements IBookServiceAdapter {
     apiClient: AxiosInstance;
@@ -13,9 +14,8 @@ export class GutenbergAdapter implements IBookServiceAdapter {
     async fetchBooks(query: string, page=1 ): Promise<BooksData> {
         const response = await this.apiClient.get(`/book/?page=${page}`);
         
-        if (!this.validFetchResponse(response)) {
+        if (!this.validFetchResponse(response))
             throw new Error ("Invalid Project Gutenberg API response.");
-        }
 
         return {
             src: BookSources.ProjectGutenberg,
@@ -41,7 +41,7 @@ export class GutenbergAdapter implements IBookServiceAdapter {
 
             return bookData;
         } catch (error) {
-            console.error("Error searching book by ID: ", error);
+            Logger.error("Error searching book by ProjectGutenberg ID: ", ADAPTER_NAMESPACE , error);
             return null;
         }
     }

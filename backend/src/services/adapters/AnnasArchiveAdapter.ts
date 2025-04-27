@@ -1,5 +1,6 @@
 import { AxiosInstance, AxiosResponse } from "axios";
-import { IBookServiceAdapter } from "./IBookServiceAdapter";
+import { Logger } from "@app/utils/Logger";
+import { IBookServiceAdapter, ADAPTER_NAMESPACE } from "./IBookServiceAdapter";
 import { annasArchiveClient } from "../apiClients";
 import { BooksData, BookSources, AnnasArchiveBook, DownloadInfo } from "@app/interfaces/Books";
 import { splitFileSize } from "@app/utils";
@@ -24,9 +25,8 @@ export class AnnasArchiveAdapter implements IBookServiceAdapter {
         try {
             const response = await this.apiClient.request(options);
 
-            if (!this.validFetchResponse) {
+            if (!this.validFetchResponse)
                 throw new Error("Invalid Anna\'s Archive API response");
-            }
 
             const totalResults = response.data.total
 
@@ -37,7 +37,7 @@ export class AnnasArchiveAdapter implements IBookServiceAdapter {
                 currentPage: totalResults / 10
             }
         } catch (error) {
-            console.error("Could not fetch books from Anna's Archive: ", error);
+            Logger.error("Could not fetch books from Anna's Archive", ADAPTER_NAMESPACE, error);
             return null;
         }
     }
@@ -93,15 +93,12 @@ export class AnnasArchiveAdapter implements IBookServiceAdapter {
         try {
             const response = await this.apiClient.request(options);
 
-            if (!response.data) {
-                console.log("Could not get download for md5: ", md5);
-                return [];
-            }
+            if (!response.data)
+                throw new Error("Missing Anna\'s Archive API response data");
 
             return response.data;
         } catch (error) {
-            console.error("Could not get download for md5: ", md5);
-            console.error("Error: ", error);
+            console.error(`Could not get download for md5: ${md5}.`, error);
             return [];
         }
     }

@@ -18,9 +18,8 @@ export class OpenLibraryAdapter implements IBookServiceAdapter {
             params: { ...formattedQuery }
         });
 
-        if (!this.validFetchResponse(response)) {
+        if (!this.validFetchResponse(response))
             throw new Error ("Invalid Open Library API response");
-        }
 
         return {
             src: BookSources.OpenLibrary,
