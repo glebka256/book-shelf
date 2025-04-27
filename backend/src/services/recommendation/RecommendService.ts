@@ -31,7 +31,7 @@ export class RecommendService {
      * Retrieves a list of popular books sorted by default for any user
      * @param page - Current page number (1-indexed)
      * @param limit - Number of books per page
-     * @returns - Most popular books sorted by book.rating
+     * @returns - Most popular shuffled across whole dataset with rating consideration
      */
     async getPopularBooks(page: number, limit: number): Promise<StorageBook[]> {
         const skip = (page - 1) * limit;
@@ -47,6 +47,7 @@ export class RecommendService {
         return filteredBooks.slice(skip, skip + limit);
     }
 
+    // Shuffling only works for a limit number of books unlike getPopularBooks
     async formRecommendations(limit: number): Promise<StorageBook[]> {
         let userInteractions = this.user.getAllInteractions();
         userInteractions = this.user.sortInteractions(userInteractions);
@@ -56,8 +57,10 @@ export class RecommendService {
 
         const aggregatedIds = Array.from(recommedationIds.values()).flat();
         const shuffledIds = this.engine.shuffleArray<string>(aggregatedIds);
-        const resultBooks = await getBooksByIds(shuffledIds);
+        const populatedBookDocs = await getBooksByIds(shuffledIds);
 
-        return extractBookFromDoc(resultBooks);
+        let resultBooks: StorageBook[] = extractBookFromDoc(populatedBookDocs);
+        resultBooks = await this.engine.getCategoryMixedBooks(resultBooks);
+        return resultBooks;
     }
 }
