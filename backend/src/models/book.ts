@@ -1,3 +1,4 @@
+import { SortQuery } from "@app/interfaces/Sort";
 import mongoose from "mongoose";
 
 const BookSchema = new mongoose.Schema({
@@ -41,11 +42,17 @@ export const getBooks = () => BookModel.find();
 export const queryBooks = (query: Object) => BookModel.find(query);
 export const queryPaginated = (page: number, limit: number) => 
     BookModel.find({}).skip((page - 1) * limit).limit(limit).exec();
+export const sortBooks = (query: SortQuery) => 
+    BookModel.find({})
+        .sort({ [query.sortBy]: query.order })
+        .skip((query.page - 1) * query.limit)
+        .limit(query.limit)
+        .exec();
 export const aggreageBooks = (aggregator: Array<any>) => BookModel.aggregate(aggregator);
+
 export const getBookById = (id: String) => BookModel.findById(id);
 export const getBooksByIds = (bookIds: String[]) => queryBooks({ _id: { $in: bookIds } });
 export const getBookByTitle = (title: String) => BookModel.findOne({ title });
-
 export const getBooksByGenres = (genres: [String]) => {
     return BookModel.find({ subject: { $in: genres } });
 }

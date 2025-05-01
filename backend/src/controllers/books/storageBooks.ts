@@ -2,6 +2,8 @@ import { createControllerHandler } from "../controllerHandler";
 import { CustomError } from "@app/errors/CustomError";
 import * as bookModel from "@app/models/book";
 import { ClientBook } from "@app/interfaces/Books";
+import { SortableField, SortQuery } from "@app/interfaces/Sort";
+import { SortOrder } from "mongoose";
 
 const NAMESPACE = "STORAGE-BOOK-REQUEST";
 const controllerHandler = createControllerHandler(NAMESPACE);
@@ -22,21 +24,38 @@ export const getAllBooks = controllerHandler(async (req, res) => {
 
 export const getPaginatedBooks = controllerHandler(async (req, res) => {
     const page = parseInt(req.params.page);
-    if (!page) throw new CustomError(400, "Request missing page parameter", false, NAMESPACE);
-    if (page <= 0) throw new CustomError(400, "Pagination is 1-indexed", false, NAMESPACE);
-
-    const limit = parseInt(req.params.limit);
-    if (!limit) throw new CustomError(400, "Request missing limit parameter", false, NAMESPACE);
-    
+    const limit = parseInt(req.params.limit);    
     const totalItems = await bookModel.getTotalEntries();
     const totalPages = Math.ceil(totalItems / limit);
 
-    if (page > totalPages) {
+    if (page > totalPages)
         throw new CustomError(400, "Page number is higher then there are pages in total", false, NAMESPACE); 
-    }
 
     const books = await bookModel.queryPaginated(page, limit);
 
+    res.status(200).json({
+        currentPage: page,
+        totalPages: totalPages,
+        totalBooks: totalItems,
+        books: books
+    });
+});
+
+export const getSortedBooks = controllerHandler(async (req, res) => {
+    const page = parseInt(req.params.page);
+    const limit = parseInt(req.params.limit);
+    const totalItems = await bookModel.getTotalEntries();
+    const totalPages = Math.ceil(totalItems / limit);
+
+    if (page > totalPages)
+        throw new CustomError(400, "Page number is higher then there are pages in total", false, NAMESPACE); 
+
+    const sortBy = req.body.sortBy as SortableField;
+    const orderDirection = req.body.order as SortOrder;
+    const order = orderDirection === 'asc' ? 1 : -1;
+    const sortQuery: SortQuery = { sortBy, order, limit, page };
+
+    const books = await bookModel.sortBooks(sortQuery);
     res.status(200).json({
         currentPage: page,
         totalPages: totalPages,

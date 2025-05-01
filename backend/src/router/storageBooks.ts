@@ -1,21 +1,15 @@
 import { Router } from 'express';
 
-import { 
-    createNewBook,
-    deleteBook,
-    getAllBooks,
-    getBook, 
-    getPaginatedBooks, 
-    retrieveByIds, 
-    updateBook
-} from '@app/controllers/books/storageBooks';
+import * as controller from "@app/controllers/books/storageBooks";
+import { validatePagination, validateSortRequest } from '@app/middlewares/validation';
 
 export default (router: Router): void => {
-    router.get('/books/', getAllBooks);
-    router.get('/books/paginated/:page/:limit', getPaginatedBooks)
-    router.get('/books/:id', getBook);
-    router.post('/books/', createNewBook);
-    router.put('/books/:id', updateBook);
-    router.delete('/books/:id', deleteBook);
-    router.post('/books/batch', retrieveByIds);
+    router.get('/books/', controller.getAllBooks);
+    router.get('/books/paginated/:page/:limit', validatePagination, controller.getPaginatedBooks);
+    router.get('/books/sorted/:page/:limit', validatePagination, validateSortRequest, controller.getSortedBooks);
+    router.get('/books/:id', controller.getBook);
+    router.post('/books/', controller.createNewBook);
+    router.put('/books/:id', controller.updateBook);
+    router.delete('/books/:id', controller.deleteBook);
+    router.post('/books/batch', controller.retrieveByIds);
 }
