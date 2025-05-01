@@ -40,8 +40,8 @@ const handleTabChange = (tab: string) => {
 
 <style scoped lang="scss">
 .store-manager {
-  margin: 0 auto;
-  padding: 2rem;
+  margin: 0 0 auto 2rem;
+  padding: 1rem;
   
   h1 {
     margin-bottom: 1.5rem;
