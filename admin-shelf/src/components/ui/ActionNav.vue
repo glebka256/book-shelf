@@ -1,21 +1,28 @@
 <script setup lang="ts">
-import { defineProps, defineEmits, ref } from "vue";
+import { defineProps, PropType, defineEmits, ref } from "vue";
+
+interface NavigationTab {
+  id: string,
+  name: string
+}
 
 const props = defineProps({
+  tabs: {
+    type: Array as PropType<NavigationTab[]>,
+    required: true
+  },
   activeTab: {
     type: String,
+    required: true
+  },
+  title: {
+    type: String,
     required: false,
-    default: 'books'
-  }
+    default: ""
+  },
 });
 
 const emit = defineEmits(['select-tab']);
-
-const tabs = [
-  { id: "books",  name: "Books"      },
-  { id: "create", name: "Create"     },
-  { id: "stats",  name: "Statistics" },
-]
 
 const currentTab = ref<string>(props.activeTab);
 
@@ -26,22 +33,22 @@ const selectTab = (tabId: string) => {
 </script>
 
 <template>
- <div class="action-nav">
-  <div class="nav-container">
-    <h2 class="title">Storage Manager</h2>
-    <ul class="nav-list">
-      <li
-        v-for="tab in tabs"
-        :key="tab.id"
-        class="nav-item"
-        :class="{ active: currentTab === tab.id }"
-        @click="selectTab(tab.id)"
-      >
-        {{ tab.name }}
-      </li>
-    </ul>
+   <div class="action-nav">
+    <div class="nav-container">
+      <h2 class="title">{{ props.title}}</h2>
+      <ul class="nav-list">
+        <li
+          v-for="tab in props.tabs"
+          :key="tab.id"
+          class="nav-item"
+          :class="{ active: currentTab === tab.id }"
+          @click="selectTab(tab.id)"
+        >
+          {{ tab.name }}
+        </li>
+      </ul>
+    </div>
   </div>
- </div>
 </template>
 
 <style scoped lang="scss">

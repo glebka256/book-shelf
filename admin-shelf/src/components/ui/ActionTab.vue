@@ -1,19 +1,17 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
 
-// Define props to accept content and visibility state
 const props = defineProps<{
   tabId: string;
   activeTab: string;
 }>();
 
-// Computed property to determine if tab is active
+// Computed property determines if component is displayed
 const isActive = () => props.tabId === props.activeTab;
 </script>
 
 <template>
   <div class="action-tab" v-if="isActive()">
-    <!-- Tab content will go here -->
     <slot></slot>
   </div>
 </template>

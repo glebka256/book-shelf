@@ -1,10 +1,15 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import ActionNav from './components/ActionNav.vue';
-import ActionTab from './components/ActionTab.vue';
+import ActionNav from '@/components/ui/ActionNav.vue';
+import ActionTab from '@/components/ui/ActionTab.vue';
 
-// Active tab to be displayed in StorageManager
 const activeTab = ref('books');
+
+const tabs = [
+  { id: "books",  name: "Books"      },
+  { id: "create", name: "Create"     },
+  { id: "stats",  name: "Statistics" },
+]
 
 // Handle tab changes from ActionNav
 const handleTabChange = (tab: string) => {
@@ -16,8 +21,10 @@ const handleTabChange = (tab: string) => {
   <div class="store-manager"> 
     <!-- Navigation component -->
     <ActionNav 
-      :activeTab="activeTab" 
-      @select-tab="handleTabChange" 
+      :tabs="tabs"
+      :activeTab="activeTab"
+      title="Storage Manager"
+      @select-tab="handleTabChange"
     />
     
     <!-- Tab content containers -->
@@ -42,10 +49,5 @@ const handleTabChange = (tab: string) => {
 .store-manager {
   margin: 0 0 auto 2rem;
   padding: 1rem;
-  
-  h1 {
-    margin-bottom: 1.5rem;
-    color: #333;
-  }
 }
 </style>
