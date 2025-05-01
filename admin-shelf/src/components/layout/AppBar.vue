@@ -9,7 +9,7 @@ interface NavigationRoute {
 
 const navigationRoutes: NavigationRoute[] = [
   { link: '/', faIcon: "fas fa-home",        text: "Home"                 },
-  { link: '/', faIcon: "fas fa-database",    text: "Storage Manager"      },
+  { link: '/storage-manager', faIcon: "fas fa-database",    text: "Storage Manager"      },
   { link: '/', faIcon: "fas fa-layer-group", text: "Sources Manager"      },
   { link: '/', faIcon: "fas fa-chart-line",  text: "Statistics dashboard" },
   { link: '/', faIcon: "fas fa-users",       text: "Users dashboard"      },
