@@ -36,8 +36,11 @@ BookSchema.index({
 
 const BookModel = mongoose.model('Book', BookSchema);
 
+export const getTotalEntries = () => BookModel.countDocuments();
 export const getBooks = () => BookModel.find();
 export const queryBooks = (query: Object) => BookModel.find(query);
+export const queryPaginated = (page: number, limit: number) => 
+    BookModel.find({}).skip((page - 1) * limit).limit(limit).exec();
 export const aggreageBooks = (aggregator: Array<any>) => BookModel.aggregate(aggregator);
 export const getBookById = (id: String) => BookModel.findById(id);
 export const getBooksByIds = (bookIds: String[]) => queryBooks({ _id: { $in: bookIds } });
