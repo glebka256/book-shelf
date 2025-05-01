@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import ActionNav from '@/components/ui/ActionNav.vue';
 import ActionTab from '@/components/ui/ActionTab.vue';
+import BookGrid from './books-view/BooksView.vue';
 
 const activeTab = ref('books');
 
@@ -29,8 +30,8 @@ const handleTabChange = (tab: string) => {
     
     <!-- Tab content containers -->
     <ActionTab tabId="books" :activeTab="activeTab">
-      <h2>Books Library</h2>
-      <p>Your book inventory will appear here.</p>
+      <h2>All books</h2>
+      <BookGrid />
     </ActionTab>
     
     <ActionTab tabId="create" :activeTab="activeTab">
