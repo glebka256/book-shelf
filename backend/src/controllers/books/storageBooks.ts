@@ -3,7 +3,6 @@ import { CustomError } from "@app/errors/CustomError";
 import * as bookModel from "@app/models/book";
 import { ClientBook } from "@app/interfaces/Books";
 import { SortableField, SortQuery } from "@app/interfaces/Sort";
-import { SortOrder } from "mongoose";
 
 const NAMESPACE = "STORAGE-BOOK-REQUEST";
 const controllerHandler = createControllerHandler(NAMESPACE);
@@ -51,7 +50,7 @@ export const getSortedBooks = controllerHandler(async (req, res) => {
         throw new CustomError(400, "Page number is higher then there are pages in total", false, NAMESPACE); 
 
     const sortBy = req.body.sortBy as SortableField;
-    const orderDirection = req.body.order as SortOrder;
+    const orderDirection = req.body.order;
     const order = orderDirection === 'asc' ? 1 : -1;
     const sortQuery: SortQuery = { sortBy, order, limit, page };
 
