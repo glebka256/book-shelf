@@ -15,8 +15,16 @@ Logger.enableDebug();
 
 const app = express();
 
+const allowedOrigins = ['http://localhost:8081', 'http://localhost:8085'];
+
 app.use(cors({
-    origin: 'http://localhost:8081',
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Origin not allowed by CORS'));
+        }
+    },
     credentials: true,
 }));
 
