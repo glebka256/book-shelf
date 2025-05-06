@@ -1,27 +1,27 @@
 import baseInstance from "@/config/axios"
-import { BookData } from "@/types/Book.types"
+import { BooksResponseData } from "./booksView.types";
 
-export const fetchBooks = async (page: number, limit: number): Promise<BookData[]> => {
-    const response = await baseInstance.get(
+export const getBooks = async (page: number, limit: number): Promise<BooksResponseData> => {
+    const response = await baseInstance.get<BooksResponseData>(
         `/books/paginated/${page}/${limit}`
     );
     console.log(response);
 
-    return response.data.books;
+    return response.data;
 }
 
-export const fetchSortedBooks = async (
+export const getSortedBooks = async (
     page: number, 
     limit: number, 
     sortBy: string, 
     order: 'asc' | 'desc'
-): Promise<BookData[]> => {
-    const response = await baseInstance.post(
+): Promise<BooksResponseData> => {
+    const response = await baseInstance.post<BooksResponseData>(
         `/books/sorted/${page}/${limit}`,
         {
             sortBy: sortBy,
             order: order
         }
     );
-    return response.data.books;
+    return response.data;
 }
