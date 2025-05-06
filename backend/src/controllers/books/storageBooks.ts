@@ -1,5 +1,6 @@
 import { createControllerHandler } from "../controllerHandler";
 import { CustomError } from "@app/errors/CustomError";
+import mongoose from "mongoose";
 import * as bookModel from "@app/models/book";
 import { ClientBook } from "@app/interfaces/Books";
 import { SortableField, SortQuery } from "@app/interfaces/Sort";
@@ -67,8 +68,17 @@ export const createNewBook = controllerHandler(async (req, res) => {
     const bookData = req.body;
     if (!bookData) throw new CustomError(400, "Request body missing bookData field", false, NAMESPACE);
 
-    const newBook = await bookModel.createBook(bookData);
-    res.status(201).json(newBook);
+    // Catch validation errors to return 400 on incorrect request body
+    try {
+        const newBook = await bookModel.createBook(bookData);
+        res.status(201).json(newBook);
+    } catch (error) {
+        if (error instanceof mongoose.Error.ValidationError) {
+            throw new CustomError(400, "Validation failed while creating book: " + error, false, NAMESPACE);
+        } else {
+            throw error;
+        }
+    }
 });
 
 export const updateBook = controllerHandler(async (req, res) => {   
@@ -78,8 +88,17 @@ export const updateBook = controllerHandler(async (req, res) => {
     const bookData = req.body;
     if (!bookData) throw new CustomError(400, "Request body missing bookData field", false, NAMESPACE);
 
-    const updatedBook = await bookModel.updateBookById(bookId, bookData);
-    res.status(201).json(updatedBook);
+    // Catch validation errors to return 400 on incorrect request body
+    try {
+        const updatedBook = await bookModel.updateBookById(bookId, bookData);
+        res.status(201).json(updatedBook);
+    } catch (error) {
+        if (error instanceof mongoose.Error.ValidationError) {
+            throw new CustomError(400, "Validation failed while updating book: " + error, false, NAMESPACE);
+        } else {
+            throw error;
+        }
+    }
 });
 
 export const deleteBook = controllerHandler(async (req, res) => {    

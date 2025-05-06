@@ -1,4 +1,5 @@
 import { SortQuery } from "@app/interfaces/Sort";
+import books from "@app/router/books";
 import mongoose from "mongoose";
 
 const BookSchema = new mongoose.Schema({
@@ -82,8 +83,9 @@ export const getBooksByCriteria = (
     ]);
 }
 
-export const createBook = (values: Record<string, any>) => {
-    new BookModel(values).save().then((book) => book.toObject());
+export const createBook = async (values: Record<string, any>) => {
+    const book = await new BookModel(values).save();
+    return book.toObject();
 }
 export const deleteBookById = (id: string) => BookModel.findOneAndDelete({ _id: id });
 export const updateBookById = async (id: string, values: Record<string, any>) => {
