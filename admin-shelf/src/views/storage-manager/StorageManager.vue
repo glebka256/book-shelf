@@ -30,7 +30,6 @@ const handleTabChange = (tab: string) => {
     
     <!-- Tab content containers -->
     <ActionTab tabId="books" :activeTab="activeTab">
-      <h2>All books</h2>
       <BookGrid />
     </ActionTab>
     

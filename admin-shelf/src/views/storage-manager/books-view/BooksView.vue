@@ -1,86 +1,37 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { BookData } from "@/types/Book.types";
 import BookCard from "./components/BookCard.vue";
+import { getBooks } from "./booksView";
+import PaginationBox from "@/components/ui/PaginationBox.vue";
 
-// Sample data imitating server response.
-const booksData = ref<BookData[]>([
-  {
-    "_id": "6759f71478067a897c733cba",
-    "coverUrl": "https://covers.openlibrary.org/b/id/8243314-L.jpg",
-    "title": "The Iron Heel",
-    "author": ["Jack London"],
-    "subject": [
-      "Revolutions, fiction",
-      "Oligarchy, fiction",
-      "Utopias, fiction",
-      "Revolutionaries, fiction",
-      "Dysyopias, fiction",
-      "Science Fiction",
-      "Socialism, fiction"
-    ],
-    "rating": 2.996213,
-    "publishedYear": 1924,
-    "language": ["yid", "fin", "ger", "spa", "swe", "eng", "chi", "fre", "por"],
-    "ebookAccess": true,
-    "complete": true,
-    "link": {
-      "size": {
-        "value": 0.5,
-        "metric": "MB"
-      },
-      "readUrl": "https://openlibrary.org/isbn/9781438547824",
-      "downloadUrl": "https://www.gutenberg.org/ebooks/24848.epub.images",
-      "format": "epub",
-      "buyUrl": "https://www.amazon.com/dp/9781438547824",
-      "_id": "67601fbc314139afa2c0b882"
-    }
-  },
-  {
-    "_id": "6759f71478067a897c733cbd",
-    "coverUrl": "https://covers.openlibrary.org/b/id/14364546-L.jpg",
-    "title": "Lilith",
-    "author": ["George MacDonald"],
-    "subject": [
-      "Fiction, romance, fantasy",
-      "Fiction, general",
-      "Christian fiction"
-    ],
-    "rating": 2.3975053,
-    "publishedYear": 1924,
-    "language": ["ita", "eng", "ger"],
-    "ebookAccess": true,
-    "complete": true,
-    "link": {
-      "size": {
-        "value": 0.5,
-        "metric": "MB"
-      },
-      "readUrl": "https://openlibrary.org/isbn/1098765265",
-      "downloadUrl": "https://www.gutenberg.org/ebooks/1640.epub.images",
-      "format": "epub",
-      "buyUrl": "https://www.amazon.com/dp/1098765265",
-      "_id": "678fb96c4f6d2f65b8ea6a1a"
-    }
-  },
-  {
-    "_id": "6759f71478067a897c733cc0",
-    "coverUrl": "https://covers.openlibrary.org/b/id/802982-L.jpg",
-    "title": "Anthem",
-    "author": ["Ayn Rand", "Erin Bateman"],
-    "subject": [
-      "Fiction",
-      "Individuality",
-      "Time travel in fiction",
-      "Individuality in fiction"
-    ],
-    "rating": 3.0934825,
-    "publishedYear": 1936,
-    "language": ["eng"],
-    "ebookAccess": true,
-    "complete": false
-  }
-]);
+const booksData = ref<BookData[]>([]);
+const totalBooks = ref<number>(0);
+const page = ref<number>(1);
+const totalPages = ref<number>(1);
+const limit = 50;
+
+const updateBooks = async (): Promise<void> => {
+  const response = await getBooks(page.value, limit);
+  booksData.value = response.books;
+  totalPages.value = response.totalPages;
+  totalBooks.value = response.totalBooks;
+}
+
+const handleLeftPageClick = async (): Promise<void> => {
+  page.value--;
+  updateBooks();
+}
+
+const handleRightPageClick = async (): Promise<void> => {
+  page.value++;
+  updateBooks();
+}
+
+const handlePageClick = async (newPage: number): Promise<void> => {
+  page.value = newPage
+  updateBooks();
+}
 
 const selectedBookId = ref<string | null>(null);
 
@@ -95,10 +46,15 @@ const toggleBookDetails = (bookId: string) => {
 const isSelected = (bookId: string): boolean => {
   return selectedBookId.value === bookId;
 };
+
+onMounted(async () => {
+  updateBooks();
+});
 </script>
 
 <template>
   <div class="books-view">
+    <h3>Books total: {{ totalBooks }}</h3>
     <div class="books-container">
       <div 
         v-for="book in booksData" 
@@ -113,6 +69,13 @@ const isSelected = (bookId: string): boolean => {
         />
       </div>
     </div>
+    <PaginationBox 
+      :currentPage="page"
+      :totalPages="totalPages"
+      @leftPageClick="handleLeftPageClick"
+      @rightPageClick="handleRightPageClick"
+      @pageClick="handlePageClick"
+    />
   </div>
 </template>
 
