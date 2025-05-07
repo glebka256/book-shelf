@@ -118,8 +118,12 @@ const handleRemove = () => emit('remove');
         border-color: #888;
       }
 
-      &.delete-btn:hover, &.edit-btn:hover {
-        background-color: rgba(244, 67, 54, 0.1);
+      &.edit-btn:hover {
+        background-color: rgba(227, 93, 20, 0.6);
+      }
+
+      &.delete-btn:hover{
+        background-color: rgba(244, 67, 54, 0.6);
       }
 
       .action-icon {
