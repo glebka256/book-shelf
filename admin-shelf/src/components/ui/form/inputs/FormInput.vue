@@ -81,44 +81,5 @@ const updateValue = (event: Event) => {
 </template>
 
 <style scoped lang="scss">
-.form-group {
-  margin-bottom: 1rem;
-  
-  label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    font-size: 0.9rem;
-  }
-  
-  input {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
-    background-color: white;
-    transition: border-color 0.2s;
-    
-    &:focus {
-      outline: none;
-      border-color: #4a90e2;
-      box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
-    }
-    
-    &.has-error {
-      border-color: #dc3545;
-      
-      &:focus {
-        box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
-      }
-    }
-  }
-  
-  .error-message {
-    color: #dc3545;
-    font-size: 0.8rem;
-    margin-top: 0.25rem;
-  }
-}
+@import "@/styles/form.module.scss";
 </style>
