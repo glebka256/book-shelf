@@ -3,6 +3,7 @@ import { reactive, ref, defineEmits, Ref } from 'vue';
 import FormWrapper from '@/components/ui/form/FormWrapper.vue';
 import { BookFormDTO } from './bookForm.types';
 import FormInput from '@/components/ui/form/inputs/FormInput.vue';
+import FormSelect from '@/components/ui/form/inputs/FormSelect.vue';
 
 // Define emit
 const emit = defineEmits<{
@@ -37,6 +38,22 @@ const initialBookState: BookFormDTO = {
     buyUrl: ''
   }
 };
+
+// Selector options
+const options = {
+  sizeMetric: [
+    { value: 'KB' },
+    { value: 'MB' },
+    { value: 'GB' }
+  ],
+  fileFormat: [
+    { value: 'pdf', label: 'PDF' },
+    { value: 'epub', label: 'EPUB' },
+    { value: 'mobi', label: 'MOBI' },
+    { value: 'azw3', label: 'AZW3' },
+    { value: 'txt', label: 'TXT' }
+  ],
+}
 
 // Reactive state
 const book = reactive<BookFormDTO>({ ...initialBookState });
@@ -311,26 +328,20 @@ const resetForm = () => {
             step="0.1"
             placeholder="File size value"
           />
-            
-          <div class="form-group">
-            <label for="size-metric">Size Metric</label>
-            <select id="size-metric" v-model="book.link.size.metric">
-              <option value="KB">KB</option>
-              <option value="MB">MB</option>
-              <option value="GB">GB</option>
-            </select>
-          </div>
-          
-          <div class="form-group">
-            <label for="format">File Format</label>
-            <select id="format" v-model="book.link.format">
-              <option value="pdf">PDF</option>
-              <option value="epub">EPUB</option>
-              <option value="mobi">MOBI</option>
-              <option value="azw3">AZW3</option>
-              <option value="txt">TXT</option>
-            </select>
-          </div>
+
+          <FormSelect 
+            id="size-metric"
+            label="Size Metric"
+            v-model="book.link.size.metric"
+            :options="options.sizeMetric"
+          />
+
+          <FormSelect 
+            id="format"
+            label="File Format"
+            v-model="book.link.format"
+            :options="options.fileFormat"
+          />
           
           <FormInput
             id="readUrl"
