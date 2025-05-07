@@ -2,6 +2,7 @@
 import { reactive, ref, defineEmits, Ref } from 'vue';
 import FormWrapper from '@/components/ui/form/FormWrapper.vue';
 import { BookFormDTO } from './bookForm.types';
+import FormInput from '@/components/ui/form/inputs/FormInput.vue';
 
 // Define emit
 const emit = defineEmits<{
@@ -113,17 +114,15 @@ const resetForm = () => {
   <div class="book-form">
     <h2>Add New Book</h2>
     <form @submit.prevent="submitForm">
+      <!--Basic Information-->
       <FormWrapper title="Basic Information">
-        <div class="form-group">
-          <label for="title">Title *</label>
-          <input 
-            id="title" 
-            v-model="book.title" 
-            type="text" 
-            required
-            placeholder="Enter book title"
-          />
-        </div>
+        <FormInput 
+          id="title"
+          v-model.string="book.title"
+          label="Title *"
+          required
+          placeholder="Enter book title"
+        />
         
         <div class="form-group">
           <label>Authors *</label>
@@ -158,17 +157,15 @@ const resetForm = () => {
         </div>
         
         <div class="form-grid">
-          <div class="form-group">
-            <label for="publishedYear">Published Year</label>
-            <input 
-              id="publishedYear" 
-              v-model.number="book.publishedYear" 
-              type="number" 
-              min="1000"
-              max="2100"
-              placeholder="Year published"
-            />
-          </div>
+          <FormInput
+            id="publishedYear"
+            v-model.number="book.publishedYear"
+            label="Published Year"
+            type="number"
+            :min="1000"
+            :max="2100"
+            placeholder="Year published"
+          />
           
           <div class="form-group">
             <label>Languages</label>
@@ -199,6 +196,7 @@ const resetForm = () => {
         </div>
       </FormWrapper>        
       
+      <!--Meta Information-->
       <FormWrapper title="Meta Information">
         <div class="form-group">
           <label for="isbn">ISBN</label>
@@ -275,13 +273,14 @@ const resetForm = () => {
         </div>
       </FormWrapper>
       
+      <!--Media and Links-->
       <FormWrapper title="Media & Links">  
         <div class="form-group">
-          <label for="coverUrl">Cover URL</label>
-          <input 
-            id="coverUrl" 
-            v-model="book.coverUrl" 
-            type="url" 
+          <FormInput
+            id="coverUrl"
+            v-model="book.coverUrl"
+            label="Cover URL"
+            type="url"
             placeholder="URL to book cover image"
           />
           <div class="cover-preview" v-if="book.coverUrl">
@@ -289,43 +288,37 @@ const resetForm = () => {
           </div>
         </div>
         
-        <div class="form-group">
-          <label for="rating">Rating</label>
-          <input 
-            id="rating" 
-            v-model.number="book.rating" 
-            type="number" 
-            min="0"
-            max="5"
-            step="0.1"
-            placeholder="Book rating (0-5)"
-          />
-        </div>
+        <FormInput
+          id="rating"
+          v-model.number="book.rating"
+          label="Rating"
+          type="number"
+          :min="0"
+          :max="5"
+          step="0.1"
+          placeholder="Book rating (0-5)"
+        />
         
         <div class="form-group link-section">
           <h4>Link Information</h4>
           
-          <div class="form-grid">
-            <div class="form-group">
-              <label for="size-value">Size Value</label>
-              <input 
-                id="size-value" 
-                v-model.number="book.link.size.value" 
-                type="number" 
-                min="0"
-                step="0.1"
-                placeholder="File size value"
-              />
-            </div>
+          <FormInput
+            id="size-value"
+            v-model.number="book.link.size.value"
+            label="Size Value"
+            type="number"
+            :min="0"
+            step="0.1"
+            placeholder="File size value"
+          />
             
-            <div class="form-group">
-              <label for="size-metric">Size Metric</label>
-              <select id="size-metric" v-model="book.link.size.metric">
-                <option value="KB">KB</option>
-                <option value="MB">MB</option>
-                <option value="GB">GB</option>
-              </select>
-            </div>
+          <div class="form-group">
+            <label for="size-metric">Size Metric</label>
+            <select id="size-metric" v-model="book.link.size.metric">
+              <option value="KB">KB</option>
+              <option value="MB">MB</option>
+              <option value="GB">GB</option>
+            </select>
           </div>
           
           <div class="form-group">
@@ -339,38 +332,33 @@ const resetForm = () => {
             </select>
           </div>
           
-          <div class="form-group">
-            <label for="readUrl">Read URL</label>
-            <input 
-              id="readUrl" 
-              v-model="book.link.readUrl" 
-              type="url" 
-              placeholder="URL to read the book online"
-            />
-          </div>
+          <FormInput
+            id="readUrl"
+            v-model="book.link.readUrl"
+            label="Read URL"
+            type="url"
+            placeholder="URL to read the book online"
+          />
           
-          <div class="form-group">
-            <label for="downloadUrl">Download URL</label>
-            <input 
-              id="downloadUrl" 
-              v-model="book.link.downloadUrl" 
-              type="url" 
-              placeholder="URL to download the book"
-            />
-          </div>
+          <FormInput
+            id="downloadUrl"
+            v-model="book.link.downloadUrl"
+            label="Download URL"
+            type="url"
+            placeholder="URL to download the book"
+          />
           
-          <div class="form-group">
-            <label for="buyUrl">Buy URL</label>
-            <input 
-              id="buyUrl" 
-              v-model="book.link.buyUrl" 
-              type="url" 
-              placeholder="URL to purchase the book"
-            />
-          </div>
+          <FormInput
+            id="buyUrl"
+            v-model="book.link.buyUrl"
+            label="Buy URL"
+            type="url"
+            placeholder="URL to purchase the book"
+          />
         </div>
       </FormWrapper>
       
+      <!--Form Actions-->
       <div class="form-actions">
         <button type="button" @click="resetForm" class="btn-secondary">Reset</button>
         <button type="submit" class="btn-primary">Submit</button>
