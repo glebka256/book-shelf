@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { reactive, ref, defineEmits, Ref } from 'vue';
+import { reactive, defineEmits } from 'vue';
 import FormWrapper from '@/components/ui/form/FormWrapper.vue';
 import { BookFormDTO } from './bookForm.types';
 import FormInput from '@/components/ui/form/inputs/FormInput.vue';
 import FormSelect from '@/components/ui/form/inputs/FormSelect.vue';
+import TagSelector from '@/components/ui/form/inputs/TagSelector.vue';
 
 // Define emit
 const emit = defineEmits<{
@@ -58,50 +59,6 @@ const options = {
 // Reactive state
 const book = reactive<BookFormDTO>({ ...initialBookState });
 
-// Tag input refs
-const newAuthor = ref('');
-const newSubject = ref('');
-const newLanguage = ref('');
-const newGutenbergId = ref('');
-const newGoodreadsId = ref('');
-const newAnnasArchiveId = ref('');
-const newAmazonId = ref('');
-
-// Utility methods
-const addItem = (list: string[], input: Ref<string>, transform?: (v: string) => string) => {
-  const value = input.value.trim();
-  if (value) {
-    list.push(transform ? transform(value) : value);
-    input.value = '';
-  }
-};
-
-const removeItem = (list: string[], index: number) => {
-  list.splice(index, 1);
-};
-
-// Specific add/remove handlers
-const addAuthor = () => addItem(book.author, newAuthor);
-const removeAuthor = (index: number) => removeItem(book.author, index);
-
-const addSubject = () => addItem(book.subject, newSubject);
-const removeSubject = (index: number) => removeItem(book.subject, index);
-
-const addLanguage = () => addItem(book.language, newLanguage, v => v.toLowerCase());
-const removeLanguage = (index: number) => removeItem(book.language, index);
-
-const addGutenbergId = () => addItem(book.meta.idGutenberg, newGutenbergId);
-const removeGutenbergId = (index: number) => removeItem(book.meta.idGutenberg, index);
-
-const addGoodreadsId = () => addItem(book.meta.idGoodreads, newGoodreadsId);
-const removeGoodreadsId = (index: number) => removeItem(book.meta.idGoodreads, index);
-
-const addAnnasArchiveId = () => addItem(book.meta.idAnnasArchive, newAnnasArchiveId);
-const removeAnnasArchiveId = (index: number) => removeItem(book.meta.idAnnasArchive, index);
-
-const addAmazonId = () => addItem(book.meta.idAmazon, newAmazonId);
-const removeAmazonId = (index: number) => removeItem(book.meta.idAmazon, index);
-
 // Form submission and reset
 const submitForm = () => {
   if (!book.title.trim()) {
@@ -117,13 +74,6 @@ const submitForm = () => {
 
 const resetForm = () => {
   Object.assign(book, JSON.parse(JSON.stringify(initialBookState)));
-  newAuthor.value = '';
-  newSubject.value = '';
-  newLanguage.value = '';
-  newGutenbergId.value = '';
-  newGoodreadsId.value = '';
-  newAnnasArchiveId.value = '';
-  newAmazonId.value = '';
 };
 </script>
 
@@ -141,37 +91,19 @@ const resetForm = () => {
           placeholder="Enter book title"
         />
         
-        <div class="form-group">
-          <label>Authors *</label>
-          <div class="tag-input">
-            <div v-for="(author, index) in book.author" :key="`author-${index}`" class="tag">
-              {{ author }}
-              <button type="button" @click="removeAuthor(index)" class="tag-remove">&times;</button>
-            </div>
-            <input 
-              v-model="newAuthor"
-              @keydown.enter.prevent="addAuthor"
-              type="text"
-              placeholder="Add author and press Enter"
-            />
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label>Subjects</label>
-          <div class="tag-input">
-            <div v-for="(subject, index) in book.subject" :key="`subject-${index}`" class="tag">
-              {{ subject }}
-              <button type="button" @click="removeSubject(index)" class="tag-remove">&times;</button>
-            </div>
-            <input 
-              v-model="newSubject"
-              @keydown.enter.prevent="addSubject"
-              type="text"
-              placeholder="Add subject and press Enter"
-            />
-          </div>
-        </div>
+        <TagSelector 
+          id="author-selector"
+          label="Authors *"
+          v-model:tags="book.author"
+          placeholder="Add author and press Enter"
+        />
+
+        <TagSelector 
+          id="subject-selector"
+          label="Subjects"
+          v-model:tags="book.subject"
+          placeholder="Add subject and press Enter"
+        />
         
         <div class="form-grid">
           <FormInput
@@ -184,21 +116,12 @@ const resetForm = () => {
             placeholder="Year published"
           />
           
-          <div class="form-group">
-            <label>Languages</label>
-            <div class="tag-input">
-              <div v-for="(lang, index) in book.language" :key="`lang-${index}`" class="tag">
-                {{ lang }}
-                <button type="button" @click="removeLanguage(index)" class="tag-remove">&times;</button>
-              </div>
-              <input 
-                v-model="newLanguage"
-                @keydown.enter.prevent="addLanguage"
-                type="text"
-                placeholder="Add language code and press Enter"
-              />
-            </div>
-          </div>
+          <TagSelector 
+            id="language-selector"
+            label="Languages"
+            v-model:tags="book.language"
+            placeholder="Add language code and press Enter"
+          />
         </div>
         
         <div class="form-group">
@@ -215,79 +138,41 @@ const resetForm = () => {
       
       <!--Meta Information-->
       <FormWrapper title="Meta Information">
-        <div class="form-group">
-          <label for="isbn">ISBN</label>
-          <input 
-            id="isbn" 
-            v-model="book.meta.isbn" 
-            type="text" 
-            placeholder="ISBN (e.g., 978-1234567890)"
-          />
-        </div>
+        <FormInput 
+          id="isbn"
+          v-model.string="book.meta.isbn"
+          label="ISBN"
+          required
+          placeholder="ISBN (e.g., 978-1234567890)"
+        />
         
-        <div class="form-group">
-          <label>ID Gutenberg</label>
-          <div class="tag-input">
-            <div v-for="(id, index) in book.meta.idGutenberg" :key="`gutenberg-${index}`" class="tag">
-              {{ id }}
-              <button type="button" @click="removeGutenbergId(index)" class="tag-remove">&times;</button>
-            </div>
-            <input 
-              v-model="newGutenbergId"
-              @keydown.enter.prevent="addGutenbergId"
-              type="text"
-              placeholder="Add Gutenberg ID and press Enter"
-            />
-          </div>
-        </div>
+        <TagSelector 
+          id="gutenberg-id-selector"
+          label="ID Gutenberg"
+          v-model:tags="book.meta.idGutenberg"
+          placeholder="Add Gutenberg ID and press Enter"
+        />
         
-        <div class="form-group">
-          <label>ID Goodreads</label>
-          <div class="tag-input">
-            <div v-for="(id, index) in book.meta.idGoodreads" :key="`goodreads-${index}`" class="tag">
-              {{ id }}
-              <button type="button" @click="removeGoodreadsId(index)" class="tag-remove">&times;</button>
-            </div>
-            <input 
-              v-model="newGoodreadsId"
-              @keydown.enter.prevent="addGoodreadsId"
-              type="text"
-              placeholder="Add Goodreads ID and press Enter"
-            />
-          </div>
-        </div>
+        <TagSelector 
+          id="goodreads-id-selector"
+          label="ID Goodreads"
+          v-model:tags="book.meta.idGoodreads"
+          placeholder="Add Goodreads ID and press Enter"
+        />
+
+        <TagSelector 
+          id="annas-id-selector"
+          label="ID Anna`s Archive"
+          v-model:tags="book.meta.idAnnasArchive"
+          placeholder="Add Anna's Archive ID and press Enter"
+        />
         
-        <div class="form-group">
-          <label>ID Anna's Archive</label>
-          <div class="tag-input">
-            <div v-for="(id, index) in book.meta.idAnnasArchive" :key="`annas-${index}`" class="tag">
-              {{ id }}
-              <button type="button" @click="removeAnnasArchiveId(index)" class="tag-remove">&times;</button>
-            </div>
-            <input 
-              v-model="newAnnasArchiveId"
-              @keydown.enter.prevent="addAnnasArchiveId"
-              type="text"
-              placeholder="Add Anna's Archive ID and press Enter"
-            />
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label>ID Amazon</label>
-          <div class="tag-input">
-            <div v-for="(id, index) in book.meta.idAmazon" :key="`amazon-${index}`" class="tag">
-              {{ id }}
-              <button type="button" @click="removeAmazonId(index)" class="tag-remove">&times;</button>
-            </div>
-            <input 
-              v-model="newAmazonId"
-              @keydown.enter.prevent="addAmazonId"
-              type="text"
-              placeholder="Add Amazon ID and press Enter"
-            />
-          </div>
-        </div>
+        <TagSelector 
+          id="amazon-id-selector"
+          label="ID Amazon"
+          v-model:tags="book.meta.idAmazon"
+          placeholder="Add Amazon ID and press Enter"
+        />
       </FormWrapper>
       
       <!--Media and Links-->
@@ -393,41 +278,6 @@ const resetForm = () => {
   
   .form-group {
     margin-bottom: 1rem;
-    
-    label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 500;
-      font-size: 0.9rem;
-    }
-    
-    input[type="text"],
-    input[type="number"],
-    input[type="url"],
-    select {
-      width: 100%;
-      padding: 0.75rem;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 1rem;
-      background-color: white;
-      transition: border-color 0.2s;
-      
-      &:focus {
-        outline: none;
-        border-color: #4a90e2;
-        box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
-      }
-    }
-    
-    select {
-      cursor: pointer;
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 8.825L1.175 4 2.05 3.125 6 7.075 9.95 3.125 10.825 4z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 1rem center;
-      padding-right: 2.5rem;
-    }
   }
   
   .form-grid {
@@ -455,56 +305,6 @@ const resetForm = () => {
     label {
       margin-bottom: 0;
       cursor: pointer;
-    }
-  }
-  
-  // Tag input styling
-  .tag-input {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: white;
-    min-height: 3rem;
-    
-    input {
-      flex: 1;
-      border: none;
-      outline: none;
-      padding: 0.5rem;
-      font-size: 0.9rem;
-      
-      &:focus {
-        box-shadow: none;
-      }
-    }
-    
-    .tag {
-      display: inline-flex;
-      align-items: center;
-      background-color: #e8f0fe;
-      color: #1a73e8;
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
-      margin: 0.25rem;
-      font-size: 0.85rem;
-      
-      .tag-remove {
-        background: none;
-        border: none;
-        color: #5f6368;
-        cursor: pointer;
-        font-size: 1rem;
-        line-height: 1;
-        margin-left: 0.25rem;
-        padding: 0 0.15rem;
-        
-        &:hover {
-          color: #d93025;
-        }
-      }
     }
   }
   
