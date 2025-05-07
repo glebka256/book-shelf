@@ -1,15 +1,20 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, defineEmits } from "vue";
 import { BookData } from "@/types/Book.types";
 import BookCard from "./components/BookCard.vue";
 import { getBooks } from "./booksView";
 import PaginationBox from "@/components/ui/PaginationBox.vue";
+
+const emit = defineEmits(['edit', 'remove']);
 
 const booksData = ref<BookData[]>([]);
 const totalBooks = ref<number>(0);
 const page = ref<number>(1);
 const totalPages = ref<number>(1);
 const limit = 50;
+
+const handleEdit = (bookId: string) => emit('edit', bookId);
+const handleRemove = (bookId: string) => emit('remove', bookId);
 
 const updateBooks = async (): Promise<void> => {
   const response = await getBooks(page.value, limit);
@@ -66,6 +71,8 @@ onMounted(async () => {
         <BookCard
           :book="book"
           :isSelected="isSelected(book._id)"
+          @edit="handleEdit"
+          @remove="handleRemove"
         />
       </div>
     </div>

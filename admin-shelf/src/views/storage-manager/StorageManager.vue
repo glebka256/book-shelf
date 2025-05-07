@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import ActionNav from '@/components/ui/ActionNav.vue';
 import ActionTab from '@/components/ui/ActionTab.vue';
-import BookGrid from './books-view/BooksView.vue';
+import BooksView from './books-view/BooksView.vue';
 import BookForm from './book-form/BookForm.vue';
 
 const activeTab = ref('books');
@@ -31,7 +31,10 @@ const handleTabChange = (tab: string) => {
     
     <!-- Tab content containers -->
     <ActionTab tabId="books" :activeTab="activeTab">
-      <BookGrid />
+      <BooksView 
+        @edit="handleTabChange('edit')"
+        @remove="handleTabChange('remove')"  
+      />
     </ActionTab>
     
     <ActionTab tabId="create" :activeTab="activeTab">
@@ -41,6 +44,14 @@ const handleTabChange = (tab: string) => {
     <ActionTab tabId="stats" :activeTab="activeTab">
       <h2>Store Statistics</h2>
       <p>Sales and inventory statistics will appear here.</p>
+    </ActionTab>
+
+    <ActionTab tabId="edit" :activeTab="activeTab">
+      <h3>Edit tab</h3>
+    </ActionTab>
+
+    <ActionTab tabId="remove" :activeTab="activeTab">
+      <h3>Remove tab</h3>
     </ActionTab>
   </div>
 </template>

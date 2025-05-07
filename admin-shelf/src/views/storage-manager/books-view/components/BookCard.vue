@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, PropType } from 'vue';
+import { defineProps, PropType, defineEmits } from 'vue';
 import { BookData } from '@/types/Book.types';
 import BookCover from '@/components/common/BookCover.vue';
 import ExtendedInfo from './ExtendedInfo.vue';
@@ -14,6 +14,11 @@ const props = defineProps({
     required: true
   }
 });
+
+const emit = defineEmits(['edit', 'remove']);
+
+const handleEdit = () => emit('edit', props.book._id);
+const handleRemove = () => emit('remove', props.book._id);
 
 // Computed property to format rating as stars
 const formatRating = (rating: number): string => {
@@ -33,6 +38,8 @@ const formatRating = (rating: number): string => {
     :coverUrl="book.coverUrl"
     :title="book.title"
     :complete="book.complete"
+    @edit="handleEdit"
+    @remove="handleRemove"
   />
 
   <div class="book-info">
