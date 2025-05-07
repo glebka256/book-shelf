@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import ActionNav from '@/components/ui/ActionNav.vue';
 import ActionTab from '@/components/ui/ActionTab.vue';
 import BookGrid from './books-view/BooksView.vue';
+import BookForm from './book-form/BookForm.vue';
 
 const activeTab = ref('books');
 
@@ -34,8 +35,7 @@ const handleTabChange = (tab: string) => {
     </ActionTab>
     
     <ActionTab tabId="create" :activeTab="activeTab">
-      <h2>Create New Book</h2>
-      <p>Form to add a new book will appear here.</p>
+      <BookForm />
     </ActionTab>
     
     <ActionTab tabId="stats" :activeTab="activeTab">
