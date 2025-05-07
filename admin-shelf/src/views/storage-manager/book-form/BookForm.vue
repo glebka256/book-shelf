@@ -1,204 +1,119 @@
-<script lang="ts">
-import { defineComponent, reactive, ref, defineEmits } from 'vue';
+<script setup lang="ts">
+import { reactive, ref, defineEmits, Ref } from 'vue';
+import FormWrapper from '@/components/ui/form/FormWrapper.vue';
 import { BookFormDTO } from './bookForm.types';
 
-const emit = defineEmits(['submit']);
+// Define emit
+const emit = defineEmits<{
+  (e: 'submit', payload: BookFormDTO): void;
+}>();
 
-export default defineComponent({
-  name: 'BookForm',
-  
-  setup() {
-    // Initialize form with empty book data
-    const initialBookState: BookFormDTO = {
-      title: '',
-      author: [],
-      subject: [],
-      publishedYear: new Date().getFullYear(),
-      language: ['eng'],
-      ebookAccess: false,
-      meta: {
-        isbn: '',
-        idGutenberg: [],
-        idGoodreads: [],
-        idAnnasArchive: [],
-        idAmazon: []
-      },
-      coverUrl: '',
-      rating: 0,
-      link: {
-        size: {
-          value: 0,
-          metric: 'MB'
-        },
-        readUrl: '',
-        downloadUrl: '',
-        format: 'pdf',
-        buyUrl: ''
-      }
-    };
-    
-    // Create reactive state for the book
-    const book = reactive<BookFormDTO>({ ...initialBookState });
-    
-    // Refs for new tag inputs
-    const newAuthor = ref('');
-    const newSubject = ref('');
-    const newLanguage = ref('');
-    const newGutenbergId = ref('');
-    const newGoodreadsId = ref('');
-    const newAnnasArchiveId = ref('');
-    const newAmazonId = ref('');
-    
-    // Tag management methods
-    const addAuthor = () => {
-      if (newAuthor.value.trim()) {
-        book.author.push(newAuthor.value.trim());
-        newAuthor.value = '';
-      }
-    };
-    
-    const removeAuthor = (index: number) => {
-      book.author.splice(index, 1);
-    };
-    
-    const addSubject = () => {
-      if (newSubject.value.trim()) {
-        book.subject.push(newSubject.value.trim());
-        newSubject.value = '';
-      }
-    };
-    
-    const removeSubject = (index: number) => {
-      book.subject.splice(index, 1);
-    };
-    
-    const addLanguage = () => {
-      if (newLanguage.value.trim()) {
-        book.language.push(newLanguage.value.trim().toLowerCase());
-        newLanguage.value = '';
-      }
-    };
-    
-    const removeLanguage = (index: number) => {
-      book.language.splice(index, 1);
-    };
-    
-    const addGutenbergId = () => {
-      if (newGutenbergId.value.trim()) {
-        book.meta.idGutenberg.push(newGutenbergId.value.trim());
-        newGutenbergId.value = '';
-      }
-    };
-    
-    const removeGutenbergId = (index: number) => {
-      book.meta.idGutenberg.splice(index, 1);
-    };
-    
-    const addGoodreadsId = () => {
-      if (newGoodreadsId.value.trim()) {
-        book.meta.idGoodreads.push(newGoodreadsId.value.trim());
-        newGoodreadsId.value = '';
-      }
-    };
-    
-    const removeGoodreadsId = (index: number) => {
-      book.meta.idGoodreads.splice(index, 1);
-    };
-    
-    const addAnnasArchiveId = () => {
-      if (newAnnasArchiveId.value.trim()) {
-        book.meta.idAnnasArchive.push(newAnnasArchiveId.value.trim());
-        newAnnasArchiveId.value = '';
-      }
-    };
-    
-    const removeAnnasArchiveId = (index: number) => {
-      book.meta.idAnnasArchive.splice(index, 1);
-    };
-    
-    const addAmazonId = () => {
-      if (newAmazonId.value.trim()) {
-        book.meta.idAmazon.push(newAmazonId.value.trim());
-        newAmazonId.value = '';
-      }
-    };
-    
-    const removeAmazonId = (index: number) => {
-      book.meta.idAmazon.splice(index, 1);
-    };
-    
-    // Form submission and reset
-    const submitForm = () => {
-      // Validate form - at minimum we need a title and author
-      if (!book.title.trim()) {
-        alert('Please enter a book title');
-        return;
-      }
-      
-      if (book.author.length === 0) {
-        alert('Please add at least one author');
-        return;
-      }
-      
-      // Emit form data to parent component
-      emit('submit', { ...book });
-    };
-    
-    const resetForm = () => {
-      // Reset all fields to initial state
-      Object.assign(book, JSON.parse(JSON.stringify(initialBookState)));
-      
-      // Clear all input refs
-      newAuthor.value = '';
-      newSubject.value = '';
-      newLanguage.value = '';
-      newGutenbergId.value = '';
-      newGoodreadsId.value = '';
-      newAnnasArchiveId.value = '';
-      newAmazonId.value = '';
-    };
-    
-    return {
-      book,
-      newAuthor,
-      newSubject,
-      newLanguage,
-      newGutenbergId,
-      newGoodreadsId,
-      newAnnasArchiveId,
-      newAmazonId,
-      addAuthor,
-      removeAuthor,
-      addSubject,
-      removeSubject,
-      addLanguage,
-      removeLanguage,
-      addGutenbergId,
-      removeGutenbergId,
-      addGoodreadsId,
-      removeGoodreadsId,
-      addAnnasArchiveId,
-      removeAnnasArchiveId,
-      addAmazonId,
-      removeAmazonId,
-      submitForm,
-      resetForm
-    };
+// Initial state
+const initialBookState: BookFormDTO = {
+  title: '',
+  author: [],
+  subject: [],
+  publishedYear: new Date().getFullYear(),
+  language: ['eng'],
+  ebookAccess: false,
+  meta: {
+    isbn: '',
+    idGutenberg: [],
+    idGoodreads: [],
+    idAnnasArchive: [],
+    idAmazon: []
   },
-  
-  emits: {
-    submit: (book: any) => true
+  coverUrl: '',
+  rating: 0,
+  link: {
+    size: {
+      value: 0,
+      metric: 'MB'
+    },
+    readUrl: '',
+    downloadUrl: '',
+    format: 'pdf',
+    buyUrl: ''
   }
-});
+};
+
+// Reactive state
+const book = reactive<BookFormDTO>({ ...initialBookState });
+
+// Tag input refs
+const newAuthor = ref('');
+const newSubject = ref('');
+const newLanguage = ref('');
+const newGutenbergId = ref('');
+const newGoodreadsId = ref('');
+const newAnnasArchiveId = ref('');
+const newAmazonId = ref('');
+
+// Utility methods
+const addItem = (list: string[], input: Ref<string>, transform?: (v: string) => string) => {
+  const value = input.value.trim();
+  if (value) {
+    list.push(transform ? transform(value) : value);
+    input.value = '';
+  }
+};
+
+const removeItem = (list: string[], index: number) => {
+  list.splice(index, 1);
+};
+
+// Specific add/remove handlers
+const addAuthor = () => addItem(book.author, newAuthor);
+const removeAuthor = (index: number) => removeItem(book.author, index);
+
+const addSubject = () => addItem(book.subject, newSubject);
+const removeSubject = (index: number) => removeItem(book.subject, index);
+
+const addLanguage = () => addItem(book.language, newLanguage, v => v.toLowerCase());
+const removeLanguage = (index: number) => removeItem(book.language, index);
+
+const addGutenbergId = () => addItem(book.meta.idGutenberg, newGutenbergId);
+const removeGutenbergId = (index: number) => removeItem(book.meta.idGutenberg, index);
+
+const addGoodreadsId = () => addItem(book.meta.idGoodreads, newGoodreadsId);
+const removeGoodreadsId = (index: number) => removeItem(book.meta.idGoodreads, index);
+
+const addAnnasArchiveId = () => addItem(book.meta.idAnnasArchive, newAnnasArchiveId);
+const removeAnnasArchiveId = (index: number) => removeItem(book.meta.idAnnasArchive, index);
+
+const addAmazonId = () => addItem(book.meta.idAmazon, newAmazonId);
+const removeAmazonId = (index: number) => removeItem(book.meta.idAmazon, index);
+
+// Form submission and reset
+const submitForm = () => {
+  if (!book.title.trim()) {
+    alert('Please enter a book title');
+    return;
+  }
+  if (book.author.length === 0) {
+    alert('Please add at least one author');
+    return;
+  }
+  emit('submit', { ...book });
+};
+
+const resetForm = () => {
+  Object.assign(book, JSON.parse(JSON.stringify(initialBookState)));
+  newAuthor.value = '';
+  newSubject.value = '';
+  newLanguage.value = '';
+  newGutenbergId.value = '';
+  newGoodreadsId.value = '';
+  newAnnasArchiveId.value = '';
+  newAmazonId.value = '';
+};
 </script>
 
 <template>
   <div class="book-form">
     <h2>Add New Book</h2>
     <form @submit.prevent="submitForm">
-      <div class="form-section">
-        <h3>Basic Information</h3>
-        
+      <FormWrapper title="Basic Information">
         <div class="form-group">
           <label for="title">Title *</label>
           <input 
@@ -282,11 +197,9 @@ export default defineComponent({
             <label for="ebookAccess">Ebook Access Available</label>
           </div>
         </div>
-      </div>
+      </FormWrapper>        
       
-      <div class="form-section">
-        <h3>Meta Information</h3>
-        
+      <FormWrapper title="Meta Information">
         <div class="form-group">
           <label for="isbn">ISBN</label>
           <input 
@@ -360,11 +273,9 @@ export default defineComponent({
             />
           </div>
         </div>
-      </div>
+      </FormWrapper>
       
-      <div class="form-section">
-        <h3>Media & Links</h3>
-        
+      <FormWrapper title="Media & Links">  
         <div class="form-group">
           <label for="coverUrl">Cover URL</label>
           <input 
@@ -458,7 +369,7 @@ export default defineComponent({
             />
           </div>
         </div>
-      </div>
+      </FormWrapper>
       
       <div class="form-actions">
         <button type="button" @click="resetForm" class="btn-secondary">Reset</button>
@@ -479,28 +390,6 @@ export default defineComponent({
     margin-bottom: 1.5rem;
     color: #333;
     font-weight: 600;
-  }
-  
-  .form-section {
-    margin-bottom: 2rem;
-    padding: 1.5rem;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    
-    h3 {
-      margin-bottom: 1rem;
-      color: #444;
-      font-weight: 500;
-      border-bottom: 1px solid #ddd;
-      padding-bottom: 0.5rem;
-    }
-    
-    h4 {
-      margin: 1rem 0;
-      color: #555;
-      font-weight: 500;
-    }
   }
   
   .form-group {
