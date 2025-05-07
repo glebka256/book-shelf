@@ -97,37 +97,34 @@ const handleRemove = () => emit('remove');
     bottom: 10px;
     right: 10px;
     display: flex;
-    gap: 8px;
+    gap: 16px;
     opacity: 0;
     transition: opacity 0.2s ease;
-    
+
     .action-btn {
-      background-color: rgba(255, 255, 255, 0.9);
-      border: none;
-      border-radius: 4px;
-      width: 32px;
-      height: 32px;
+      background-color: rgba(255, 255, 255, 0.95);
+      border-radius: 6px;
+      width: 44px;
+      height: 44px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      transition: transform 0.2s ease, background-color 0.2s ease;
-      
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+      transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+
       &:hover {
-        transform: translateY(-2px);
+        transform: translateY(-3px);
+        border-color: #888;
       }
-      
-      &.edit-btn:hover {
-        background-color: rgba(74, 123, 202, 0.2);
+
+      &.delete-btn:hover, &.edit-btn:hover {
+        background-color: rgba(244, 67, 54, 0.1);
       }
-      
-      &.delete-btn:hover {
-        background-color: rgba(244, 67, 54, 0.2);
-      }
-      
+
       .action-icon {
-        font-size: 16px;
+        font-size: 20px;
+        color: #333;
       }
     }
   }
