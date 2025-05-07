@@ -5,6 +5,7 @@ import { BookFormDTO } from './bookForm.types';
 import FormInput from '@/components/ui/form/inputs/FormInput.vue';
 import FormSelect from '@/components/ui/form/inputs/FormSelect.vue';
 import TagSelector from '@/components/ui/form/inputs/TagSelector.vue';
+import FormActions from '@/components/ui/form/inputs/FormActions.vue';
 
 // Define emit
 const emit = defineEmits<{
@@ -255,10 +256,7 @@ const resetForm = () => {
       </FormWrapper>
       
       <!--Form Actions-->
-      <div class="form-actions">
-        <button type="button" @click="resetForm" class="btn-secondary">Reset</button>
-        <button type="submit" class="btn-primary">Submit</button>
-      </div>
+      <FormActions :onReset="resetForm"/>
     </form>
   </div>
 </template>
@@ -318,43 +316,6 @@ const resetForm = () => {
       height: auto;
       border-radius: 4px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-  }
-  
-  // Form actions
-  .form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-    margin-top: 2rem;
-    
-    button {
-      padding: 0.75rem 1.5rem;
-      border-radius: 4px;
-      font-size: 1rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-      
-      &.btn-primary {
-        background-color: #4a90e2;
-        color: white;
-        border: none;
-        
-        &:hover {
-          background-color: #3a7ec7;
-        }
-      }
-      
-      &.btn-secondary {
-        background-color: white;
-        color: #333;
-        border: 1px solid #ddd;
-        
-        &:hover {
-          background-color: #f5f5f5;
-        }
-      }
     }
   }
 }
