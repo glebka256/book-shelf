@@ -10,7 +10,8 @@ import { postBookEdit, postNewBook } from './book-form/bookForm';
 
 const activeTab = ref('books');
 
-const tabs = [
+/** Tabs displayed on ActionNav. Not all tabs are visible */
+const visibleTabs = [
   { id: "books",  name: "Books"      },
   { id: "create", name: "Create"     },
   { id: "stats",  name: "Statistics" },
@@ -21,6 +22,7 @@ const handleTabChange = (tab: string) => {
   activeTab.value = tab;
 };
 
+// Edit actions
 const editedBookId = ref<string | null>(null);
 const initialEditFormDTO = ref<BookFormDTO | null>(null);
 
@@ -41,6 +43,7 @@ const submitEditedBook = async (book: BookFormDTO) => {
   }
 }
 
+// Create new actions
 const submitNewBook = async (book: BookFormDTO) => {
   const responseStatus = await postNewBook(book);
   if (responseStatus) {
@@ -50,13 +53,23 @@ const submitNewBook = async (book: BookFormDTO) => {
     alert("Could not create new book");
   }
 }
+
+// Delete actions
+const deletedBookId = ref<string | null>(null);
+
+const removeBook = async (bookId: string) => {
+  deletedBookId.value = bookId;
+  if (deletedBookId.value) {
+    handleTabChange(deletedBookId.value);
+  }
+}
 </script>
 
 <template>
   <div class="store-manager"> 
     <!-- Navigation component -->
     <ActionNav 
-      :tabs="tabs"
+      :tabs="visibleTabs"
       :activeTab="activeTab"
       title="Storage Manager"
       @select-tab="handleTabChange"
@@ -66,7 +79,7 @@ const submitNewBook = async (book: BookFormDTO) => {
     <ActionTab tabId="books" :activeTab="activeTab">
       <BooksView 
         @edit="goToEditTab"
-        @remove="handleTabChange('remove')"  
+        @remove="removeBook"  
       />
     </ActionTab>
     

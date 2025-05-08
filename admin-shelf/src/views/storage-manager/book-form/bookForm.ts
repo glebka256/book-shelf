@@ -84,3 +84,8 @@ export const postNewBook = async (data: BookFormDTO): Promise<boolean> => {
     const response = await baseInstance.post<BookData>(`/books`, data);
     return response.status === 201;
 }
+
+export const deleteBook = async (id: string): Promise<boolean> => {
+    const response = await baseInstance.delete<BookData>(`/books/${id}`);
+    return response.status === 201;
+}
