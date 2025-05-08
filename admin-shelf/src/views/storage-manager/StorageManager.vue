@@ -4,6 +4,8 @@ import ActionNav from '@/components/ui/ActionNav.vue';
 import ActionTab from '@/components/ui/ActionTab.vue';
 import BooksView from './books-view/BooksView.vue';
 import BookForm from './book-form/BookForm.vue';
+import { BookFormDTO } from './book-form/bookForm.types';
+import { populateFormById } from './storageManager';
 
 const activeTab = ref('books');
 
@@ -17,6 +19,13 @@ const tabs = [
 const handleTabChange = (tab: string) => {
   activeTab.value = tab;
 };
+
+const initialEditFormDTO = ref<BookFormDTO | null>(null);
+
+const goToEditTab = async (bookId: string) => {
+  initialEditFormDTO.value = await populateFormById(bookId);
+  handleTabChange('edit');
+}
 </script>
 
 <template>
@@ -32,7 +41,7 @@ const handleTabChange = (tab: string) => {
     <!-- Tab content containers -->
     <ActionTab tabId="books" :activeTab="activeTab">
       <BooksView 
-        @edit="handleTabChange('edit')"
+        @edit="goToEditTab"
         @remove="handleTabChange('remove')"  
       />
     </ActionTab>
@@ -47,7 +56,7 @@ const handleTabChange = (tab: string) => {
     </ActionTab>
 
     <ActionTab tabId="edit" :activeTab="activeTab">
-      <h3>Edit tab</h3>
+      <BookForm v-if="initialEditFormDTO" :initialBookState="initialEditFormDTO"/>
     </ActionTab>
 
     <ActionTab tabId="remove" :activeTab="activeTab">

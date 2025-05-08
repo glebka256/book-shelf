@@ -1,64 +1,29 @@
 <script setup lang="ts">
-import { reactive, defineEmits } from 'vue';
+import { defineProps, reactive, defineEmits, PropType } from 'vue';
 import FormWrapper from '@/components/ui/form/FormWrapper.vue';
 import { BookFormDTO } from './bookForm.types';
 import FormInput from '@/components/ui/form/inputs/FormInput.vue';
 import FormSelect from '@/components/ui/form/inputs/FormSelect.vue';
 import TagSelector from '@/components/ui/form/inputs/TagSelector.vue';
 import FormActions from '@/components/ui/form/inputs/FormActions.vue';
+import { emptyInitialForm, options } from './bookForm';
+
+// props are given only when form should initialy have some selected values
+const props = defineProps({
+  initialBookState: {
+    type: Object as PropType<BookFormDTO>,
+    required: false,
+    default: emptyInitialForm
+  }
+});
 
 // Define emit
 const emit = defineEmits<{
   (e: 'submit', payload: BookFormDTO): void;
 }>();
 
-// Initial state
-const initialBookState: BookFormDTO = {
-  title: '',
-  author: [],
-  subject: [],
-  publishedYear: new Date().getFullYear(),
-  language: ['eng'],
-  ebookAccess: false,
-  meta: {
-    isbn: '',
-    idGutenberg: [],
-    idGoodreads: [],
-    idAnnasArchive: [],
-    idAmazon: []
-  },
-  coverUrl: '',
-  rating: 0,
-  link: {
-    size: {
-      value: 0,
-      metric: 'MB'
-    },
-    readUrl: '',
-    downloadUrl: '',
-    format: 'pdf',
-    buyUrl: ''
-  }
-};
-
-// Selector options
-const options = {
-  sizeMetric: [
-    { value: 'KB' },
-    { value: 'MB' },
-    { value: 'GB' }
-  ],
-  fileFormat: [
-    { value: 'pdf', label: 'PDF' },
-    { value: 'epub', label: 'EPUB' },
-    { value: 'mobi', label: 'MOBI' },
-    { value: 'azw3', label: 'AZW3' },
-    { value: 'txt', label: 'TXT' }
-  ],
-}
-
 // Reactive state
-const book = reactive<BookFormDTO>({ ...initialBookState });
+const book = reactive<BookFormDTO>(props.initialBookState);
 
 // Form submission and reset
 const submitForm = () => {
@@ -74,7 +39,7 @@ const submitForm = () => {
 };
 
 const resetForm = () => {
-  Object.assign(book, JSON.parse(JSON.stringify(initialBookState)));
+  Object.assign(book, JSON.parse(JSON.stringify(emptyInitialForm)));
 };
 </script>
 

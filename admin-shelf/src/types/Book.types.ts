@@ -1,13 +1,14 @@
+interface BookSize {
+    value: number;
+    metric: 'KB' | 'MB' | 'GB';
+}
+
 export interface BookLink {
-    size: {
-        value: number;
-        metric: string;
-    };
+    size: BookSize;
     readUrl: string;
     downloadUrl: string;
     format: string;
     buyUrl: string;
-    _id: string;
 }
 
 export interface BookData {

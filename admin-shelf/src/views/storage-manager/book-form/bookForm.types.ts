@@ -1,15 +1,4 @@
-interface BookSize {
-    value: number;
-    metric: 'KB' | 'MB' | 'GB';
-}
-
-interface BookLink {
-    size: BookSize;
-    readUrl: string;
-    downloadUrl: string;
-    format: string;
-    buyUrl: string;
-}
+import { BookLink } from "@/types/Book.types";
 
 interface BookMeta {
     isbn: string;
