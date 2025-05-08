@@ -1,4 +1,6 @@
+import baseInstance from "@/config/axios";
 import { BookFormDTO } from "./bookForm.types";
+import { BookData } from "@/types/Book.types";
 
 /** Emtpy form values */
 export const emptyInitialForm: BookFormDTO = {
@@ -71,4 +73,14 @@ export function formInitialBookState(
             },
         },
     };
+}
+
+export const postBookEdit = async (id: string, data: BookFormDTO): Promise<boolean> => {
+    const response = await baseInstance.put<BookData>(`/books/${id}`, data);
+    return response.status === 201;
+};
+
+export const postNewBook = async (data: BookFormDTO): Promise<boolean> => {
+    const response = await baseInstance.post<BookData>(`/books`, data);
+    return response.status === 201;
 }

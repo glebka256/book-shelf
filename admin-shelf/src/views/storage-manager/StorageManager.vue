@@ -6,6 +6,7 @@ import BooksView from './books-view/BooksView.vue';
 import BookForm from './book-form/BookForm.vue';
 import { BookFormDTO } from './book-form/bookForm.types';
 import { populateFormById } from './storageManager';
+import { postBookEdit, postNewBook } from './book-form/bookForm';
 
 const activeTab = ref('books');
 
@@ -20,11 +21,34 @@ const handleTabChange = (tab: string) => {
   activeTab.value = tab;
 };
 
+const editedBookId = ref<string | null>(null);
 const initialEditFormDTO = ref<BookFormDTO | null>(null);
 
 const goToEditTab = async (bookId: string) => {
-  initialEditFormDTO.value = await populateFormById(bookId);
+  editedBookId.value = bookId;
+  initialEditFormDTO.value = await populateFormById(editedBookId.value);
   handleTabChange('edit');
+}
+
+const submitEditedBook = async (book: BookFormDTO) => {
+  if (editedBookId.value) {
+    const responseStatus = await postBookEdit(editedBookId.value, book);
+    if (responseStatus) {
+      alert("Edited book with id: " + editedBookId.value);
+    } else {
+      alert("Could not edit book with id: " + editedBookId.value);
+    }
+  }
+}
+
+const submitNewBook = async (book: BookFormDTO) => {
+  const responseStatus = await postNewBook(book);
+  if (responseStatus) {
+    alert("Successfully created new book");
+  }
+  else {
+    alert("Could not create new book");
+  }
 }
 </script>
 
@@ -47,7 +71,7 @@ const goToEditTab = async (bookId: string) => {
     </ActionTab>
     
     <ActionTab tabId="create" :activeTab="activeTab">
-      <BookForm />
+      <BookForm @submit="submitNewBook" />
     </ActionTab>
     
     <ActionTab tabId="stats" :activeTab="activeTab">
@@ -56,7 +80,11 @@ const goToEditTab = async (bookId: string) => {
     </ActionTab>
 
     <ActionTab tabId="edit" :activeTab="activeTab">
-      <BookForm v-if="initialEditFormDTO" :initialBookState="initialEditFormDTO"/>
+      <BookForm 
+        v-if="initialEditFormDTO" 
+        :initialBookState="initialEditFormDTO" 
+        @submit="submitEditedBook"
+      />
     </ActionTab>
 
     <ActionTab tabId="remove" :activeTab="activeTab">
