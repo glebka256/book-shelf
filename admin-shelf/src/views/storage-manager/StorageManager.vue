@@ -2,11 +2,12 @@
 import { ref } from 'vue';
 import ActionNav from '@/components/ui/ActionNav.vue';
 import ActionTab from '@/components/ui/ActionTab.vue';
+import ConfirmationCard from '@/components/ui/ConfirmationCard.vue';
 import BooksView from './books-view/BooksView.vue';
 import BookForm from './book-form/BookForm.vue';
 import { BookFormDTO } from './book-form/bookForm.types';
 import { populateFormById } from './storageManager';
-import { postBookEdit, postNewBook } from './book-form/bookForm';
+import { deleteBook, postBookEdit, postNewBook } from './book-form/bookForm';
 
 const activeTab = ref('books');
 
@@ -60,8 +61,25 @@ const deletedBookId = ref<string | null>(null);
 const removeBook = async (bookId: string) => {
   deletedBookId.value = bookId;
   if (deletedBookId.value) {
-    handleTabChange(deletedBookId.value);
+    handleTabChange('remove');
   }
+}
+
+const handleBookDelete = async () => {
+  if (deletedBookId.value) {
+    const responseStatus = await deleteBook(deletedBookId.value)
+    if (responseStatus) {
+      alert(`Successfully deleted book with id: ${deletedBookId.value}`);
+    }
+    else {
+      alert(`Could delete book with id: ${deletedBookId.value}`);
+    }
+  }
+}
+
+const handleBookDeleteCancel = () => {
+  alert(`'Delete' operation canceled for book with id: ${deletedBookId.value}`);
+  deletedBookId.value = null;
 }
 </script>
 
@@ -101,7 +119,14 @@ const removeBook = async (bookId: string) => {
     </ActionTab>
 
     <ActionTab tabId="remove" :activeTab="activeTab">
-      <h3>Remove tab</h3>
+      <ConfirmationCard
+        :promptMessage="`Are you sure you want to delete book with this id?`"
+        inputLabel="Enter book id to confirm"
+        :confirmationText="deletedBookId ?? 'secret lol'"
+        confirmButtonText="Delete Book"
+        @confirm="handleBookDelete"
+        @cancel="handleBookDeleteCancel"
+      />
     </ActionTab>
   </div>
 </template>
