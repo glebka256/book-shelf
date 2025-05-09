@@ -3,6 +3,7 @@ import { ref } from "vue";
 import ActionNav from "@/components/ui/ActionNav.vue";
 import ActionTab from "@/components/ui/ActionTab.vue";
 import HomeCard from "./components/HomeCard.vue";
+import SourceTab from "./components/SourceTab.vue";
 
 const activeTab = ref('home');
 
@@ -39,7 +40,7 @@ const handleTabChange = (tab: string) => {
     </ActionTab>
 
     <ActionTab tabId="goodreads" :activeTab="activeTab">
-      <h3>Goodreads tab</h3>
+      <SourceTab sourceName="Goodreads API"/>
     </ActionTab>
 
     <ActionTab tabId="annas-archive" :activeTab="activeTab">
