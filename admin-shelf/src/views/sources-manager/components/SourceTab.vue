@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, ref } from 'vue';
+import { defineProps, PropType, ref } from 'vue';
 import FormWrapper from '@/components/ui/form/FormWrapper.vue';
 import FormInput from '@/components/ui/form/inputs/FormInput.vue';
 import FormActions from '@/components/ui/form/inputs/FormActions.vue';
@@ -14,6 +14,11 @@ const props = defineProps({
     type: String,
     required: false,
     default: "Enter book title, author, or ISBN"
+  },
+  infoTag: {
+    type: Object as PropType<{ email: string } | null>,
+    required: false,
+    default: null
   }
 });
 
@@ -69,6 +74,13 @@ const resetForm = () => {
   <div v-if="bookData" class="book-search__results">
     <JsonDisplay :jsonData="bookData"/>
   </div>
+
+  <p 
+    v-if="props.infoTag" 
+    class="info-text"
+  >
+    Have problems with source? Report to <a :href="`mailto:${props.infoTag.email}`">{{ props.infoTag.email }}</a>
+  </p>
  </div>
 </template>
 
@@ -97,6 +109,19 @@ const resetForm = () => {
 
   form {
     margin-bottom: 2rem;
+  }
+
+  .info-text {
+    margin: 0;
+    
+    a {
+      color: #3498db;
+      text-decoration: none;
+      
+      &:hover {
+        text-decoration: underline;
+      }
+    }
   }
 }
 </style>

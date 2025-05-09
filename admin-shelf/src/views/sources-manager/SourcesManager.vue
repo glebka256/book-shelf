@@ -40,7 +40,7 @@ const handleTabChange = (tab: string) => {
     </ActionTab>
 
     <ActionTab tabId="goodreads" :activeTab="activeTab">
-      <SourceTab sourceName="Goodreads API"/>
+      <SourceTab sourceName="Goodreads API" :infoTag="{ email: 'glebkarpenko1@gmail.com' }" />
     </ActionTab>
 
     <ActionTab tabId="annas-archive" :activeTab="activeTab">
