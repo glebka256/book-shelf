@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import ActionNav from "@/components/ui/ActionNav.vue";
 import ActionTab from "@/components/ui/ActionTab.vue";
+import HomeCard from "./components/HomeCard.vue";
 
 const activeTab = ref('home');
 
@@ -11,7 +12,7 @@ const visibleTabs = [
   { id: "goodreads",     name: "Goodreads"      },
   { id: "annas-archive", name: "Anna's Archive" },
   { id: "open-lib",      name: "Open Lib"       },
-  { id: "gutenberg",      name: "Gutenberg"      },
+  { id: "gutenberg",     name: "Gutenberg"      },
   { id: "best-books",    name: "Best Books"     },
 ];
 
@@ -33,17 +34,29 @@ const handleTabChange = (tab: string) => {
     />
     
     <!-- Tab content containers -->
-    <ActionTab tabId="home" :activeTab="activeTab"></ActionTab>
+    <ActionTab tabId="home" :activeTab="activeTab">
+      <HomeCard :tabs="visibleTabs" @select-tab="handleTabChange" />
+    </ActionTab>
 
-    <ActionTab tabId="goodreads" :activeTab="activeTab"></ActionTab>
+    <ActionTab tabId="goodreads" :activeTab="activeTab">
+      <h3>Goodreads tab</h3>
+    </ActionTab>
 
-    <ActionTab tabId="annas-archive" :activeTab="activeTab"></ActionTab>
+    <ActionTab tabId="annas-archive" :activeTab="activeTab">
+      <h3>Annas tab</h3>
+    </ActionTab>
 
-    <ActionTab tabId="open-lib" :activeTab="activeTab"></ActionTab>
+    <ActionTab tabId="open-lib" :activeTab="activeTab">
+      <h3>Open lib tab</h3>
+    </ActionTab>
 
-    <ActionTab tabId="gutenberg" :activeTab="activeTab"></ActionTab>
+    <ActionTab tabId="gutenberg" :activeTab="activeTab">
+      <h3>Gutenberg tab</h3>
+    </ActionTab>
 
-    <ActionTab tabId="best-books" :activeTab="activeTab"></ActionTab>
+    <ActionTab tabId="best-books" :activeTab="activeTab">
+      <h3>Best books</h3>
+    </ActionTab>
  </div>
 </template>
 
