@@ -13,7 +13,7 @@ import SourceDescription from '@/views/documentation-card/components/SourceDescr
   <div class="goodreads-doc">
     <DocumentationCard>
       <DocumentationSection>
-        <SectionTitle>How to use Goodreads Source?</SectionTitle>
+        <SectionTitle border-color="#fcc349">How to use Goodreads Source?</SectionTitle>
         <SourceDescription>
           Search from around 68 thousand books on Goodreads. Provide query of book keyword and see JSON results.
         </SourceDescription>

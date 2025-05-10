@@ -1,9 +1,21 @@
 <script setup lang="ts">
 // Static component
+import { defineProps } from 'vue';
+
+const props = defineProps({
+  borderColor: {
+    type: String,
+    required: false,
+    default: "#000000"
+  }
+});
 </script>
 
 <template>
- <h2 class="section-title">
+  <h2  
+    class="section-title" 
+    :style="{ borderBottom: `2px solid ${props.borderColor}` }"
+  >
   <slot></slot>
  </h2>
 </template>
@@ -14,7 +26,6 @@
   font-size: 1.8rem;
   margin-top: 0;
   margin-bottom: 1rem;
-  border-bottom: 2px solid #e67e22;
   padding-bottom: 0.5rem;
 }
 </style>

@@ -10,10 +10,10 @@ import SourceDescription from '@/views/documentation-card/components/SourceDescr
 </script>
 
 <template>
-  <div class="goodreads-doc">
+  <div class="open-lib-doc">
     <DocumentationCard>
       <DocumentationSection>
-        <SectionTitle>How to use Open Library Source?</SectionTitle>
+        <SectionTitle border-color="#4979fc">How to use Open Library Source?</SectionTitle>
         <SourceDescription>
           The Open Library Search API is one of the most convenient and complete ways to retrieve book data on Open Library.
           Use form to make query and see JSON result.

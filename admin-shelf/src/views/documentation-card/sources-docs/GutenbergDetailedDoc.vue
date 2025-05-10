@@ -10,10 +10,10 @@ import SourceDescription from '@/views/documentation-card/components/SourceDescr
 </script>
 
 <template>
-  <div class="goodreads-doc">
+  <div class="gutenberg-detailed-doc">
     <DocumentationCard>
       <DocumentationSection>
-        <SectionTitle>How to use Gutenberg Detailed Source?</SectionTitle>
+        <SectionTitle border-color="#25a146">How to use Gutenberg Detailed Source?</SectionTitle>
         <SourceDescription>
           Project Gutenberg API allows access to the entire Project Gutenberg catalogue of books. 
           This specific tab allows to retrieve detailed information, including resources, meta data and other. 

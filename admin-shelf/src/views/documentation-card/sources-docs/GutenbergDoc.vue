@@ -10,10 +10,10 @@ import SourceDescription from '@/views/documentation-card/components/SourceDescr
 </script>
 
 <template>
-  <div class="goodreads-doc">
+  <div class="gutenberg-doc">
     <DocumentationCard>
       <DocumentationSection>
-        <SectionTitle>How to use Gutenberg Source?</SectionTitle>
+        <SectionTitle border-color="#2dcc57">How to use Gutenberg Source?</SectionTitle>
         <SourceDescription>
           Project Gutenberg API allows access to the entire Project Gutenberg catalogue of books. 
           Dataset includes over 60 000 books, use pagination to browse catalogue in JSON format. 
