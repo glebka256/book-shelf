@@ -13,20 +13,18 @@ import SourceDescription from '@/views/documentation-card/components/SourceDescr
   <div class="goodreads-doc">
     <DocumentationCard>
       <DocumentationSection>
-        <SectionTitle>How to use Gutenberg Source?</SectionTitle>
+        <SectionTitle>How to use Gutenberg Detailed Source?</SectionTitle>
         <SourceDescription>
           Project Gutenberg API allows access to the entire Project Gutenberg catalogue of books. 
-          Dataset includes over 60 000 books, use pagination to browse catalogue in JSON format. 
-          For downloading book resources or gathering more information, copy it's id and use in Goodreads Detailed Source tab.
+          This specific tab allows to retrieve detailed information, including resources, meta data and other. 
+          This is the best source for getting book downloads or other resources.
         </SourceDescription>
         
         <InstructionSection>
           <h3>Tips & Best Practices</h3>
           <ul>
-            <li>This source allows to browse full Project Gutenberg catalogue.</li>
-            <li>If you search for specific book, go to another source that provides Gutenberg ID</li>
-            <li>Other sources with Gutenberg ID include: Open Lib, Goodreads, Anna's Archive</li>
-            <li>If you want to download resources, copy Gutenberg id and go to 'Gutenberg Detailed' tab</li>
+            <li>This source allows to get all book data and resources by Gutenberg ID</li>
+            <li>If you want to browse full catalogue go to 'Gutenberg' tab</li>
             <li>For more information go to: <a href="https://gnikdroy.pythonanywhere.com/">https://gnikdroy.pythonanywhere.com/</a></li>
           </ul>
         </InstructionSection>
@@ -34,9 +32,9 @@ import SourceDescription from '@/views/documentation-card/components/SourceDescr
       
       <FieldTable>
         <tr>
-          <td>Page</td>
-          <td>Catalogue page, see which page you are on in response data</td>
-          <td>1</td>
+          <td>ID</td>
+          <td>Project Gutenberg ID</td>
+          <td>24848</td>
         </tr>
       </FieldTable>
     </DocumentationCard>

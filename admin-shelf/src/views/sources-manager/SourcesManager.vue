@@ -9,6 +9,7 @@ import { QueryField } from "./sourcesManager.types";
 import * as api from "./sourcesManager";
 import OpenLibDoc from "../documentation-card/sources-docs/OpenLibDoc.vue";
 import GutenbergDoc from "../documentation-card/sources-docs/GutenbergDoc.vue";
+import GutenbergDetailedDoc from "../documentation-card/sources-docs/GutenbergDetailedDoc.vue";
 
 const activeTab = ref('home');
 
@@ -217,7 +218,7 @@ const gutenbergDetailsFormFields: QueryField[] = [
         :queryFields="gutenbergDetailsFormFields"
         :fetchData="api.fetchGutenbergDetailedData"
         :infoTag="{ email: 'glebkarpenko1@gmail.com' }" 
-      />
+      ><GutenbergDetailedDoc /></SourceTab>
     </ActionTab>
  </div>
 </template>
