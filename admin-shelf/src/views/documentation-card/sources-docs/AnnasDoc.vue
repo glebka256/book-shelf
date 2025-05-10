@@ -13,7 +13,7 @@ import SourceDescription from '@/views/documentation-card/components/SourceDescr
   <div class="gutenberg-detailed-doc">
     <DocumentationCard>
       <DocumentationSection>
-        <SectionTitle border-color="#25a146">How to use Annas's Arhive Source?</SectionTitle>
+        <SectionTitle border-color="#f041ed">How to use Annas's Arhive Source?</SectionTitle>
         <SourceDescription class="red-text">
           This source is no longer supported. Contact for more details: <a href="mailto:glebkarpenko1@gmail.com">glebkarpenko1@gmail.com</a>
         </SourceDescription>

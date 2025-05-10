@@ -11,6 +11,8 @@ import OpenLibDoc from "../documentation-card/sources-docs/OpenLibDoc.vue";
 import GutenbergDoc from "../documentation-card/sources-docs/GutenbergDoc.vue";
 import GutenbergDetailedDoc from "../documentation-card/sources-docs/GutenbergDetailedDoc.vue";
 import AnnasDoc from "../documentation-card/sources-docs/AnnasDoc.vue";
+import BestBookDoc from "../documentation-card/sources-docs/BestBookDoc.vue";
+import BestBookDetailed from "../documentation-card/sources-docs/BestBookDetailed.vue";
 
 const activeTab = ref('home');
 
@@ -183,7 +185,7 @@ const gutenbergDetailsFormFields: QueryField[] = [
         :queryFields="bestAllFormFields"
         :fetchData="api.fetchBestBooksData"
         :infoTag="{ email: 'glebkarpenko1@gmail.com' }" 
-      />
+      ><BestBookDoc /></SourceTab>
     </ActionTab>
 
     <ActionTab tabId="best-detailed" :activeTab="activeTab">
@@ -192,7 +194,7 @@ const gutenbergDetailsFormFields: QueryField[] = [
         :queryFields="bestDetailedFormFields"
         :fetchData="api.fetchBestBooksdetailedData"
         :infoTag="{ email: 'glebkarpenko1@gmail.com' }" 
-      />
+      ><BestBookDetailed /></SourceTab>
     </ActionTab>
 
     <ActionTab tabId="open-lib" :activeTab="activeTab">
