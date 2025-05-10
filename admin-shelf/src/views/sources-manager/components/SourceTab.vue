@@ -82,7 +82,7 @@ const resetForm = () => {
 
 <template>
  <div class="source-tab">
-  <div class="source-tab-header">
+  <div v-if="props.sourceName" class="source-tab-header">
     <h3 class="tab-title">Book Source: {{ props.sourceName }}</h3>
   </div>
   <slot></slot>

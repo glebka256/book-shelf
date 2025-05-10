@@ -163,7 +163,6 @@ const gutenbergDetailsFormFields: QueryField[] = [
 
     <ActionTab tabId="goodreads" :activeTab="activeTab">
       <SourceTab 
-        sourceName="Goodreads API" 
         :queryFields="goodreadsFormFields"
         :fetchData="api.fetchGoodreadsData"
         :infoTag="{ email: 'glebkarpenko1@gmail.com' }" 
@@ -172,7 +171,6 @@ const gutenbergDetailsFormFields: QueryField[] = [
 
     <ActionTab tabId="annas-archive" :activeTab="activeTab">
       <SourceTab 
-        sourceName="Annas Archive API" 
         :queryFields="annasFormFields"
         :fetchData="api.fetchAnnasArchiveData"
         :infoTag="{ email: 'glebkarpenko1@gmail.com' }" 
@@ -199,7 +197,6 @@ const gutenbergDetailsFormFields: QueryField[] = [
 
     <ActionTab tabId="open-lib" :activeTab="activeTab">
       <SourceTab 
-        sourceName="Open Library API" 
         :queryFields="openLibFormFields"
         :fetchData="api.fetchOpenLibData"
         :infoTag="{ email: 'glebkarpenko1@gmail.com' }" 
@@ -208,7 +205,6 @@ const gutenbergDetailsFormFields: QueryField[] = [
 
     <ActionTab tabId="gutenberg-search" :activeTab="activeTab">
       <SourceTab 
-        sourceName="Gutenberg API" 
         :queryFields="gutenbergSearchFormFields"
         :fetchData="api.fetchGutenbergData"
         :infoTag="{ email: 'glebkarpenko1@gmail.com' }" 
@@ -217,7 +213,6 @@ const gutenbergDetailsFormFields: QueryField[] = [
 
     <ActionTab tabId="gutenberg-detailed" :activeTab="activeTab">
       <SourceTab 
-        sourceName="Gutenberg Detailed API" 
         :queryFields="gutenbergDetailsFormFields"
         :fetchData="api.fetchGutenbergDetailedData"
         :infoTag="{ email: 'glebkarpenko1@gmail.com' }" 
