@@ -1,51 +1,76 @@
 <script setup lang="ts">
-import { defineProps, PropType, ref } from 'vue';
+import { defineProps, PropType, defineEmits, ref, reactive } from 'vue';
 import FormWrapper from '@/components/ui/form/FormWrapper.vue';
 import FormInput from '@/components/ui/form/inputs/FormInput.vue';
 import FormActions from '@/components/ui/form/inputs/FormActions.vue';
 import JsonDisplay from '@/components/common/JsonDisplay.vue';
+import { FetchDataFunction, placeholderResultJSON, QueryField } from '../sourcesManager.types';
 
 const props = defineProps({
   sourceName: {
     type: String,
     requireed: true
   },
-  searchPlaceholder: {
-    type: String,
-    required: false,
-    default: "Enter book title, author, or ISBN"
+  /** Fields by which data will be fetched with fetchData method */
+  queryFields: {
+    type: Array as PropType<QueryField[]>,
+    required: true
   },
   infoTag: {
     type: Object as PropType<{ email: string } | null>,
     required: false,
     default: null
+  },
+  /** Method to fetch JSON data on submit */
+  fetchData: {
+    type: Function as PropType<FetchDataFunction>,
+    required: false,
+    default: null
   }
 });
 
-const query = ref<string | undefined>(undefined);
+const emit = defineEmits(['submit', 'reset', 'data-loaded']);
+
+/** Reactive values that store user's form input */
+const formValues = reactive<Record<string, any>>({});
+// Initialize form values with empty values corresponding to number of inputs
+props.queryFields.forEach(field => {
+  formValues[field.id] = undefined;
+});
+
 const errorMessage = ref<string | undefined>(undefined);
+const resultData = ref<unknown | null>(null);
 
-const bookData = ref<unknown | null>(null);
-
-const submitForm = () => {
-  console.log("Form submited");
-  bookData.value =   
-  [
-    {
-      "bookId": "42844155",
-      "title": "Harry Potter and the Sorcerer’s Stone (Harry Potter, #1)J.K. RowlingOlly Moss",
-      "imageUrl": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1598823299i/42844155._SX50_.jpg",
-      "bookUrl": "/book/show/42844155-harry-potter-and-the-sorcerer-s-stone?from_search=true&from_srp=true&qid=dttqYffwRH&rank=1",
-      "author": "J.K. Rowling, Olly Moss",
-      "rank": 1,
-      "rating": 4.47,
-      "publishedYear": "1997"
+const submitForm = async () => {
+  try {
+    errorMessage.value = undefined;
+    
+    // If a fetchData function is provided, use it to get data
+    if (props.fetchData) {
+      resultData.value = await props.fetchData(formValues);
+    } else {
+      // Default demo data if no fetchData function is provided
+      resultData.value = placeholderResultJSON;
     }
-  ];
-}
+    
+    // Emit the submit event with form values and results
+    emit('submit', { values: formValues, results: resultData.value });
+    emit('data-loaded', resultData.value);
+  } catch (error) {
+    errorMessage.value = error instanceof Error ? error.message : 'An error occurred';
+  }
+};
 
 const resetForm = () => {
-  console.log("Form reset");
+  // Reset all form values
+  Object.keys(formValues).forEach(key => {
+    formValues[key] = undefined;
+  });
+  
+  resultData.value = null;
+  errorMessage.value = undefined;
+  
+  emit('reset');
 }
 </script>
 
@@ -56,13 +81,17 @@ const resetForm = () => {
   </div>
   <form @submit.prevent="submitForm">
     <FormWrapper title="">
-      <FormInput 
-        id="query"
-        v-model.string="query"
-        label="Query *"
-        required
-        :placeholder="searchPlaceholder"
-      />
+      <!-- Dynamically render form fields based on props -->
+      <template v-for="field in props.queryFields" :key="field.id">
+        <FormInput
+          :id="field.id"
+          v-model.string="formValues[field.id]"
+          :label="field.label"
+          :required="field.required"
+          :placeholder="field.placeholder"
+          :type="field.type || 'text'"
+        />
+      </template>
     </FormWrapper>
 
     <!--Form Actions-->
@@ -71,8 +100,8 @@ const resetForm = () => {
     <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
   </form>
 
-  <div v-if="bookData" class="book-search__results">
-    <JsonDisplay :jsonData="bookData"/>
+  <div v-if="resultData" class="book-search__results">
+    <JsonDisplay :jsonData="resultData"/>
   </div>
 
   <p 

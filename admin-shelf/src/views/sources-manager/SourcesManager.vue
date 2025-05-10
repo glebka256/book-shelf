@@ -4,6 +4,7 @@ import ActionNav from "@/components/ui/ActionNav.vue";
 import ActionTab from "@/components/ui/ActionTab.vue";
 import HomeCard from "./components/HomeCard.vue";
 import SourceTab from "./components/SourceTab.vue";
+import { QueryField } from "./sourcesManager.types";
 
 const activeTab = ref('home');
 
@@ -22,6 +23,15 @@ const handleTabChange = (tab: string) => {
   activeTab.value = tab;
 };
 
+const goodreadsFormFields: QueryField[] = [
+  {
+    id: "query",
+    label: "Query *",
+    placeholder: "Enter book title, author, or ISBN",
+    required: true,
+    type: "text"
+  }
+];
 </script>
 
 <template>
@@ -40,7 +50,11 @@ const handleTabChange = (tab: string) => {
     </ActionTab>
 
     <ActionTab tabId="goodreads" :activeTab="activeTab">
-      <SourceTab sourceName="Goodreads API" :infoTag="{ email: 'glebkarpenko1@gmail.com' }" />
+      <SourceTab 
+        sourceName="Goodreads API" 
+        :queryFields="goodreadsFormFields"
+        :infoTag="{ email: 'glebkarpenko1@gmail.com' }" 
+      />
     </ActionTab>
 
     <ActionTab tabId="annas-archive" :activeTab="activeTab">
