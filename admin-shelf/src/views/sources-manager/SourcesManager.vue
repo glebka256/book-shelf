@@ -5,6 +5,7 @@ import ActionTab from "@/components/ui/ActionTab.vue";
 import HomeCard from "./components/HomeCard.vue";
 import SourceTab from "./components/SourceTab.vue";
 import { QueryField } from "./sourcesManager.types";
+import { fetchGoodreadsData } from "./sourcesManager";
 
 const activeTab = ref('home');
 
@@ -53,6 +54,7 @@ const goodreadsFormFields: QueryField[] = [
       <SourceTab 
         sourceName="Goodreads API" 
         :queryFields="goodreadsFormFields"
+        :fetchData="fetchGoodreadsData"
         :infoTag="{ email: 'glebkarpenko1@gmail.com' }" 
       />
     </ActionTab>
