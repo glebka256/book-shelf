@@ -10,6 +10,7 @@ import * as api from "./sourcesManager";
 import OpenLibDoc from "../documentation-card/sources-docs/OpenLibDoc.vue";
 import GutenbergDoc from "../documentation-card/sources-docs/GutenbergDoc.vue";
 import GutenbergDetailedDoc from "../documentation-card/sources-docs/GutenbergDetailedDoc.vue";
+import AnnasDoc from "../documentation-card/sources-docs/AnnasDoc.vue";
 
 const activeTab = ref('home');
 
@@ -173,7 +174,7 @@ const gutenbergDetailsFormFields: QueryField[] = [
         :queryFields="annasFormFields"
         :fetchData="api.fetchAnnasArchiveData"
         :infoTag="{ email: 'glebkarpenko1@gmail.com' }" 
-      />
+      ><AnnasDoc /></SourceTab>
     </ActionTab>
 
     <ActionTab tabId="best-all" :activeTab="activeTab">
