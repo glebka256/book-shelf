@@ -5,6 +5,7 @@ import FormInput from '@/components/ui/form/inputs/FormInput.vue';
 import FormActions from '@/components/ui/form/inputs/FormActions.vue';
 import JsonDisplay from '@/components/common/JsonDisplay.vue';
 import { FetchDataFunction, placeholderResultJSON, QueryField } from '../sourcesManager.types';
+import LoadSpinner from '@/components/common/loaders/LoadSpinner.vue';
 
 const props = defineProps({
   sourceName: {
@@ -38,10 +39,12 @@ props.queryFields.forEach(field => {
   formValues[field.id] = undefined;
 });
 
+const loading = ref<boolean>(false);
 const errorMessage = ref<string | undefined>(undefined);
 const resultData = ref<unknown | null>(null);
 
 const submitForm = async () => {
+  loading.value = true;
   try {
     errorMessage.value = undefined;
     
@@ -58,6 +61,8 @@ const submitForm = async () => {
     emit('data-loaded', resultData.value);
   } catch (error) {
     errorMessage.value = error instanceof Error ? error.message : 'An error occurred';
+  } finally {
+    loading.value = false;
   }
 };
 
@@ -102,6 +107,9 @@ const resetForm = () => {
 
   <div v-if="resultData" class="book-search__results">
     <JsonDisplay :jsonData="resultData"/>
+  </div>
+  <div v-if="loading">
+    <LoadSpinner />
   </div>
 
   <p 
