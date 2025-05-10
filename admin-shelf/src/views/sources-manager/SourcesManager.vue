@@ -7,6 +7,7 @@ import SourceTab from "./components/SourceTab.vue";
 import GoodreadsDoc from "@/views/documentation-card/sources-docs/GoodreadsDoc.vue";
 import { QueryField } from "./sourcesManager.types";
 import * as api from "./sourcesManager";
+import OpenLibDoc from "../documentation-card/sources-docs/OpenLibDoc.vue";
 
 const activeTab = ref('home');
 
@@ -91,30 +92,30 @@ const openLibFormFields: QueryField[] = [
   },
   {
     id: "author",
-    label: "Author",
+    label: "Author *",
     placeholder: "Enter book author to narrow down search",
-    required: false,
+    required: true,
     type: "text"
   },
   {
     id: "cat",
-    label: "Category",
+    label: "Category *",
     placeholder: "Enter book category to narrow down search",
-    required: false,
+    required: true,
     type: "text"
   },
   {
     id: "access",
-    label: "Access",
-    placeholder: "Enter book access (true or false) to narrow down search",
-    required: false,
+    label: "Access *",
+    placeholder: "Enter public access status (true for public only, false for any)",
+    required: true,
     type: "text"
   },
   {
     id: "lang",
-    label: "Language",
+    label: "Language *",
     placeholder: "Enter book language code to narrow down search",
-    required: false,
+    required: true,
     type: "text"
   }
 ];
@@ -197,7 +198,7 @@ const gutenbergDetailsFormFields: QueryField[] = [
         :queryFields="openLibFormFields"
         :fetchData="api.fetchOpenLibData"
         :infoTag="{ email: 'glebkarpenko1@gmail.com' }" 
-      />
+      ><OpenLibDoc /></SourceTab>
     </ActionTab>
 
     <ActionTab tabId="gutenberg-search" :activeTab="activeTab">
