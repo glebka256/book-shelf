@@ -4,6 +4,7 @@ import ActionNav from "@/components/ui/ActionNav.vue";
 import ActionTab from "@/components/ui/ActionTab.vue";
 import HomeCard from "./components/HomeCard.vue";
 import SourceTab from "./components/SourceTab.vue";
+import GoodreadsDoc from "@/views/documentation-card/sources-docs/GoodreadsDoc.vue";
 import { QueryField } from "./sourcesManager.types";
 import * as api from "./sourcesManager";
 
@@ -14,7 +15,7 @@ const visibleTabs = [
   { id: "home",               name: "Home"               },
   { id: "goodreads",          name: "Goodreads"          },
   { id: "open-lib",           name: "Open Lib"           },
-  { id: "gutenberg-search",   name: "Gutenberg Search"   },
+  { id: "gutenberg-search",   name: "Gutenberg"          },
   { id: "gutenberg-detailed", name: "Gutenberg Detailed" },
   { id: "annas-archive",      name: "Anna's Archive"     },
   { id: "best-all",           name: "Best Books"         },
@@ -132,7 +133,7 @@ const gutenbergDetailsFormFields: QueryField[] = [
   {
     id: "id",
     label: "ID *",
-    placeholder: "Enter Gutenberg ID, can get from Gutenberg Search API",
+    placeholder: "Enter Gutenberg ID, can get from Gutenberg API",
     required: true,
     type: "number"
   }
@@ -160,7 +161,7 @@ const gutenbergDetailsFormFields: QueryField[] = [
         :queryFields="goodreadsFormFields"
         :fetchData="api.fetchGoodreadsData"
         :infoTag="{ email: 'glebkarpenko1@gmail.com' }" 
-      />
+      ><GoodreadsDoc /></SourceTab>
     </ActionTab>
 
     <ActionTab tabId="annas-archive" :activeTab="activeTab">
@@ -201,7 +202,7 @@ const gutenbergDetailsFormFields: QueryField[] = [
 
     <ActionTab tabId="gutenberg-search" :activeTab="activeTab">
       <SourceTab 
-        sourceName="Gutenberg Search API" 
+        sourceName="Gutenberg API" 
         :queryFields="gutenbergSearchFormFields"
         :fetchData="api.fetchGutenbergData"
         :infoTag="{ email: 'glebkarpenko1@gmail.com' }" 

@@ -44,6 +44,7 @@ const errorMessage = ref<string | undefined>(undefined);
 const resultData = ref<unknown | null>(null);
 
 const submitForm = async () => {
+  resultData.value = null;
   loading.value = true;
   try {
     errorMessage.value = undefined;
@@ -84,6 +85,7 @@ const resetForm = () => {
   <div class="source-tab-header">
     <h3 class="tab-title">Book Source: {{ props.sourceName }}</h3>
   </div>
+  <slot></slot>
   <form @submit.prevent="submitForm">
     <FormWrapper title="">
       <!-- Dynamically render form fields based on props -->
