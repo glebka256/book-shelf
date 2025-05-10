@@ -3,19 +3,14 @@ import { FetchDataFunction } from "./sourcesManager.types";
 
 export const fetchGoodreadsData: FetchDataFunction = async (formValues) => {
     const response = await baseInstance.get(
-        `/books/goodreads
-            /${formValues['query']}
-            /${formValues['page']??null}`
+        `/books/goodreads/${formValues['query']}/${formValues['page']??null}`
     );
     return response.data;
 };
 
 export const fetchAnnasArchiveData: FetchDataFunction = async (formValues) => {
     const response = await baseInstance.get(
-        `/books/annas
-            /${formValues['query']}
-            /${formValues['author']??null}
-            /${formValues['cat']??null}`
+        `/books/annas/${formValues['query']}/${formValues['author']??null}/${formValues['cat']??null}`
     );
     return response.data;
 };
@@ -32,13 +27,7 @@ export const fetchBestBooksdetailedData: FetchDataFunction = async (formValues) 
 
 export const fetchOpenLibData: FetchDataFunction = async (formValues) => {
     const response = await baseInstance.get(
-        `/books/open-lib
-            /${formValues['q']}
-            /${formValues['author']??null}
-            /${formValues['cat']??null}
-            /${formValues['access']??null}
-            /${formValues['lang']??null}`
-    );
+        `/books/open-lib/${formValues['q']}/${formValues['author']??null}/${formValues['cat']??null}/${formValues['access']??null}/${formValues['lang']??null}`);
     return response.data;
 };
 
