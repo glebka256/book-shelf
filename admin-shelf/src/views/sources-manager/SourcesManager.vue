@@ -8,6 +8,7 @@ import GoodreadsDoc from "@/views/documentation-card/sources-docs/GoodreadsDoc.v
 import { QueryField } from "./sourcesManager.types";
 import * as api from "./sourcesManager";
 import OpenLibDoc from "../documentation-card/sources-docs/OpenLibDoc.vue";
+import GutenbergDoc from "../documentation-card/sources-docs/GutenbergDoc.vue";
 
 const activeTab = ref('home');
 
@@ -123,9 +124,9 @@ const openLibFormFields: QueryField[] = [
 const gutenbergSearchFormFields: QueryField[] = [
   {
     id: "page",
-    label: "Page *",
+    label: "Page",
     placeholder: "Select numeric value",
-    required: true,
+    required: false,
     type: "number"
   }
 ];
@@ -207,7 +208,7 @@ const gutenbergDetailsFormFields: QueryField[] = [
         :queryFields="gutenbergSearchFormFields"
         :fetchData="api.fetchGutenbergData"
         :infoTag="{ email: 'glebkarpenko1@gmail.com' }" 
-      />
+      ><GutenbergDoc /></SourceTab>
     </ActionTab>
 
     <ActionTab tabId="gutenberg-detailed" :activeTab="activeTab">
