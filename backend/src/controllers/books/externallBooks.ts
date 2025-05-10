@@ -3,6 +3,7 @@ import { CustomError } from "@app/errors/CustomError";
 import bookManager from "@app/config/book-manager";
 import { BookSources } from "@app/interfaces/Books";
 import { Languages } from "@app/interfaces/Util";
+import { OpenLibraryAdapter } from "@app/services/adapters/OpenLibraryAdapter";
 
 const NAMESPACE = "THIRD-PARTY-BOOK-REQUEST";
 const controllerHandler = createControllerHandler(NAMESPACE);
@@ -55,7 +56,11 @@ export const getOpenLibraryBooks = controllerHandler(async (req, res) => {
         language: req.params.lang !== 'none' ? req.params.lang as Languages : undefined
     }
 
-    const bookData = await bookManager.fetchBooks(BookSources.OpenLibrary, params);
+    // Not using BookManager because strict mode needs to be disabled.
+    // Sctrict mode needs to be disbled for client to see any JSON, including invalid
+    const adapter = new OpenLibraryAdapter();
+    adapter.strictMap = false;
+    const bookData = await adapter.fetchBooks(params)
     res.status(200).json(bookData);
 });
 

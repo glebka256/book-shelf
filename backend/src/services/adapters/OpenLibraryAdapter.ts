@@ -6,6 +6,8 @@ import { Languages } from "@app/interfaces/Util";
 
 export class OpenLibraryAdapter implements IBookServiceAdapter {
     apiClient: AxiosInstance;
+    /** strictMap makes adapter return any JSON it recieves without filtering */
+    strictMap: boolean = true;
 
     constructor() {
         this.apiClient = openLibaryClient;
@@ -21,9 +23,11 @@ export class OpenLibraryAdapter implements IBookServiceAdapter {
         if (!this.validFetchResponse(response))
             throw new Error ("Invalid Open Library API response");
 
+        const books = response.data.docs;
+
         return {
             src: BookSources.OpenLibrary,
-            books: this.mapData(response.data.docs),
+            books: this.strictMap ? this.mapData(books) : books,
             totalResults: response.data.numFound || response.data.docs.length,
             currentPage: 1
         }
