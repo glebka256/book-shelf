@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import AuthForm from '@/components/layout/AuthForm.vue';
-import { AuthField } from '@/components/layout/authForm.types.ts';
+import { AuthField } from '@/components/layout/authForm.types';
 import { register } from './authService';
 
 const registerFields: AuthField[] = [
