@@ -1,0 +1,20 @@
+{
+  "name": "book-shelf",
+  "version": "0.1.0",
+  "description": "Personalized digital library",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "library", 
+    "literature", 
+    "digital library", 
+    "recommendation system", 
+    "recommendation engine",
+    "conent based recommendation"
+  ],
+  "author": "GlebKarpenko/glebkarpenko1@gmail.com",
+  "license": "MIT",
+  "packageManager": "pnpm@10.10.0"
+}

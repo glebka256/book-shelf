@@ -1,4 +1,4 @@
-# book-shelf-client
+# client-shelf
 
 ## Project setup
 ```
