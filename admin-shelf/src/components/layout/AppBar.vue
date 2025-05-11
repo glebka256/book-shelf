@@ -8,11 +8,11 @@ interface NavigationRoute {
 }
 
 const navigationRoutes: NavigationRoute[] = [
-  { link: '/', faIcon: "fas fa-home",        text: "Home"                           },
-  { link: '/storage-manager', faIcon: "fas fa-database",    text: "Storage Manager" },
-  { link: '/sources-manager', faIcon: "fas fa-layer-group", text: "Sources Manager" },
-  { link: '/', faIcon: "fas fa-chart-line",  text: "Statistics dashboard"           },
-  { link: '/', faIcon: "fas fa-users",       text: "Users dashboard"                },
+  { link: '/',                faIcon: "fas fa-home",        text: "Home"                 },
+  { link: '/storage-manager', faIcon: "fas fa-database",    text: "Storage Manager"      },
+  { link: '/sources-manager', faIcon: "fas fa-layer-group", text: "Sources Manager"      },
+  { link: '/',                faIcon: "fas fa-chart-line",  text: "Statistics dashboard" },
+  { link: '/users-manager',   faIcon: "fas fa-users",       text: "Users dashboard"      },
 ]
 </script>
 

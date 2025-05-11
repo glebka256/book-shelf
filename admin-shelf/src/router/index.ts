@@ -3,6 +3,7 @@ import HomeView from '@/views/HomeView.vue'
 import AboutView from '@/views/AboutView.vue'
 import StorageManager from '@/views/storage-manager/StorageManager.vue'
 import SourcesManager from '@/views/sources-manager/SourcesManager.vue'
+import UsersManager from '@/views/users-manager/UsersManager.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -19,6 +20,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/sources-manager",
     name: 'sources-manager',
     component: SourcesManager
+  },
+  {
+    path: "/users-manager",
+    name: 'users-manager',
+    component: UsersManager
   },
   {
     path: '/about',
