@@ -8,6 +8,7 @@ import ProfileManager from '@/views/profile-manager/ProfileManager.vue'
 import LoginView from '@/views/auth/LoginView.vue'
 import LogoutView from '@/views/auth/LogoutView.vue'
 import RegisterView from '@/views/auth/RegisterView.vue'
+import { getLoginStatus } from '@/views/auth/auth.api'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -60,6 +61,21 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+
+const protectedRoutes = ["users-manager"];
+
+router.beforeEach(async (to, from, next) => {
+  if (protectedRoutes.includes(to.name as string)) {
+    const isAuthorized = await getLoginStatus();
+    if (isAuthorized) {
+      next();
+    } else {
+      next({ name: "login" });
+    }
+  } else {
+    next();
+  }
 })
 
 export default router
