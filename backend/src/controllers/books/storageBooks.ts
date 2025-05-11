@@ -10,10 +10,13 @@ const controllerHandler = createControllerHandler(NAMESPACE);
 
 export const getBook = controllerHandler(async (req, res) => {
     const bookId = req.params.id;
-    if (!bookId) throw new CustomError(400, "Request missing id parameter", false, NAMESPACE);
+    if (!bookId) 
+        throw new CustomError(400, "Request missing id parameter", false, NAMESPACE);
     
     const searchedBook = await bookModel.getBookById(bookId);
-    if (!searchedBook) throw new CustomError(404, `Book with id: ${bookId} not found`, false, NAMESPACE);
+    if (!searchedBook) 
+        throw new CustomError(404, `Book with id: ${bookId} not found`, false, NAMESPACE);
+    
     res.status(200).json(searchedBook);
 });
 
@@ -66,7 +69,8 @@ export const getSortedBooks = controllerHandler(async (req, res) => {
 
 export const createNewBook = controllerHandler(async (req, res) => {
     const bookData = req.body;
-    if (!bookData) throw new CustomError(400, "Request body missing bookData field", false, NAMESPACE);
+    if (!bookData) 
+        throw new CustomError(400, "Request body missing bookData field", false, NAMESPACE);
 
     // Catch validation errors to return 400 on incorrect request body
     try {
@@ -83,10 +87,12 @@ export const createNewBook = controllerHandler(async (req, res) => {
 
 export const updateBook = controllerHandler(async (req, res) => {   
     const bookId = req.params.id;
-    if (!bookId) throw new CustomError(400, "Request missing bookId parameter", false, NAMESPACE);
+    if (!bookId) 
+        throw new CustomError(400, "Request missing bookId parameter", false, NAMESPACE);
 
     const bookData = req.body;
-    if (!bookData) throw new CustomError(400, "Request body missing bookData field", false, NAMESPACE);
+    if (!bookData) 
+        throw new CustomError(400, "Request body missing bookData field", false, NAMESPACE);
 
     // Catch validation errors to return 400 on incorrect request body
     try {
@@ -103,10 +109,12 @@ export const updateBook = controllerHandler(async (req, res) => {
 
 export const deleteBook = controllerHandler(async (req, res) => {    
     const bookId = req.params.id;
-    if (!bookId) throw new CustomError(400, "Request missing bookId parameter", false, NAMESPACE);
+    if (!bookId) 
+        throw new CustomError(400, "Request missing bookId parameter", false, NAMESPACE);
 
     const deletedBook = await bookModel.deleteBookById(bookId);
-    if (!deleteBook) throw new CustomError(404, "Book with specified id not found", false, NAMESPACE);
+    if (!deleteBook) 
+        throw new CustomError(404, "Book with specified id not found", false, NAMESPACE);
 
     res.status(201).json(deletedBook);
 });
