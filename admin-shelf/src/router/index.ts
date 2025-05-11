@@ -5,6 +5,9 @@ import StorageManager from '@/views/storage-manager/StorageManager.vue'
 import SourcesManager from '@/views/sources-manager/SourcesManager.vue'
 import UsersManager from '@/views/users-manager/UsersManager.vue'
 import ProfileManager from '@/views/profile-manager/ProfileManager.vue'
+import LoginView from '@/views/auth/LoginView.vue'
+import LogoutView from '@/views/auth/LogoutView.vue'
+import RegisterView from '@/views/auth/RegisterView.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -36,6 +39,21 @@ const routes: Array<RouteRecordRaw> = [
     path: '/about',
     name: 'about',
     component: AboutView
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: LoginView
+  },
+  {
+    path: '/logout',
+    name: 'logout',
+    component: LogoutView
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: RegisterView
   }
 ]
 
