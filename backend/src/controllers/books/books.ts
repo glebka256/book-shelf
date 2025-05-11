@@ -24,17 +24,21 @@ export const getGeneralPopular = controllerHandler(async (req, res) => {
 
 export const getFilterOptions = controllerHandler(async (req, res) => {
     const filters = BookFilter.submitOptions();
-    if (!filters) throw new CustomError(500, "Could not retrieve any filtering options", false, NAMESPACE);
+    if (!filters) 
+        throw new CustomError(500, "Could not retrieve any filtering options", false, NAMESPACE);
+    
     res.status(200).json(filters);
 });
 
 export const getFiltered = controllerHandler(async (req, res) => {
     // TODO: move all logic to service layer
     const query = req.body.query as FilterQuery;
-    if (!query) throw new CustomError(400, "Request missing 'query' field from request body", false, NAMESPACE);
+    if (!query) 
+        throw new CustomError(400, "Request missing 'query' field from request body", false, NAMESPACE);
 
     const endPage = parseInt(req.body.page) || -1;
-    if (endPage === -1) throw new CustomError(400, "Request missing 'page' field from request body", false, NAMESPACE);
+    if (endPage === -1) 
+        throw new CustomError(400, "Request missing 'page' field from request body", false, NAMESPACE);
 
     const beginPage = endPage - 1;
     const pageSize = 50;
@@ -70,10 +74,13 @@ export const getFiltered = controllerHandler(async (req, res) => {
 
 export const lookupBookDetails = controllerHandler(async (req, res) => {
     const id = req.params.id;
-    if (!id) throw new CustomError(400, "Request missing id parameter", false, NAMESPACE);
+    if (!id) 
+        throw new CustomError(400, "Request missing id parameter", false, NAMESPACE);
 
     const book: ClientBook = await bookManager.lookupBook(id);
-    if (!book) throw new CustomError(404, "Book not found", false, NAMESPACE);
+    if (!book) 
+        throw new CustomError(404, "Book not found", false, NAMESPACE);
+    
     res.status(200).json(book);
 });
 
@@ -145,7 +152,8 @@ export const getRecommendations = controllerHandler(async (req, res) => {
     const limit = endPage * pageSize;
 
     const userId = get(req, 'identity._id') as string;
-    if (!userId) throw new CustomError(400, "Request missing user identity", false, NAMESPACE);
+    if (!userId) 
+        throw new CustomError(400, "Request missing user identity", false, NAMESPACE);
     
     const recommendation = new RecommendService();
     await recommendation.setUser(userId);
