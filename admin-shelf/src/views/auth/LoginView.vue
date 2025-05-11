@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import AuthForm from '@/components/layout/AuthForm.vue';
 import { AuthField } from '@/components/layout/authForm.types';
 import { login } from './authService';
+import { useRoute, useRouter } from 'vue-router';
 
 const loginFields: AuthField[] = [
   { name: 'email', label: 'Email', type: 'email', placeholder: 'Enter your email' },
@@ -12,8 +13,21 @@ const loginFields: AuthField[] = [
 /** message can either be error or successfull action status message */
 const message = ref<string>('');
 
+const router = useRouter();
+const route = useRoute();
+
 async function handleLogin(formData: Record<string, string>) {
-  message.value = (await login(formData)).message;
+  const result = await login(formData);
+  message.value = result.message;
+
+  if (result.status) {
+    const redirectPath = (route.query.redirect as string) || '/';
+
+    // debug
+    console.log(route.query.redirect);
+
+    router.push(redirectPath);
+  }
 }
 </script>
 

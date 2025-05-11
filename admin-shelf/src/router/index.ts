@@ -71,7 +71,7 @@ router.beforeEach(async (to, from, next) => {
     if (isAuthorized) {
       next();
     } else {
-      next({ name: "login" });
+      next({ name: 'login', query: { redirect: to.fullPath } });
     }
   } else {
     next();
