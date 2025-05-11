@@ -9,6 +9,7 @@ interface NavigationRoute {
 
 const navigationRoutes: NavigationRoute[] = [
   { link: '/',                faIcon: "fas fa-home",        text: "Home"                 },
+  { link: '/profile',         faIcon: "fas fa-user",        text: "Profile"              },
   { link: '/storage-manager', faIcon: "fas fa-database",    text: "Storage Manager"      },
   { link: '/sources-manager', faIcon: "fas fa-layer-group", text: "Sources Manager"      },
   { link: '/',                faIcon: "fas fa-chart-line",  text: "Statistics dashboard" },
@@ -34,7 +35,7 @@ const navigationRoutes: NavigationRoute[] = [
 
 <style scoped lang="scss">
 .app-bar {
-  width: 238px;
+  width: 246px;
   height: 100vh;
   color:#ffffff;
   background-color: #2d305e;
@@ -66,8 +67,6 @@ nav li {
     font-size: 1.2rem;
     display: flex;
     flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
     padding: 0.5rem 1rem;
     border-radius: 4px;
     transition: padding 0.4s ease, background-color 0.4s ease;
@@ -78,6 +77,9 @@ nav li {
   }
 
   i {
+    // Use fixed width so that text is displayed in one neat line
+    // Alternative would be to display text and icons in columns side by side
+    width: 24px;
     margin-right: 0.75rem;
     transition: margin-right 0.4s ease, font-size 0.4s ease;
   }

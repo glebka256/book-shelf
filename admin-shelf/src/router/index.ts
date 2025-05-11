@@ -4,12 +4,18 @@ import AboutView from '@/views/AboutView.vue'
 import StorageManager from '@/views/storage-manager/StorageManager.vue'
 import SourcesManager from '@/views/sources-manager/SourcesManager.vue'
 import UsersManager from '@/views/users-manager/UsersManager.vue'
+import ProfileManager from '@/views/profile-manager/ProfileManager.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'home',
     component: HomeView
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: ProfileManager
   },
   {
     path: "/storage-manager",
