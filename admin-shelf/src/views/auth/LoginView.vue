@@ -2,16 +2,18 @@
 import { ref } from 'vue';
 import AuthForm from '@/components/layout/AuthForm.vue';
 import { AuthField } from '@/components/layout/authForm.types.ts';
+import { login } from './authService';
 
 const loginFields: AuthField[] = [
   { name: 'email', label: 'Email', type: 'email', placeholder: 'Enter your email' },
   { name: 'password', label: 'Password', type: 'password', placeholder: 'Enter your password' }
 ];
 
+/** message can either be error or successfull action status message */
 const message = ref<string>('');
 
 async function handleLogin(formData: Record<string, string>) {
-  console.log("login");
+  message.value = (await login(formData)).message;
 }
 </script>
 

@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import AuthForm from '@/components/layout/AuthForm.vue';
 import { AuthField } from '@/components/layout/authForm.types.ts';
+import { register } from './authService';
 
 const registerFields: AuthField[] = [
   { name: 'username', label: 'Username', type: 'text', placeholder: 'Enter your username' },
@@ -10,10 +11,11 @@ const registerFields: AuthField[] = [
   { name: 'pass-match', label: 'Repeat password', type: 'password', placeholder: 'Repeat your password' }
 ];
 
+/** message can either be error or successfull action status message */
 const message = ref<string>('');
 
 async function handleRegister(formData: Record<string, string>) {
-  console.log("register");
+  message.value = (await register(formData)).message;
 }
 </script>
 
