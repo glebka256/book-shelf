@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import auth from "@/config/auth";
 import AuthForm from '@/components/layout/AuthForm.vue';
 import { AuthField } from '@/components/layout/authForm.types';
-import { useAuth } from '@book-shelf/auth-util';
-import baseInstance from '@/config/axios';
 import { useRoute, useRouter } from 'vue-router';
 
 const loginFields: AuthField[] = [
@@ -14,7 +13,6 @@ const loginFields: AuthField[] = [
 /** message can either be error or successfull action status message */
 const message = ref<string>('');
 
-const auth = useAuth(baseInstance);
 const router = useRouter();
 const route = useRoute();
 

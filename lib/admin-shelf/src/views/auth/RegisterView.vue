@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import auth from "@/config/auth";
 import AuthForm from '@/components/layout/AuthForm.vue';
 import { AuthField } from '@/components/layout/authForm.types';
-import { useAuth } from "@book-shelf/auth-util";
-import baseInstance from "@/config/axios";
 
 const registerFields: AuthField[] = [
   { name: 'username', label: 'Username', type: 'text', placeholder: 'Enter your username' },
@@ -16,7 +15,6 @@ const registerFields: AuthField[] = [
 const message = ref<string>('');
 
 async function handleRegister(formData: Record<string, string>) {
-  const auth = useAuth(baseInstance);
   const response = await auth.service.register(formData)
   message.value = response.message;
 }

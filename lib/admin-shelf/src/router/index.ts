@@ -8,8 +8,7 @@ import ProfileManager from '@/views/profile-manager/ProfileManager.vue'
 import LoginView from '@/views/auth/LoginView.vue'
 import LogoutView from '@/views/auth/LogoutView.vue'
 import RegisterView from '@/views/auth/RegisterView.vue'
-import { useAuth } from "@book-shelf/auth-util"
-import baseInstance from '@/config/axios'
+import auth from "@/config/auth";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -68,7 +67,6 @@ const protectedRoutes = ["users-manager"];
 
 router.beforeEach(async (to, from, next) => {
   if (protectedRoutes.includes(to.name as string)) {
-    const auth = useAuth(baseInstance);
     const isAuthorized = await auth.api.getLoginStatus();
     if (isAuthorized) {
       next();
