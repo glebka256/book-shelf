@@ -1,23 +1,44 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { useAuth } from '@book-shelf/auth-util';
+import { useRouter } from 'vue-router';
+import auth from '@/config/auth';
 import { User } from '@book-shelf/auth-util/src/auth.types';
-import baseInstance from '@/config/axios';
 import ActionButton from '@/../../component-lib/src/components/buttons/ActionButton.vue';
 
 const user = ref<User>();
 const errorMessage = ref<string>();
+const router = useRouter();
 
-const handleLogout = () => {
-  console.log("log out");
+const handleLogout = async () => {
+  const logoutConfirmed = confirm("Are you sure you want to exit from account?");
+  if (logoutConfirmed) {
+    const result = await auth.api.requestLogout();
+    if (result.status) {
+      alert("Successfully loged out from account");
+      router.push('/');
+    } else {
+      alert(result.message);
+      errorMessage.value = result.message;
+    }
+  }
 }
 
-const handleDelete = () => {
-  console.log("delete");
+const handleDelete = async () => {
+  const deleteConfirmed = confirm("Are you sure you want to delete this account?");
+  if (deleteConfirmed) {
+    const result = await auth.api.requestDelete();
+    if (result.status) {
+      alert("Account deleted");
+      auth.api.requestLogout();
+      router.push('/');
+    } else {
+      alert(result.message);
+      errorMessage.value = result.message;
+    }
+  }
 }
 
 onMounted(async () => {
-  const auth = useAuth(baseInstance);
   const response = await auth.api.getUserCredentials();
 
   if (!('error' in response)) {

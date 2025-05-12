@@ -22,10 +22,6 @@ async function handleLogin(formData: Record<string, string>) {
 
   if (result.status) {
     const redirectPath = (route.query.redirect as string) || '/';
-
-    // debug
-    console.log(route.query.redirect);
-
     router.push(redirectPath);
   }
 }
