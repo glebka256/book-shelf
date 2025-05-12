@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import AuthForm from '@/components/layout/AuthForm.vue';
 import { AuthField } from '@/components/layout/authForm.types';
-import { useAuth } from '@auth-util';
+import { useAuth } from '@book-shelf/auth-util';
 import baseInstance from '@/config/axios';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -14,12 +14,12 @@ const loginFields: AuthField[] = [
 /** message can either be error or successfull action status message */
 const message = ref<string>('');
 
+const auth = useAuth(baseInstance);
 const router = useRouter();
 const route = useRoute();
 
 async function handleLogin(formData: Record<string, string>) {
-  const auth = useAuth(baseInstance);
-  const result = await auth.login(formData);
+  const result = await auth.service.login(formData);
   message.value = result.message;
 
   if (result.status) {

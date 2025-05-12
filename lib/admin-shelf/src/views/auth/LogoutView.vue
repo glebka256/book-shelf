@@ -2,7 +2,8 @@
 import { ref } from 'vue';
 import AuthForm from '@/components/layout/AuthForm.vue';
 import { AuthField } from '@/components/layout/authForm.types';
-import { logout } from './authService';
+import { useAuth } from "@book-shelf/auth-util";
+import baseInstance from '@/config/axios';
 
 const logoutFields: AuthField[] = [];
 
@@ -10,7 +11,9 @@ const logoutFields: AuthField[] = [];
 const message = ref<string>('');
 
 async function handleLogout() {
-  message.value = (await logout()).message;
+  const auth = useAuth(baseInstance);
+  const response = await auth.service.logout();
+  message.value = response.message;
 }
 </script>
 
