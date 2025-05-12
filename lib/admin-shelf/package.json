@@ -9,6 +9,8 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@book-shelf/auth-utils": "file:../auth-util",
+    "auth-util": "file:../auth-util",
     "axios": "^1.9.0",
     "core-js": "^3.8.3",
     "vue": "^3.2.13",
