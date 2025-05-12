@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { User } from '@/types/Auth';
-import { getUserCredentials } from '@/api/auth';
+import auth from '@/config/auth';
 
 const user = ref<User>();
 const errorMessage = ref<string>();
 
 onMounted(async () => {
-  const response = await getUserCredentials();
+  const response = await auth.api.getUserCredentials();
 
   if (!('error' in response)) {
     user.value = response;

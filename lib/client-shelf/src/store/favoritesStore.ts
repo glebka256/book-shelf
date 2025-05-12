@@ -1,12 +1,7 @@
 import { defineStore } from "pinia";
-import { getLoginStatus } from "@/api/auth";
 import { toggleServerFavorite } from "@/api/user";
-import {
-  addLocalFavorite, 
-  getLocalFavorites, 
-  removeLocalFavorite, 
-  syncFavorites
-} from "@/services/favoritesService";
+import * as favoritesService from "@/services/favoritesService";
+import auth from '@/config/auth';
 
 export const useFavoritesStore = defineStore('favorites', {
   state: () => ({
@@ -21,18 +16,18 @@ export const useFavoritesStore = defineStore('favorites', {
   actions: {
     async addFavorite(id: string) {
       this.favoriteBooksIds.push(id);
-      addLocalFavorite(id);
+      favoritesService.addLocalFavorite(id);
       
-      if (await getLoginStatus()) {
+      if (await auth.api.getLoginStatus()) {
         await toggleServerFavorite(id);
       }
     },
 
     async removeFavorite(id: string) {
       this.favoriteBooksIds = this.favoriteBooksIds.filter((itemId) => itemId !== id);
-      removeLocalFavorite(id);
+      favoritesService.removeLocalFavorite(id);
 
-      if (await getLoginStatus()) {
+      if (await auth.api.getLoginStatus()) {
         await toggleServerFavorite(id);
       }
     },
@@ -46,10 +41,10 @@ export const useFavoritesStore = defineStore('favorites', {
     },
 
     async initialize() {
-      this.favoriteBooksIds = getLocalFavorites();
+      this.favoriteBooksIds = favoritesService.getLocalFavorites();
 
-      if (await getLoginStatus()) {
-        await syncFavorites();
+      if (await auth.api.getLoginStatus()) {
+        await favoritesService.syncFavorites();
       }
     },
   }

@@ -19,6 +19,9 @@
     "paths": {
       "@/*": [
         "src/*"
+      ],
+        "@book-shelf/auth-util": [
+        "../auth-util/*"
       ]
     },
     "lib": [

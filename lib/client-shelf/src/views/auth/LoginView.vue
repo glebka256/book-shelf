@@ -4,7 +4,7 @@ import { useFavoritesStore } from '@/store/favoritesStore';
 import AuthForm from '@/components/layout/AuthForm.vue';
 import { FormField } from '@/types/Auth';
 import { sendInteractions } from '@/services/interactionService';
-import { login } from '@/services/authService';
+import auth from '@/config/auth';
 
 const loginFields: FormField[] = [
   { name: 'email', label: 'Email', type: 'email', placeholder: 'Enter your email' },
@@ -14,7 +14,8 @@ const loginFields: FormField[] = [
 const message = ref<string>('');
 
 async function handleLogin(formData: Record<string, string>) {
-  message.value = (await login(formData)).message;
+  const response = await auth.service.login(formData);
+  message.value = response.message;
 
   const favoritesStore = useFavoritesStore();
   await favoritesStore.initialize();

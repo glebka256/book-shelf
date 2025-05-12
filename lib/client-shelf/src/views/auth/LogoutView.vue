@@ -2,14 +2,15 @@
 import { ref } from 'vue';
 import AuthForm from '@/components/layout/AuthForm.vue';
 import { FormField } from '@/types/Auth';
-import { logout } from '@/services/authService';
+import auth from '@/config/auth';
 
 const logoutFields: FormField[] = [];
 
 const message = ref<string>('');
 
 async function handleLogout() {
-  message.value = (await logout()).message;
+  const response = await auth.service.logout();
+  message.value = response.message;
 }
 </script>
 

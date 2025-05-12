@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { FormField } from '@/types/Auth';
 import AuthForm from '@/components/layout/AuthForm.vue';
-import { register } from '@/services/authService';
+import auth from '@/config/auth';
 
 const registerFields: FormField[] = [
   { name: 'username', label: 'Username', type: 'text', placeholder: 'Enter your username' },
@@ -14,7 +14,8 @@ const registerFields: FormField[] = [
 const message = ref<string>('');
 
 async function handleRegister(formData: Record<string, string>) {
-  message.value = (await register(formData)).message;
+  const response = await auth.service.register(formData);
+  message.value = response.message;
 }
 </script>
 
