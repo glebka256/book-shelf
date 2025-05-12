@@ -6,6 +6,12 @@ export interface User {
     }
 }
 
+export interface ValidationResult {
+    userId: string | null,
+    status: 200 | 401 | 404,
+    message: string
+}
+
 export interface DecodedJWT {
     userId: string,
     username: string,

@@ -1,15 +1,11 @@
 import { Router } from 'express';
 
-import { 
-    register, 
-    login, 
-    logout, 
-    getUserInfo
-} from '@app/controllers/authentication';
+import * as auth from '@app/controllers/authentication';
 
 export default (router: Router): void => {
-    router.post('/auth/register', register);
-    router.post('/auth/login', login);
-    router.post('/auth/logout', logout);
-    router.get('/auth/user', getUserInfo);
+    router.post('/auth/register', auth.register);
+    router.post('/auth/login', auth.login);
+    router.post('/auth/logout', auth.logout);
+    router.get('/auth/user', auth.getUserInfo);
+    router.get('/auth/user/id', auth.getUserId);
 }

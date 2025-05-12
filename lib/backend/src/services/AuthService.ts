@@ -1,13 +1,8 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-import { 
-    UserModel, 
-    getUserByEmail, 
-    getUserCreditentialsByEmail, 
-    updateUserById 
-} from "@app/models/user";
-import { DecodedJWT } from '@app/interfaces/User';
+import * as userModel from "@app/models/user";
+import { DecodedJWT, ValidationResult, User } from '@app/interfaces/User';
 
 export class AuthService {
     private static saltRounds = 12;
@@ -41,14 +36,29 @@ export class AuthService {
         }
     }
 
+    static async validateUser(token: string | undefined): Promise<ValidationResult> {
+        if (!token)
+            return { userId: null, status: 401, message: "Unauthorized" };
+    
+        const decoded = await AuthService.verifyAuthToken(token);
+        if (decoded === null)
+            return { userId: null, status: 401, message: "Unauthorized" };
+    
+        const user = await userModel.getUserById(decoded.userId) as User;
+        if (!user) 
+            return { userId: null, status: 404, message: "User not found" };
+    
+        return { userId: decoded.userId, status: 200, message: "OK" };
+    }
+
     static async register(username: String, email: string, password: string): Promise<any> {      
-        const existingUser = await getUserByEmail(email);
+        const existingUser = await userModel.getUserByEmail(email);
         if (existingUser) {
             throw new Error('User already exists.');
         }
         
         const hashedPassword = await this.hashPassword(password);
-        const newUser = new UserModel({
+        const newUser = new userModel.UserModel({
             username,
             email,
             authentication: {
@@ -63,7 +73,7 @@ export class AuthService {
     }
 
     static async login(email: string, password: string): Promise<any> {
-        const user = await getUserCreditentialsByEmail(email);
+        const user = await userModel.getUserCreditentialsByEmail(email);
         if (!user) {
             throw new Error('User not found.');
         }
@@ -75,8 +85,8 @@ export class AuthService {
         
         const token = this.generateAuthToken(user.id, user.username);
 
-        await updateUserById(user.id, { 'authentication.sessionToken': token });
-        const newUser = await getUserCreditentialsByEmail(email);
+        await userModel.updateUserById(user.id, { 'authentication.sessionToken': token });
+        const newUser = await userModel.getUserCreditentialsByEmail(email);
 
         return newUser;
     }
