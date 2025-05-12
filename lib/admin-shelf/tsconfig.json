@@ -22,6 +22,9 @@
       ],
       "@auth-util": [
         "../auth-util/*"
+      ],
+      "@book-shelf/component-lib": [
+        "../component-lib/*"
       ]
     },
     "lib": [

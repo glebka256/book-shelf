@@ -1,0 +1,45 @@
+{
+  "name": "@book-shelf/component-lib",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "./dist/component-lib.umd.js",
+  "module": "./dist/component-lib.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/component-lib.es.js",
+      "require": "./dist/component-lib.umd.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && vue-tsc --emitDeclarationOnly",
+    "preview": "vite preview",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@vitejs/plugin-vue": "^5.2.4",
+    "@vue/compiler-sfc": "^3.5.13",
+    "sass-embedded": "^1.88.0",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.3",
+    "vite": "^5.4.19",
+    "vue": "^3.5.13",
+    "vue-loader": "^17.4.2",
+    "vue-tsc": "^2.2.10"
+  },
+  "dependencies": {
+    "jest": "^29.7.0"
+  },
+  "peerDependencies": {
+    "vue": "^3.0.0"
+  }
+}
