@@ -8,4 +8,5 @@ export default (router: Router): void => {
     router.post('/auth/logout', auth.logout);
     router.get('/auth/user', auth.getUserInfo);
     router.get('/auth/user/id', auth.getUserId);
+    router.delete('/auth/user', auth.deleteUser);
 }
