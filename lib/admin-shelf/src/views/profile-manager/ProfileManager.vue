@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { User } from '@/views/auth/auth.types';
 import { useAuth } from '@book-shelf/auth-util';
+import { User } from '@book-shelf/auth-util/src/auth.types';
 import baseInstance from '@/config/axios';
 
 const user = ref<User>();

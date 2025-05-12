@@ -5,7 +5,7 @@ import SearchBar from '@/components/common/SearchBar.vue';
 import BookSkeleton from '@/components/book/BookSkeleton.vue';
 import BookGrid from '@/components/book/BookGrid.vue';
 import BookSidebar from '@/components/book/BookSidebar.vue';
-import TextLoader from '@/components/common/loaders/TextLoader.vue';
+import TextLoader from '@/../../component-lib/src/components/loaders/TextLoader.vue';
 import { Book, SearchMethods, SearchMethod } from '@/types/Book';
 import { useInteractionStore } from '@/store/interactionStore';
 import { InteractionTypes } from '@/types/User';

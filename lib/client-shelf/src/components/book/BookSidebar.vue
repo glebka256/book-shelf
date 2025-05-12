@@ -2,7 +2,7 @@
 import baseInstance from '@/api/baseInstance';
 import { defineProps, onMounted, ref, computed } from 'vue';
 import CommonButton from '@/components/common/buttons/CommonButton.vue';
-import TextLoader from '@/components/common/loaders/TextLoader.vue';
+import TextLoader from '@/../../component-lib/src/components/loaders/TextLoader.vue';
 import IconButton from '@/components/common/buttons/IconButton.vue';
 import { useFavoritesStore } from '@/store/favoritesStore';
 import { useInteractionStore } from '@/store/interactionStore';

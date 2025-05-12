@@ -8,7 +8,7 @@ import HorizontalScroll from '@/components/layout/HorizontalScroll.vue';
 import IconButton from '@/components/common/buttons/IconButton.vue';
 import FilterForm from '@/components/layout/FilterForm.vue';
 import BookGrid from '@/components/book/BookGrid.vue';
-import TextLoader from '@/components/common/loaders/TextLoader.vue';
+import TextLoader from '@/../../component-lib/src/components/loaders/TextLoader.vue';
 import { Book } from '@/types/Book';
 import { FilterFormInstance, FilterQuery } from '@/types/Filter';
 import { InteractionTypes } from '@/types/User';
@@ -59,6 +59,9 @@ function closeSidebar() {
 const recommendedPage = ref(1);
 const recommendedPageSize = 50;
 
+const formError = (error: unknown) =>
+  (typeof(error) === "string") ? error : "Could not retrieve recommended books";
+
 async function handleRecommendationReset() {
   loading.recommended = true;
   loading.errorMessage = '';
@@ -66,7 +69,7 @@ async function handleRecommendationReset() {
   try {
     recommendedBooks.value = await loadRecommended(recommendedPage.value, recommendedPageSize);
   } catch (error) {
-    loading.errorMessage = error;
+    loading.errorMessage = formError(error);
   } finally {
     loading.recommended = false;
   }

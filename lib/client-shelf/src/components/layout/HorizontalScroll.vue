@@ -10,7 +10,7 @@ defineProps({
   }
 });
 
-const emit = defineEmits(['select-book'], ['scroll-end']);
+const emit = defineEmits(['select-book', 'scroll-end']);
 
 function onBookSelect(bookId: string) {
   emit('select-book', bookId);
@@ -62,12 +62,14 @@ const onScroll = () => {
 
   scrollTimeout = window.setTimeout(() => {
     const el = scrollView.value;
-    const scrollLeft = el.scrollLeft;
-    const maxScrollLeft = el.scrollWidth - el.clientWidth;
+    if (el) {
+      const scrollLeft = el.scrollLeft;
+      const maxScrollLeft = el.scrollWidth - el.clientWidth;
 
-    // Idk why 20px, just a guess
-    if (scrollLeft >= maxScrollLeft - 20) {
-      emit('scroll-end')
+      // Idk why 20px, just a guess
+      if (scrollLeft >= maxScrollLeft - 20) {
+        emit('scroll-end')
+      }
     }
   }, 100);
 }

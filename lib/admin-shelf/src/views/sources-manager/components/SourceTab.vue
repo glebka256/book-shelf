@@ -5,7 +5,7 @@ import FormInput from '@/components/ui/form/inputs/FormInput.vue';
 import FormActions from '@/components/ui/form/inputs/FormActions.vue';
 import JsonDisplay from '@/components/common/JsonDisplay.vue';
 import { FetchDataFunction, placeholderResultJSON, QueryField } from '../sourcesManager.types';
-import LoadSpinner from '@/components/common/loaders/LoadSpinner.vue';
+import LoadSpinner from '@/../../component-lib/src/components/loaders/LoadSpinner.vue';
 
 const props = defineProps({
   sourceName: {

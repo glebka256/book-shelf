@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
-import LoadingSpinner from '@/components/common/loaders/LoadingSpinner.vue';
+import LoadSpinner from './LoadSpinner.vue';
 
 const props = defineProps({
   loaderText: {
@@ -12,12 +12,12 @@ const props = defineProps({
 
 <template>
 <div class="text-loader">
-    <LoadingSpinner />
+    <LoadSpinner />
     <p>{{ props.loaderText }}</p>
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .text-loader {
   display: flex;
   flex-direction: column;
