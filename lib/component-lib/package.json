@@ -5,9 +5,10 @@
   "type": "module",
   "main": "./dist/component-lib.umd.js",
   "module": "./dist/component-lib.es.js",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/types/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/types/index.d.ts",
       "import": "./dist/component-lib.es.js",
       "require": "./dist/component-lib.umd.js"
     }

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { LogoImage } from "@book-shelf/component-lib";
+import { LogoImage } from "../../../component-lib/src/index";
 </script>
 
 <template>
  <div class="home-view">
-  <LogoImage />
+  <LogoImage :width="150"/>
   <h1>This is HomeView Component</h1>
  </div>
 </template>
