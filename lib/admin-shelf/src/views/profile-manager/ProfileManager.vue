@@ -3,9 +3,18 @@ import { onMounted, ref } from 'vue';
 import { useAuth } from '@book-shelf/auth-util';
 import { User } from '@book-shelf/auth-util/src/auth.types';
 import baseInstance from '@/config/axios';
+import ActionButton from '@/../../component-lib/src/components/buttons/ActionButton.vue';
 
 const user = ref<User>();
 const errorMessage = ref<string>();
+
+const handleLogout = () => {
+  console.log("log out");
+}
+
+const handleDelete = () => {
+  console.log("delete");
+}
 
 onMounted(async () => {
   const auth = useAuth(baseInstance);
@@ -28,6 +37,11 @@ onMounted(async () => {
    <div v-if="user" class="credentials">
      <p><strong>Username:</strong> {{ user.username }}</p>
      <p><strong>Email:</strong> {{ user.email }}</p>
+
+     <div class="button-group">
+      <ActionButton type="button" text="Logout" class="btn-secondary" @click="handleLogout" />
+      <ActionButton type="button" text="Delete Account" class="btn-danger" @click="handleDelete" />
+     </div>
    </div>
    <div v-else-if="errorMessage" class="error">
      <p>{{ errorMessage }}</p>
@@ -48,6 +62,13 @@ onMounted(async () => {
   min-height: 100vh;
   background: linear-gradient(135deg, #e3f2fd, #bbdefb);
   font-family: 'Arial', sans-serif;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
 .credentials, .not-signed-in, .error {
