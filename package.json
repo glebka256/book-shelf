@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "concurrently \"npm run dev --prefix lib/backend\" \"npm run dev --prefix lib/client-shelf\" \"npm run dev --prefix lib/admin-shelf\""
+    "start": "concurrently \"npm run dev --prefix lib/backend\" \"npm run dev --prefix lib/client-shelf\" \"npm run dev --prefix lib/admin-shelf\"",
+    "build-auth-util": "npm run build --prefix lib/auth-util"
   },
   "keywords": [
     "library",
