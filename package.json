@@ -4,17 +4,20 @@
   "description": "Personalized digital library",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "concurrently \"npm run dev --prefix lib/backend\" \"npm run dev --prefix lib/client-shelf\" \"npm run dev --prefix lib/admin-shelf\""
   },
   "keywords": [
-    "library", 
-    "literature", 
-    "digital library", 
-    "recommendation system", 
+    "library",
+    "literature",
+    "digital library",
+    "recommendation system",
     "recommendation engine",
     "conent based recommendation"
   ],
   "author": "GlebKarpenko/glebkarpenko1@gmail.com",
   "license": "MIT",
-  "packageManager": "pnpm@10.10.0"
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
 }
