@@ -48,7 +48,7 @@ export class RecommendEngine {
         const result: StorageBook[] = [];
         const maxBooks = books.length;
 
-        // Weights represent probability to pick of selecting book from category
+        // Weights represent probability of selecting book from category
         const weights = {
             top: 0.7,
             mid: 0.2,
