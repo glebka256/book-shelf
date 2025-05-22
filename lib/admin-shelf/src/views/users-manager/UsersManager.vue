@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import StatCard from '@/components/common/buttons/StatCard.vue';
+import DataTable from '@/components/layout/table/DataTable.vue';
 import { UserStats } from '@/types/User.types';
 
 const userStats: UserStats = {
@@ -44,6 +46,31 @@ const userStats: UserStats = {
         }
     ]
 }
+
+const columns = ref([
+  {
+    key: 'username',
+    label: 'Username',
+    headerClass: 'header-username'
+  },
+  {
+    key: 'email',
+    label: 'Email Address',
+    headerClass: 'header-email'
+  },
+  {
+    key: 'favoriteCount',
+    label: 'Favorites',
+    headerClass: 'header-center',
+    cellClass: 'text-center'
+  },
+  {
+    key: 'interactionCount',
+    label: 'Interactions',
+    headerClass: 'header-center',
+    cellClass: 'text-center'
+  }
+])
 </script>
 
 <template>
@@ -52,6 +79,24 @@ const userStats: UserStats = {
       <StatCard label="Total Interactions" :value="userStats.totalInteraction" />
       <StatCard label="Total Favorites" :value="userStats.totalFavorites" />
     </div>
+
+    <DataTable 
+      :data="userStats.users" 
+      :columns="columns"
+      row-key="username"
+    >
+      <!-- Custom email slot with mailto link -->
+      <template #email="{ value }">
+        <a :href="`mailto:${value}`" class="email-link">{{ value }}</a>
+      </template>
+      
+      <!-- Custom favorite count with icon -->
+      <template #favoriteCount="{ value }">
+        <span class="favorite-badge">
+          ⭐ {{ value }}
+        </span>
+      </template>
+    </DataTable>
 
     <div v-if="userStats.users.length === 0" class="empty-state">
       <p>No users found</p>
