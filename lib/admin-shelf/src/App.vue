@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import AppBar from "@/components/layout/AppBar.vue"; 
+import NavBar from './views/NavBar.vue';
 </script>
 
 <template>
-  <AppBar />
+  <NavBar />
   <div class="main-content">
     <router-view />
   </div>

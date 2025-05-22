@@ -1,28 +1,61 @@
 <script setup lang="ts">
+import { defineProps, PropType } from "vue";
 import LogoImage from "@/../../component-lib/src/components/common/LogoImage.vue";
+import { NavigationRoute } from "./appBar.types";
 
-interface NavigationRoute {
-  link: string,
-  faIcon: string,
-  text: string
-}
-
-const navigationRoutes: NavigationRoute[] = [
-  { link: '/',                faIcon: "fas fa-home",        text: "Home"                 },
-  { link: '/profile',         faIcon: "fas fa-user",        text: "Profile"              },
-  { link: '/storage-manager', faIcon: "fas fa-database",    text: "Storage Manager"      },
-  { link: '/sources-manager', faIcon: "fas fa-layer-group", text: "Sources Manager"      },
-  { link: '/',                faIcon: "fas fa-chart-line",  text: "Statistics dashboard" },
-  { link: '/users-manager',   faIcon: "fas fa-users",       text: "Users dashboard"      },
-]
+const props = defineProps({
+  navigationRoutes: {
+    type: Array as PropType<NavigationRoute[]>,
+    required: true
+  },
+  title: {
+    type: String,
+    required: false,
+    default: undefined
+  },
+  logo: {
+    type: Boolean,
+    required: false,
+    default: false
+  },
+  backgroundColor: {
+    type: String,
+    default: "#2d305e"
+  },
+  headingColor: {
+    type: String,
+    default: "#ffffff"
+  },
+  linkColor: {
+    type: String,
+    default: "#ffffff"
+  },
+  width: {
+    type: String,
+    default: "246px"
+  },
+  collapsedWidth: {
+    type: String,
+    default: "92px"
+  }
+});
 </script>
 
 <template>
- <div class="app-bar">
+ <div 
+  class="app-bar"
+  :style="{
+    '--app-bar-bg': props.backgroundColor,
+    '--app-bar-h2-color': props.headingColor,
+    '--app-bar-link-color': props.linkColor,
+    '--app-bar-width': props.width,
+    '--app-bar-collapsed-width': props.collapsedWidth
+  }"
+>
   <nav>
     <ul>
-      <LogoImage :width="80"/>
-      <h2 id="brand-title">Admin Shelf</h2>
+      <LogoImage v-if=props.logo :width="80"/>
+      <h2 v-if="props.title" id="brand-title">{{ props.title }}</h2>
       <li v-for="navigation in navigationRoutes" :key="navigation.text">
         <router-link :to="navigation.link">
           <i :class="navigation.faIcon"></i> <span class="router-link-text">{{ navigation.text }}</span>
@@ -35,10 +68,10 @@ const navigationRoutes: NavigationRoute[] = [
 
 <style scoped lang="scss">
 .app-bar {
-  width: 246px;
+  width: var(--app-bar-width);
   height: 100vh;
-  color:#ffffff;
-  background-color: #2d305e;
+  color: #ffffff;
+  background-color: var(--app-bar-bg);
   position: fixed;
   top: 0;
   left: 0;
@@ -55,6 +88,10 @@ nav ul {
   margin: 0;
   padding: 0;
   transition: all 0.4s ease;
+
+  h2 {
+    color: var(--app-bar-h2-color);
+  }
 }
 
 nav li {
@@ -62,7 +99,7 @@ nav li {
   transition: margin 0.4s ease;
 
   a {
-    color:#ffffff;
+    color: var(--app-bar-link-color);
     text-decoration: none;
     font-size: 1.2rem;
     display: flex;
@@ -87,7 +124,7 @@ nav li {
 
 @media (max-width: 1084px) {
   .app-bar {
-    width: 92px;
+    width: var(--app-bar-collapsed-width);
   }
 
   nav li a {
