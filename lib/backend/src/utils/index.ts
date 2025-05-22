@@ -64,6 +64,10 @@ export const dynamicLog = (() => {
     };
 })();
 
+export const extractDocs = <T>(docs: any[]): T[] => {
+    return docs.map((doc) => doc._doc as T);
+}
+
 export const extractBookFromDoc = (bookDoc: any[]): StorageBook[] => {
     return bookDoc.map((book) => book._doc as StorageBook);
 }

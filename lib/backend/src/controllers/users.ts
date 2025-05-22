@@ -2,9 +2,11 @@ import { createControllerHandler } from './controllerHandler';
 import { CustomError } from '@app/errors/CustomError';
 import { get } from 'lodash';
 import * as userModel from "@app/models/user";
-import { ClientInteraction, UserInteraction } from '@app/interfaces/User';
+import userService from '@app/services/userService';
+import { ClientInteraction , UserData, UserInteraction, UserStats } from '@app/interfaces/User';
 import { ValidationResponse } from '@app/interfaces/Util';
 import { InteractionService } from '@app/services/recommendation/InteractionService';
+import { extractDocs } from '@app/utils';
 
 const NAMESPACE = "USER-REQUEST";
 const controllerHandler = createControllerHandler(NAMESPACE);
@@ -13,6 +15,14 @@ export const getAllUsers = controllerHandler(async (req, res) => {
     const users = await userModel.getUsers();
     res.status(200).json(users);
 })
+
+export const getUsersStats = controllerHandler(async (req, res) => {
+    const userDoc = await userModel.getUsers();
+    const users: UserData[] = extractDocs<UserData>(userDoc);
+
+    const userStats: UserStats = await userService.getStats(users);
+    res.status(200).json(userStats);
+});
 
 export const deleteUser = controllerHandler(async (req, res) => {
     const { id } = req.params;

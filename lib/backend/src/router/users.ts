@@ -7,12 +7,14 @@ import {
     toggleFavorite,
     updateFavorites,
     getFavoritesIds,
-    storeInteractions
+    storeInteractions,
+    getUsersStats
 } from '@app/controllers/users';
 import { isAccountOwner, isAuthenticated } from '@app/middlewares';
 
 export default (router: Router): void => {
     router.get('/users/', isAuthenticated, getAllUsers);
+    router.get('/users/stats/', isAuthenticated, getUsersStats);
     router.delete('/users/:id', isAuthenticated, isAccountOwner, deleteUser);
     router.get('/users/favorites/', isAuthenticated, getFavoritesIds);
     router.get('/users/favorites/populated', isAuthenticated, getAllFavorites);

@@ -73,3 +73,21 @@ export interface UserInteraction {
     bookId: string,
     timestamp: Date
 }
+
+export interface UserData {
+    username: string,
+    email: string,
+    favorites: string[],
+    interactions: StorageInteraction[]
+}
+
+export interface UserStats {
+    totalFavorites: number,
+    totalInteraction: number,
+    users: {
+        username: string,
+        email: string,
+        favoriteCount: number,
+        interactionCount: number
+    }[]
+}
