@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed, watch } from 'vue';
 import { UserStats } from '@/types/User.types';
 import { getUserStats } from './usersManager';
 import StatCard from '@/components/common/buttons/StatCard.vue';
@@ -7,8 +7,14 @@ import IconButton from '@/../../component-lib/src/components/buttons/IconButton.
 import DataTable from '@/components/layout/DataTable.vue';
 import ToolTip from '@/../../component-lib/src/components/common/ToolTip.vue';
 import LoadSpinner from '@/../../component-lib/src/components/loaders/LoadSpinner.vue';
+import PaginationBox from '@/components/ui/PaginationBox.vue';
 
-const loading = ref(false);
+const loading = ref<boolean>(false);
+
+const page = ref<number>(1);
+const totalPages = ref<number>(1);
+const limit = 50;
+
 const errorMessage = ref<string | null>(null);
 const userStats = ref<UserStats | null>(null);
 
@@ -42,6 +48,25 @@ const tipText = {
   interactions: "Number of interactions user done on the website (liked, cliked cover, bought, etc)"
 }
 
+const paginatedUsers = computed(() => {
+  if (!userStats.value) return [];
+  const start = (page.value - 1) * limit;
+  return userStats.value.users.slice(start, start + limit);
+});
+
+watch(userStats, () => {
+  if (userStats.value) {
+    totalPages.value = Math.ceil(userStats.value.users.length / limit);
+    if (page.value > totalPages.value) page.value = totalPages.value;
+  }
+});
+
+watch(page, () => {
+  // Ensure page stays in bounds
+  if (page.value < 1) page.value = 1;
+  if (page.value > totalPages.value) page.value = totalPages.value;
+});
+
 const fetchUserStats = async (): Promise<void> => {
   loading.value = true;
 
@@ -69,7 +94,7 @@ onMounted(async () => {
     </div>
 
     <DataTable v-if="userStats" 
-      :data="userStats.users" 
+      :data="paginatedUsers" 
       :columns="columns"
       row-key="username"
     >
@@ -95,6 +120,11 @@ onMounted(async () => {
         </span>
       </template>
     </DataTable>
+
+    <PaginationBox 
+      :currentPage="page"
+      :totalPages="totalPages"
+    />
 
     <div v-if="loading">
       <LoadSpinner />
