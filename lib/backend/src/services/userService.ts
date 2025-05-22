@@ -7,7 +7,9 @@ export const getStats = async (users: UserData[]): Promise<UserStats> => {
 
     const userStats = users.map(user => {
         const favoriteCount = user.favorites.length;
-        const interactionCount = user.interactions.length;
+
+        // Add favorites because they are not considered interactions in storage
+        const interactionCount = user.interactions.length + favoriteCount;
 
         totalFavorites += favoriteCount;
         totalInteraction += interactionCount;
