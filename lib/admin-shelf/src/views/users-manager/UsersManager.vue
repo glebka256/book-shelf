@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import StatCard from '@/components/common/buttons/StatCard.vue';
-import DataTable from '@/components/layout/DataTable.vue';
-import ToolTip from '@/../../component-lib/src/components/common/ToolTip.vue';
 import { UserStats } from '@/types/User.types';
 import { getUserStats } from './usersManager';
+import StatCard from '@/components/common/buttons/StatCard.vue';
+import IconButton from '@/../../component-lib/src/components/buttons/IconButton.vue';
+import DataTable from '@/components/layout/DataTable.vue';
+import ToolTip from '@/../../component-lib/src/components/common/ToolTip.vue';
+import LoadSpinner from '@/../../component-lib/src/components/loaders/LoadSpinner.vue';
 
 const loading = ref(false);
 const errorMessage = ref<string | null>(null);
@@ -44,6 +46,7 @@ const fetchUserStats = async (): Promise<void> => {
   loading.value = true;
 
   try {
+    userStats.value = null;
     userStats.value = await getUserStats();
   } catch (error) {
     errorMessage.value = error instanceof Error ? error.message : 'An error occurred';
@@ -62,6 +65,7 @@ onMounted(async () => {
     <div v-if="userStats" class="stats-summary">
       <StatCard label="Total Interactions" :value="userStats.totalInteraction" />
       <StatCard label="Total Favorites" :value="userStats.totalFavorites" />
+      <IconButton iconType="reset" @click="fetchUserStats"/>
     </div>
 
     <DataTable v-if="userStats" 
