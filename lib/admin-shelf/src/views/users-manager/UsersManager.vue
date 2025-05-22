@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue';
 import StatCard from '@/components/common/buttons/StatCard.vue';
 import DataTable from '@/components/layout/DataTable.vue';
-import ToolTip from '@/components/common/ToolTip.vue';
+import ToolTip from '@/../../component-lib/src/components/common/ToolTip.vue';
 import { UserStats } from '@/types/User.types';
 import { getUserStats } from './usersManager';
 
