@@ -1,5 +1,9 @@
 import { UserData, UserStats } from "@app/interfaces/User";
 import { UserModel } from "@app/models/user";
+import { aggreageBooks, getBooks } from "@app/models/book";
+import { GenreDistribution, PublicationFrequency, StorageBook } from "@app/interfaces/Books";
+import { GenreChunk } from "./recommendation/genreService";
+import { getGenreDivision } from "@app/controllers/statistics";
 
 const countUserInteractions = async (users: UserData[]): Promise<UserStats> => {
     let totalFavorites = 0;
@@ -80,10 +84,46 @@ const getInteractionsByWeek = () => {
     ]);
 };
 
+/**
+ * Calculates percentage statistics from genre chunks
+ */
+const calculateGenreStatistics = (genreChunks: GenreChunk[]): GenreDistribution[] => {
+    const totalBooks = genreChunks.reduce((sum, chunk) => sum + chunk.books, 0);
+    
+    return genreChunks
+        .map(chunk => ({
+            genre: chunk.genre,
+            count: chunk.books,
+            percentage: totalBooks > 0 ? (chunk.books / totalBooks) * 100 : 0
+        }))
+        .sort((a, b) => b.count - a.count); // Sort by count descending
+}
+
+const getTimelineData = async (): Promise<PublicationFrequency[]> => {
+    const data = await aggreageBooks([
+        {
+            $group: {
+                _id: '$publishedYear',
+                count: { $sum: 1 }
+            }
+        },
+        {
+            $sort: { _id: 1 }
+        }
+    ]);
+
+    return data.map(item => ({
+        year: item._id,
+        books: item.count
+    }));
+}
+
 const statService = {
     countUserInteractions,
     getUserActivityStats,
-    getInteractionsByWeek
+    getInteractionsByWeek,
+    calculateGenreStatistics,
+    getTimelineData
 };
 
 export default statService;

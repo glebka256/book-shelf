@@ -140,3 +140,14 @@ export interface SearchParams {
     page: number,
     pageSize: number
 }
+
+export interface PublicationFrequency {
+    year: number,
+    books: number
+}
+
+export interface GenreDistribution {
+    genre: string,
+    count: number,
+    percentage: number
+}

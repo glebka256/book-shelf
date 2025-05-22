@@ -3,6 +3,8 @@ import { createControllerHandler } from "./controllerHandler";
 import * as bookModel from "@app/models/book";
 import * as userModel from "@app/models/user";
 import statService from "@app/services/statService";
+import { GenreDistribution, PublicationFrequency } from "@app/interfaces/Books";
+import { divideBooksByGenre, GenreChunk } from "@app/services/recommendation/genreService";
 
 const NAMESPACE = "STATISTICS-REQUEST";
 const controllerHandler = createControllerHandler(NAMESPACE);
@@ -34,5 +36,16 @@ export const getUserActivityStats = controllerHandler(async (req, res) => {
 
 export const getInteractionsByWeek = controllerHandler(async (req, res) => {
     const result: WeeklyInteraction[] = await statService.getInteractionsByWeek();
+    res.status(200).json(result);
+});
+
+export const getGenreDivision = controllerHandler(async (req, res) => {
+    const stats: GenreChunk[] = await divideBooksByGenre();
+    const percentages: GenreDistribution[] = statService.calculateGenreStatistics(stats);
+    res.status(200).json(percentages);
+});
+
+export const getPublishingTimeline = controllerHandler(async (req, res) => {
+    const result: PublicationFrequency[] = await statService.getTimelineData();
     res.status(200).json(result);
 });
