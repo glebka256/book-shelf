@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue';
 import { useFavoritesStore } from './store/favoritesStore';
-import AppBar from '@/components/layout/AppBar.vue';
+import AppBar from './components/layout/AppBar.vue';
 import auth from './config/auth';
 import { sendInteractions } from './services/interactionService';
 

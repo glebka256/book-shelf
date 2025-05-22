@@ -1,15 +1,23 @@
 <script setup lang="ts">
+import LogoImage from "@/../../component-lib/src/components/common/LogoImage.vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
+function goHome() {
+  router.push('/');
+}
 </script>
 
 <template>
  <div class="app-bar">
   <nav>
     <ul>
-      <h2 class="logo">Book Shelf</h2>
+      <LogoImage :width="52" @click="goHome"/>
+      <h2 class="logo" @click="goHome">Book Shelf</h2>
       <li><router-link to="/"><i class="fas fa-home"></i> <span class="router-link-text">Discover</span></router-link></li>
       <li><router-link to="/search/downloadable?q="><i class="fas fa-book"></i> <span class="router-link-text">Download</span></router-link></li>
       <li><router-link to="/favorites"><i class="fas fa-heart"></i> <span class="router-link-text">Favorites</span></router-link></li>
-      <li><router-link to="/"><i class="fas fa-robot"></i> <span class="router-link-text">Suggest</span></router-link></li>
       <li><router-link to="/account"><i class="fas fa-user"></i> <span class="router-link-text">Profile</span></router-link></li>
       <li><router-link to="/auth/logout"><i class="fas fa-sign-out-alt"></i> <span class="router-link-text">Logout</span></router-link></li>
       <li><router-link to="/about"><i class="fas fa-question-circle"></i> <span class="router-link-text">About</span></router-link></li>
