@@ -61,9 +61,29 @@ const getUserActivityStats = () => {
     ]);
 };
 
+const getInteractionsByWeek = () => {
+    return UserModel.aggregate([
+        { $unwind: '$interactions' },
+        {
+            $group: {
+                _id: {
+                    year: { $year: '$interactions.timestamp' },
+                    week: { $week: '$interactions.timestamp' }
+                },
+                count: { $sum: 1 },
+                startOfWeek: {
+                    $min: '$interactions.timestamp'
+                }
+            }
+        },
+        { $sort: { '_id.year': 1, '_id.week': 1 } }
+    ]);
+};
+
 const statService = {
     countUserInteractions,
-    getUserActivityStats
+    getUserActivityStats,
+    getInteractionsByWeek
 };
 
 export default statService;

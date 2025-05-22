@@ -101,3 +101,12 @@ export interface UsersActivity {
     maxFavorites: number,
     maxInteraction: number
 }
+
+export interface WeeklyInteraction {
+    _id: {
+        year: number,
+        week: number
+    },
+    count: number,
+    startOfWeek: string
+}

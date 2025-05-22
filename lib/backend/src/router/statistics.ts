@@ -7,4 +7,5 @@ export default (router: Router): void => {
     router.get('/stats/books/authors/total/', statController.getTotalAuthors);
     router.get('/stats/users/total/', statController.getTotalUsers);
     router.get('/stats/users/activity/', statController.getUserActivityStats);
+    router.get('/stats/users/activity/weekly/', statController.getInteractionsByWeek);
 }

@@ -1,4 +1,4 @@
-import { UsersActivity } from "@app/interfaces/User";
+import { UsersActivity, WeeklyInteraction } from "@app/interfaces/User";
 import { createControllerHandler } from "./controllerHandler";
 import * as bookModel from "@app/models/book";
 import * as userModel from "@app/models/user";
@@ -30,4 +30,9 @@ export const getTotalUsers = controllerHandler(async (req, res) => {
 export const getUserActivityStats = controllerHandler(async (req, res) => {
     const result: UsersActivity[] = await statService.getUserActivityStats();
     res.status(200).json(result[0]);
+});
+
+export const getInteractionsByWeek = controllerHandler(async (req, res) => {
+    const result: WeeklyInteraction[] = await statService.getInteractionsByWeek();
+    res.status(200).json(result);
 });
