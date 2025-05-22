@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import LogoImage from "@/components/common/LogoImage.vue";
+import LogoImage from "@/../../component-lib/src/components/common/LogoImage.vue";
 
 interface NavigationRoute {
   link: string,
