@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import baseInstance from '@/api/baseInstance';
 import { defineProps, onMounted, ref, computed } from 'vue';
-import CommonButton from '@/components/common/buttons/CommonButton.vue';
+import CommonButton from '@/../../component-lib/src/components/buttons/CommonButton.vue';
 import TextLoader from '@/../../component-lib/src/components/loaders/TextLoader.vue';
-import IconButton from '@/components/common/buttons/IconButton.vue';
+import IconButton from '@/../../component-lib/src/components/buttons/IconButton.vue';
 import { useFavoritesStore } from '@/store/favoritesStore';
 import { useInteractionStore } from '@/store/interactionStore';
 import { Book } from '@/types/Book';
