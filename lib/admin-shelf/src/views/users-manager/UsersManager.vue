@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import StatCard from '@/components/common/buttons/StatCard.vue';
-import DataTable from '@/components/layout/table/DataTable.vue';
+import DataTable from '@/components/layout/DataTable.vue';
 import { UserStats } from '@/types/User.types';
 import ToolTip from '@/components/common/ToolTip.vue';
 
@@ -91,10 +91,12 @@ const tipText = {
       :columns="columns"
       row-key="username"
     >
+      <!-- Custom tooltip for favorites header -->
       <template #header-favoriteCount>
         <span>Favorites</span><ToolTip :text="tipText.favorites" position="top" :dark="true" />
       </template>
 
+      <!-- Custom tooltip for interactions header -->
       <template #header-interactionCount>
         <span>Interactions</span><ToolTip :text="tipText.interactions" position="top" :dark="true" />
       </template>
@@ -104,7 +106,7 @@ const tipText = {
         <a :href="`mailto:${value}`" class="email-link">{{ value }}</a>
       </template>
       
-      <!-- Custom favorite count with icon -->
+      <!-- Custom icon for favorites count -->
       <template #favoriteCount="{ value }">
         <span class="favorite-badge">
           ⭐ {{ value }}
