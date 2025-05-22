@@ -2,7 +2,7 @@ import { createControllerHandler } from './controllerHandler';
 import { CustomError } from '@app/errors/CustomError';
 import { get } from 'lodash';
 import * as userModel from "@app/models/user";
-import userService from '@app/services/userService';
+import statService from '@app/services/statService';
 import { ClientInteraction , UserData, UserInteraction, UserStats } from '@app/interfaces/User';
 import { ValidationResponse } from '@app/interfaces/Util';
 import { InteractionService } from '@app/services/recommendation/InteractionService';
@@ -20,7 +20,7 @@ export const getUsersStats = controllerHandler(async (req, res) => {
     const userDoc = await userModel.getUsers();
     const users: UserData[] = extractDocs<UserData>(userDoc);
 
-    const userStats: UserStats = await userService.getStats(users);
+    const userStats: UserStats = await statService.countUserInteractions(users);
     res.status(200).json(userStats);
 });
 

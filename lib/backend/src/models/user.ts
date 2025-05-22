@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { interactionTypes, StorageInteraction, UserInteraction } from "@app/interfaces/User";
+import { StorageInteraction } from "@app/interfaces/User";
 
 const UserSchema = new mongoose.Schema({
     username: { type: String, required: true },
@@ -25,6 +25,8 @@ UserSchema.index({ favorites: 1 });
 export const UserModel = mongoose.model('User', UserSchema);
 
 // Get User
+export const getTotalEntries = () => UserModel.countDocuments();
+
 export const getUsers = () => UserModel.find();
 
 export const getUserById = (id : string) => UserModel.findById(id);

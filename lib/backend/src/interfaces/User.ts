@@ -91,3 +91,13 @@ export interface UserStats {
         interactionCount: number
     }[]
 }
+
+export interface UsersActivity {
+    totalUsers: number,
+    totalFavorites: number,
+    totalInteractions: number,
+    avgFavorites: number,
+    avgInteractions: number,
+    maxFavorites: number,
+    maxInteraction: number
+}

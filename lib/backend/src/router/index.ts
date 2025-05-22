@@ -5,6 +5,7 @@ import users from "@app/router/users";
 import storageBooks from "./storageBooks";
 import books from "./books";
 import externalBooks from "./externalBooks";
+import statistics from "./statistics";
 
 const router = express.Router();
 
@@ -14,6 +15,7 @@ export default (): express.Router => {
     storageBooks(router);
     books(router);
     externalBooks(router);
+    statistics(router);
 
     return router;
 }

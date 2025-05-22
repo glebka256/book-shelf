@@ -1,5 +1,4 @@
 import { SortQuery } from "@app/interfaces/Sort";
-import books from "@app/router/books";
 import mongoose from "mongoose";
 
 const BookSchema = new mongoose.Schema({
@@ -38,31 +37,50 @@ BookSchema.index({
 
 const BookModel = mongoose.model('Book', BookSchema);
 
-export const getTotalEntries = () => BookModel.countDocuments();
-export const getBooks = () => BookModel.find();
-export const queryBooks = (query: Object) => BookModel.find(query);
+export const getTotalEntries = () => 
+    BookModel.countDocuments();
+
+export const getBooks = () => 
+    BookModel.find();
+
+export const queryBooks = (query: Object) => 
+    BookModel.find(query);
+
 export const queryPaginated = (page: number, limit: number) => 
     BookModel.find({}).skip((page - 1) * limit).limit(limit).exec();
+
 export const sortBooks = (query: SortQuery) => 
     BookModel.find({})
         .sort({ [query.sortBy]: query.order })
         .skip((query.page - 1) * query.limit)
         .limit(query.limit)
         .exec();
-export const aggreageBooks = (aggregator: Array<any>) => BookModel.aggregate(aggregator);
 
-export const getBookById = (id: String) => BookModel.findById(id);
-export const getBooksByIds = (bookIds: String[]) => queryBooks({ _id: { $in: bookIds } });
-export const getBookByTitle = (title: String) => BookModel.findOne({ title });
-export const getBooksByGenres = (genres: [String]) => {
-    return BookModel.find({ subject: { $in: genres } });
+export const aggreageBooks = (aggregator: Array<any>) => 
+    BookModel.aggregate(aggregator);
+
+export const getUniqueEntryCount = async (entry: string) => {
+    const uniqueEntries = await BookModel.distinct(entry);
+    return uniqueEntries.length;
 }
-export const getBooksByAuthors = (authors: [String]) => {
-    return BookModel.find({ author: { $in: authors } });
-}
-export const getBooksByLanguages = (languages: [String]) => {
-    return BookModel.find({ language: { $in: languages } });
-}
+
+export const getBookById = (id: String) => 
+    BookModel.findById(id);
+
+export const getBooksByIds = (bookIds: String[]) => 
+    queryBooks({ _id: { $in: bookIds } });
+
+export const getBookByTitle = (title: String) => 
+    BookModel.findOne({ title });
+
+export const getBooksByGenres = (genres: [String]) =>
+    BookModel.find({ subject: { $in: genres } });
+
+export const getBooksByAuthors = (authors: [String]) =>
+    BookModel.find({ author: { $in: authors } });
+
+export const getBooksByLanguages = (languages: [String]) =>
+    BookModel.find({ language: { $in: languages } });
 
 export const getBooksByCriteria = (
     genres: string[], 
@@ -87,10 +105,12 @@ export const createBook = async (values: Record<string, any>) => {
     const book = await new BookModel(values).save();
     return book.toObject();
 }
-export const deleteBookById = (id: string) => BookModel.findOneAndDelete({ _id: id });
-export const updateBookById = async (id: string, values: Record<string, any>) => {
-    return await BookModel.findByIdAndUpdate(id, values, { new: true }).exec();
-}
+
+export const deleteBookById = (id: string) => 
+    BookModel.findOneAndDelete({ _id: id });
+
+export const updateBookById = async (id: string, values: Record<string, any>) =>
+    await BookModel.findByIdAndUpdate(id, values, { new: true }).exec();
 
 export const addBookProperty = async (id: string, newProperty: Record<string, any>) => {
     return await BookModel.findByIdAndUpdate(
@@ -99,9 +119,10 @@ export const addBookProperty = async (id: string, newProperty: Record<string, an
         { new: true }
     ).exec();
 }
-export const addBookLinkProperty = (id: string, linkData: any) => {
-    return addBookProperty(id, { "link": linkData });
-}
+
+export const addBookLinkProperty = (id: string, linkData: any) =>
+    addBookProperty(id, { "link": linkData });
+
 export const updateBookCompleteStatus = async (id: string, isComplete: boolean) => {
     return await BookModel.findByIdAndUpdate(
         id,
