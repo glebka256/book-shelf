@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import AuthForm from '@/components/layout/AuthForm.vue';
-import { FormField } from '@/types/Auth';
+import AuthForm from "@/../../component-lib/src/components/layout/AuthForm.vue";
+import { AuthField } from '@/../../component-lib/src/components/layout/authForm.types';
 import auth from '@/config/auth';
 
-const logoutFields: FormField[] = [];
+const logoutFields: AuthField[] = [];
 
 const message = ref<string>('');
 

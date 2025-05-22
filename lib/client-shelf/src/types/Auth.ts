@@ -3,13 +3,6 @@ export interface User {
     email: string
 }
 
-export interface FormField {
-    name: string,
-    label: string,
-    type: 'text' | 'number' | 'date' | 'email' | 'password',
-    placeholder: string
-}
-
 export interface AuthError {
     error: string
 }

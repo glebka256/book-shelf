@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useFavoritesStore } from '@/store/favoritesStore';
-import AuthForm from '@/components/layout/AuthForm.vue';
-import { FormField } from '@/types/Auth';
+import AuthForm from "@/../../component-lib/src/components/layout/AuthForm.vue";
+import { AuthField } from '@/../../component-lib/src/components/layout/authForm.types';
 import { sendInteractions } from '@/services/interactionService';
 import auth from '@/config/auth';
 
-const loginFields: FormField[] = [
+const loginFields: AuthField[] = [
   { name: 'email', label: 'Email', type: 'email', placeholder: 'Enter your email' },
   { name: 'password', label: 'Password', type: 'password', placeholder: 'Enter your password' }
 ];

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { FormField } from '@/types/Auth';
-import AuthForm from '@/components/layout/AuthForm.vue';
+import AuthForm from "@/../../component-lib/src/components/layout/AuthForm.vue";
+import { AuthField } from '@/../../component-lib/src/components/layout/authForm.types';
 import auth from '@/config/auth';
 
-const registerFields: FormField[] = [
+const registerFields: AuthField[] = [
   { name: 'username', label: 'Username', type: 'text', placeholder: 'Enter your username' },
   { name: 'email', label: 'Email', type: 'email', placeholder: 'Enter your email' },
   { name: 'password', label: 'Password', type: 'password', placeholder: 'Enter your password' },

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineProps, PropType, defineEmits, reactive } from 'vue';
-import { AuthField } from "./authForm.types.ts";
+import { AuthField } from "./authForm.types";
 
 const props = defineProps({
   title: {
