@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import StatCard from '@/components/common/buttons/StatCard.vue';
 import DataTable from '@/components/layout/table/DataTable.vue';
 import { UserStats } from '@/types/User.types';
+import ToolTip from '@/components/common/ToolTip.vue';
 
 const userStats: UserStats = {
     "totalFavorites": 38,
@@ -71,6 +72,11 @@ const columns = ref([
     cellClass: 'text-center'
   }
 ])
+
+const tipText = {
+  favorites: "A number of books user added as favorite",
+  interactions: "Number of interactions user done on the website (liked, cliked cover, bought, etc)"
+}
 </script>
 
 <template>
@@ -85,6 +91,14 @@ const columns = ref([
       :columns="columns"
       row-key="username"
     >
+      <template #header-favoriteCount>
+        <span>Favorites</span><ToolTip :text="tipText.favorites" position="top" :dark="true" />
+      </template>
+
+      <template #header-interactionCount>
+        <span>Interactions</span><ToolTip :text="tipText.interactions" position="top" :dark="true" />
+      </template>
+
       <!-- Custom email slot with mailto link -->
       <template #email="{ value }">
         <a :href="`mailto:${value}`" class="email-link">{{ value }}</a>

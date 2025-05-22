@@ -55,7 +55,9 @@ const getRowKey = (item: Record<string, any>, index: number): string | number =>
             :key="column.key"
             :class="column.headerClass"
           >
-            {{ column.label }}
+            <slot :name="`header-${column.key}`">
+              {{ column.label }}
+            </slot>
           </th>
         </tr>
       </thead>
