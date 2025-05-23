@@ -222,9 +222,9 @@ const gutenbergDetailsFormFields: QueryField[] = [
 </template>
 
 <style scoped lang="scss">
-// TODO import this shared style as global
+@import '@/styles/manager.scss';
+
 .sources-manager {
-  margin: 0 0 auto 2rem;
-  padding: 1rem;
+  @extend %manager-base;
 }
 </style>
