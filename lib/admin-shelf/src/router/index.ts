@@ -9,6 +9,7 @@ import LoginView from '@/views/auth/LoginView.vue'
 import LogoutView from '@/views/auth/LogoutView.vue'
 import RegisterView from '@/views/auth/RegisterView.vue'
 import auth from "@/config/auth";
+import StatManager from '@/views/stat-manager/StatManager.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -35,6 +36,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/users-manager",
     name: 'users-manager',
     component: UsersManager
+  },
+  {
+    path: "/stat-manager",
+    name: 'stat-manager',
+    component: StatManager
   },
   {
     path: '/about',

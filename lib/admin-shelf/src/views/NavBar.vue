@@ -7,7 +7,7 @@ const navigationRoutes: NavigationRoute[] = [
   { link: '/profile',         faIcon: "fas fa-user",        text: "Profile"              },
   { link: '/storage-manager', faIcon: "fas fa-database",    text: "Storage Manager"      },
   { link: '/sources-manager', faIcon: "fas fa-layer-group", text: "Sources Manager"      },
-  { link: '/',                faIcon: "fas fa-chart-line",  text: "Statistics dashboard" },
+  { link: '/stat-manager',    faIcon: "fas fa-chart-line",  text: "Statistics dashboard" },
   { link: '/users-manager',   faIcon: "fas fa-users",       text: "Users dashboard"      },
 ]
 </script>
