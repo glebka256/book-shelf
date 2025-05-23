@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { NavigationRoute } from "@/../../component-lib/src/components/layout/appBar.types";
-import AppBar from "@/../../component-lib/src/components/layout/AppBar.vue";
+// When importing from component-lib breaks with warning:
+// [Vue warn]: resolveComponent can only be used in render() or setup()
+import AppBar from "@/components/layout/AppBar.vue";
 
 const navigationRoutes: NavigationRoute[] = [
   { link: '/',                faIcon: "fas fa-home",        text: "Home"                 },
