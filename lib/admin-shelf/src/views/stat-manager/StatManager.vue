@@ -1,34 +1,20 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { getStat, PublicationFrequency, StatRoutes, SubjectDivision, UsersActivity, WeeklyFrequency } from "./stat.api";
+import { formStats, Stats } from "./statManager";
+import StatCard from "@/components/common/buttons/StatCard.vue";
+import TextLoader from '@/../../component-lib/src/components/loaders/TextLoader.vue';
 
 const loading      = ref<boolean>(false);
 const errorMessage = ref<string | null>(null);
 
-const totalBooks    = ref<number | null>(null);
-const totalSubjects = ref<number | null>(null);
-const totalAuthors  = ref<number | null>(null);
-const totalUsers    = ref<number | null>(null);
-
-const usersActivity       = ref<UsersActivity | null>(null);
-const weeklyActivity      = ref<WeeklyFrequency[] | null>(null);
-const subjectDistribution = ref<SubjectDivision[] | null>(null);
-const publicationTimeline = ref<PublicationFrequency[] | null>(null);
+const stats = ref<Stats | null>(null);
 
 const loadStats = async () => {
   loading.value = true;
   errorMessage.value = null;
 
   try {
-    totalBooks.value    = await getStat<number>(StatRoutes.BooksTotal);
-    totalSubjects.value = await getStat<number>(StatRoutes.SubjectsTotal);
-    totalAuthors.value  = await getStat<number>(StatRoutes.AuthorsTotal);
-    totalUsers.value    = await getStat<number>(StatRoutes.UsersTotal);
-
-    usersActivity.value       = await getStat<UsersActivity>(StatRoutes.UsersActivity);
-    weeklyActivity.value      = await getStat<WeeklyFrequency[]>(StatRoutes.WeeklyActivity);
-    subjectDistribution.value = await getStat<SubjectDivision[]>(StatRoutes.SubjectDivision);
-    publicationTimeline.value = await getStat<PublicationFrequency[]>(StatRoutes.PublicationTimeline);
+    stats.value = await formStats();
   } catch (error) {
     errorMessage.value = error instanceof Error ? error.message : 'An error occurred'; 
   } finally {
@@ -37,13 +23,28 @@ const loadStats = async () => {
 }
 
 onMounted(() => {
-  loadStats();
+  void loadStats();
 });
 </script>
 
 <template>
  <div class="stat-manager">
-  <h1>This StatManager component</h1>
+  <div class="books-stats" v-if="stats">
+    <h2>Book Stats</h2>
+    <div class="total-stats">
+      <StatCard label="Total Books" :value="stats.total.books" />
+      <StatCard label="Total Subjects" :value="stats.total.subjects" />
+      <StatCard label="Total Authors" :value="stats.total.authors" />
+    </div>
+  </div>
+
+  <div class="users-stats">
+    <h2>User Stats</h2>
+  </div>
+
+  <div v-if="loading">
+    <TextLoader loaderText="Loading books statistics..." />
+  </div>
  </div>
 </template>
 
