@@ -140,11 +140,11 @@ onMounted(async () => {
 </template>
 
 <style scoped lang="scss">
+@import '@/styles/manager.scss';
+
 .users-manager {
-  // TODO import this shared style as global
-  margin: 0 0 auto 2rem;
-  padding: 1rem;
-  
+  @extend %manager-base;
+
   .stats-summary {
     display: flex;
     gap: 20px;

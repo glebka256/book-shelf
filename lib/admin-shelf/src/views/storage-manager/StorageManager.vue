@@ -132,8 +132,9 @@ const handleBookDeleteCancel = () => {
 </template>
 
 <style scoped lang="scss">
+@import '@/styles/manager.scss';
+
 .store-manager {
-  margin: 0 0 auto 2rem;
-  padding: 1rem;
+  @extend %manager-base;
 }
 </style>
