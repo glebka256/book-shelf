@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import auth from "@/config/auth";
-import AuthForm from "@/../../component-lib/src/components/layout/AuthForm.vue";
-import { AuthField } from '@/../../component-lib/src/components/layout/authForm.types';
+import AuthForm from "@/components/layout/AuthForm.vue";
+import { AuthField } from "@/components/layout/authForm.types";
 import { useRoute, useRouter } from 'vue-router';
 
 const loginFields: AuthField[] = [
