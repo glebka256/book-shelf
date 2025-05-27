@@ -4,6 +4,7 @@ import { formStats, Stats } from "./statManager";
 import StatCard from "@/component-lib/StatCard.vue";
 import TextLoader from "@/component-lib/loaders/TextLoader.vue";
 import DataTable from "@/component-lib/layout/DataTable.vue";
+import ToolTip from "@/component-lib/common/ToolTip.vue";
 
 const loading      = ref<boolean>(false);
 const errorMessage = ref<string | null>(null);
@@ -77,6 +78,17 @@ const formActivityDataCell = (): void => {
   }
 }
 
+const tipText = {
+  statCard: {
+    totalSubjects: "Number of unique subject keywords in the database",
+    totalInteractions: "Number of registered and stored user actions (like, buy, read, click, etc.)"
+  },
+  dataTable: {
+    favorites: "How many unique books were added to favorites",
+    interactions: "How many user interactions were made (like, buy, read, click, etc.)"
+  }
+}
+
 onMounted(() => {
   void loadStats();
 });
@@ -88,7 +100,13 @@ onMounted(() => {
     <h2>Content Stats</h2>
     <div class="total-stats">
       <StatCard label="Total Books" :value="stats.total.books" />
-      <StatCard label="Total Subjects" :value="stats.total.subjects" />
+      <StatCard label="Total Subjects" :value="stats.total.subjects" >
+        <ToolTip 
+          :text="tipText.statCard.totalSubjects"
+          position="bottom"
+          :dark="true"
+        />
+      </StatCard>
       <StatCard label="Total Authors" :value="stats.total.authors" />
     </div>
   </div>
@@ -97,13 +115,41 @@ onMounted(() => {
     <h2>Activity Stats</h2>
     <div class="total-stats">
       <StatCard label="Total Users" :value="stats.activity.users.totalUsers" />
-      <StatCard label="Total Interactions" :value="stats.activity.users.totalFavorites + stats.activity.users.totalInteractions" />
+      <StatCard 
+        label="Total Interactions" 
+        :value="stats.activity.users.totalFavorites + stats.activity.users.totalInteractions" 
+      >
+        <ToolTip 
+          :text="tipText.statCard.totalInteractions"
+          position="top"
+          :dark="true"
+        />
+      </StatCard>
       <DataTable
         v-if="activityTableData"
         :data="activityTableData" 
         :columns="activityTableColumns"
         row-key="param"
-      />
+      >
+        <!-- Use custom rendering for param column to add ToolTip -->
+        <template #param="{ item, value }">
+          <span>
+            {{ value }}
+            <ToolTip
+              v-if="item.param === 'Favorites'"
+              :text="tipText.dataTable.favorites"
+              position="top"
+              :dark="true"
+            />
+            <ToolTip
+              v-else-if="item.param === 'Other Interactions'"
+              :text="tipText.dataTable.interactions"
+              position="bottom"
+              :dark="true"
+            />
+          </span>
+        </template>
+      </DataTable>
     </div>
   </div>
  </div>
