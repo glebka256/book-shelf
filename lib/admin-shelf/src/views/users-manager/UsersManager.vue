@@ -3,10 +3,10 @@ import { onMounted, ref, computed, watch } from 'vue';
 import { UserStats } from '@/types/User.types';
 import { getUserStats } from './usersManager';
 import StatCard from '@/components/common/buttons/StatCard.vue';
-import IconButton from '@/../../component-lib/src/components/buttons/IconButton.vue';
-import DataTable from '@/components/layout/DataTable.vue';
-import ToolTip from '@/../../component-lib/src/components/common/ToolTip.vue';
-import LoadSpinner from '@/../../component-lib/src/components/loaders/LoadSpinner.vue';
+import IconButton from '@/component-lib/buttons/IconButton.vue';
+import DataTable from '@/component-lib/layout/DataTable.vue';
+import ToolTip from '@/component-lib/common/ToolTip.vue';
+import LoadSpinner from '@/component-lib/loaders/LoadSpinner.vue';
 import PaginationBox from '@/components/ui/PaginationBox.vue';
 
 const loading = ref<boolean>(false);

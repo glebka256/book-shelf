@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import auth from "@/config/auth";
 import AuthForm from "@/components/layout/AuthForm.vue";
-import { AuthField } from "@/components/layout/authForm.types";
+import { AuthField } from "@/component-lib/layout/authForm.types";
 
 const logoutFields: AuthField[] = [];
 

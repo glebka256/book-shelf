@@ -1,16 +1,7 @@
 <script setup lang="ts">
 import { defineProps, PropType } from "vue";
 import LogoImage from "@/../../component-lib/src/components/common/LogoImage.vue";
-<<<<<<< HEAD
-
-interface NavigationRoute {
-  link: string,
-  faIcon: string,
-  text: string
-}
-=======
-import { NavigationRoute } from "./appBar.types";
->>>>>>> 07dc98133e208b78c797650cc1ef9334c089bde0
+import { NavigationRoute } from "./layout/appBar.types";
 
 const props = defineProps({
   navigationRoutes: {

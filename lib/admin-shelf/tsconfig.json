@@ -22,9 +22,6 @@
       ],
       "@auth-util": [
         "../auth-util/*"
-      ],
-      "@component-lib": [
-        "../component-lib/*"
       ]
     },
     "lib": [

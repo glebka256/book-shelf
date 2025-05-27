@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NavigationRoute } from "@/components/layout/appBar.types";
+import { NavigationRoute } from "@/component-lib/layout/appBar.types";
 import AppBar from "@/components/layout/AppBar.vue";
 
 const navigationRoutes: NavigationRoute[] = [

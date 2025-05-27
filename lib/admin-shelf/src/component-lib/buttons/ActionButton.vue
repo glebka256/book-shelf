@@ -1,13 +1,17 @@
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue';
+import { defineProps, defineEmits, useAttrs } from 'vue';
 
+// TODO: Use slot instead of prop for 'text' field
+// NOTO: Doing so makes currentRenderingInstance null which breaks rendering
 interface Props {
   /** Optional type of button (submit, reset, button) */
   type?: 'button' | 'submit' | 'reset';
   /** Whether the button is disabled */
   disabled?: boolean;
-  /** Optional additional CSS classes */
-  class?: string;
+/** Text displayed inside button. 
+ * Slot is not used because currentRenderingInstance becomes null who knows why
+*/
+  text: string
 }
 
 const props = defineProps<Props>();
@@ -15,20 +19,23 @@ const props = defineProps<Props>();
 const emit = defineEmits<{
   (e: 'click', event: MouseEvent): void;
 }>();
+
+const attrs = useAttrs();
 </script>
 
 <template>
   <button
     :type="props.type || 'button'"
     :disabled="props.disabled"
-    :class="['button', props.class]"
-    @click="(event: any) => emit('click', event)"
+    class="button"
+    :class="attrs.class"
+    @click="(event) => emit('click', event)"
   >
-    <slot></slot>
+    {{ props.text }}    
   </button>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .button {
   padding: 0.625rem 1rem;
   border-radius: 4px;

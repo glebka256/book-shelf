@@ -2,7 +2,7 @@
 import { onMounted, ref } from "vue";
 import { formStats, Stats } from "./statManager";
 import StatCard from "@/components/common/buttons/StatCard.vue";
-import TextLoader from '@/../../component-lib/src/components/loaders/TextLoader.vue';
+import TextLoader from "@/component-lib/loaders/TextLoader.vue";
 
 const loading      = ref<boolean>(false);
 const errorMessage = ref<string | null>(null);

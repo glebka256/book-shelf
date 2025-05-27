@@ -11,11 +11,9 @@
   },
   "dependencies": {
     "@book-shelf/auth-util": "file:../auth-util",
-    "@book-shelf/component-lib": "file:../component-lib",
     "auth-util": "file:../auth-util",
     "axios": "^1.9.0",
     "chart.js": "^4.4.9",
-    "component-lib": "file:../component-lib",
     "core-js": "^3.8.3",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3"

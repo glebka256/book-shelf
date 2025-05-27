@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { defineProps, reactive, defineEmits, PropType } from 'vue';
 import FormWrapper from '@/components/ui/form/FormWrapper.vue';
-import { BookFormDTO } from './bookForm.types';
 import FormInput from '@/components/ui/form/inputs/FormInput.vue';
 import FormSelect from '@/components/ui/form/inputs/FormSelect.vue';
 import TagSelector from '@/components/ui/form/inputs/TagSelector.vue';
 import FormActions from '@/components/ui/form/inputs/FormActions.vue';
+import { BookFormDTO } from './bookForm.types';
 import { emptyInitialForm, options } from './bookForm';
 
 // props are given only when form should initialy have some selected values

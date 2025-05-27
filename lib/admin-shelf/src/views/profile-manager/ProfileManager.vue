@@ -3,7 +3,7 @@ import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import auth from '@/config/auth';
 import { User } from '@book-shelf/auth-util/src/auth.types';
-import ActionButton from '@/../../component-lib/src/components/buttons/ActionButton.vue';
+import ActionButton from '@/component-lib/buttons/ActionButton.vue';
 
 const user = ref<User>();
 const errorMessage = ref<string>();
