@@ -10,6 +10,7 @@ import ToolTip from "@/component-lib/common/ToolTip.vue";
 import FrequencyChart from "@/component-lib/charts/FrequencyChart.vue";
 import PieChart from "@/component-lib/charts/PieChart.vue";
 import { ChartDistribution, PieChartConfig } from "@/component-lib/charts/pieChart.types";
+import { ChartColors, minimalistNeatConfig } from "@/config/charts";
 
 const loading      = ref<boolean>(false);
 const errorMessage = ref<string | null>(null);
@@ -61,20 +62,7 @@ const activityTableColumns = ref([
 ])
 
 const genreDistributionChartData = ref<ChartDistribution[] | null>(null);
-const genreDistributionChartConfig: PieChartConfig = {
-  colors: [
-    '#27AE60', '#2ECC71', '#F39C12', '#E67E22',
-    '#8E44AD', '#9B59B6', '#34495E', '#16A085'
-  ],
-  borderColor: '#ffffff',
-  borderWidth: 2,
-  hoverBorderColor: '#ecf0f1',
-  hoverBorderWidth: 3,
-  showLegend: true,
-  legendPosition: 'left',
-  animateRotate: true,
-  animateScale: true
-}
+const genreDistributionChartConfig: PieChartConfig = minimalistNeatConfig;
 
 const publicationChartData = ref<ChartFrequency[] | null>(null);
 const publicationChartConfig: ChartConfig = {
@@ -82,8 +70,8 @@ const publicationChartConfig: ChartConfig = {
   datasetLabel: 'Books Published',
   yAxisLabel: 'Number of Books',
   xAxisLabel: 'Year',
-  color: 'rgb(99, 102, 241)',
-  backgroundColor: 'rgba(99, 102, 241, 0.1)'
+  color: ChartColors.TealBright,
+  backgroundColor: ChartColors.TealDark
 }
 
 const activityChartData = ref<ChartFrequency[] | null>(null);
@@ -92,8 +80,8 @@ const activityChartConfig: ChartConfig = {
   datasetLabel: 'Interaction Count',
   yAxisLabel: 'Number of Interactions',
   xAxisLabel: 'Week',
-  color: 'rgb(99, 102, 241)',
-  backgroundColor: 'rgba(99, 102, 241, 0.1)'
+  color: ChartColors.PurpleBright,
+  backgroundColor: ChartColors.PurpleDark
 }
 
 const tipText = {
