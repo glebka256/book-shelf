@@ -51,6 +51,8 @@ const handleRemove = () => emit('remove');
 </template>
 
 <style scoped lang="scss">
+@import "@/styles/variables.scss";
+
 .book-cover {
   position: relative;
   width: 100%;
@@ -77,17 +79,17 @@ const handleRemove = () => emit('remove');
       padding: 4px 8px;
       border-radius: 4px;
       font-size: 0.75rem;
-      font-weight: 600;
+      font-weight: $med-thick;
       text-transform: uppercase;
      
       &.complete {
         background-color: #4caf50;
-        color: white;
+        color: $btn-color;
       }
      
       &.incomplete {
         background-color: #ff9800;
-        color: white;
+        color: $btn-color;
       }
     }
   }
@@ -110,12 +112,12 @@ const handleRemove = () => emit('remove');
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+      box-shadow: $normal-shadow;
       transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
 
       &:hover {
         transform: translateY(-3px);
-        border-color: #888;
+        border-color: $main-gray-bgcolor;
       }
 
       &.edit-btn:hover {

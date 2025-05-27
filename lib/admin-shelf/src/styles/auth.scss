@@ -1,0 +1,11 @@
+@import "@/styles/variables.scss";
+
+%auth-base {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: $auth-bg;
+  font-family: $auth-font;
+}

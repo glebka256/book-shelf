@@ -51,12 +51,14 @@ const handleSelectTab = (tabId: string) => {
 </template>
 
 <style scoped lang="scss">
+@import "@/styles/variables.scss";
+
 .home-card {
-  background-color: white;
+  background-color: $main-bgcolor;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-  padding: 2rem;
-  max-width: 900px;
+  box-shadow: $wide-shadow;
+  padding: $manager-subcontent-padding;
+  max-width: $manager-subcontent-mxwidth;
   margin: 0 auto;
 
   .welcome-section {
@@ -77,7 +79,7 @@ const handleSelectTab = (tabId: string) => {
   .sources-section {
     h2 {
       font-size: 1.25rem;
-      font-weight: 600;
+      font-weight: $med-thick;
       margin-bottom: 0.75rem;
     }
 
@@ -86,7 +88,7 @@ const handleSelectTab = (tabId: string) => {
       grid-template-columns: repeat(2, 1fr);
       gap: 1rem;
       
-      @media (min-width: 768px) {
+      @media (min-width: $small-width) {
         grid-template-columns: repeat(3, 1fr);
       }
     }

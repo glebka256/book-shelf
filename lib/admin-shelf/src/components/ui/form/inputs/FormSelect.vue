@@ -64,14 +64,15 @@ const updateValue = (event: Event) => {
 
 <style scoped lang="scss">
 @import "@/styles/form.module.scss";
+@import "@/styles/variables.scss";
 
 select {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #ddd;
+  border: 1px solid $main-border-color;
   border-radius: 4px;
   font-size: 1rem;
-  background-color: white;
+  background-color: $main-bgcolor;
   transition: border-color 0.2s;
   cursor: pointer;
   appearance: none;
@@ -82,7 +83,7 @@ select {
   
   &:focus {
     outline: none;
-    border-color: #4a90e2;
+    border-color: $sec-btn-bgcolor;
     box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
   }
 }

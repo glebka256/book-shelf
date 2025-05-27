@@ -1,0 +1,67 @@
+// Colors
+$main-color: #2c3e50;
+$main-bgcolor: white;
+$main-darker-bgcolor: #fff;
+$main-border-color: #e0e0e0;
+$main-gray-bgcolor: #9ca3af;
+$main-thick-font: #333;
+$sec-thick-font: #555;
+$initial-gradient-bg-color: #667eea;
+$transition-gradient-bg-color: #764ba2;
+
+// auth
+$auth-bg: linear-gradient(135deg, #e3f2fd, #bbdefb);
+
+// btn
+$btn-color: white;
+$btn-bgcolor: #4f46e5;
+$btn-primary-bgcolor: #4338ca;
+$btn-secondary-color: #1f2937;
+$btn-secondary-bgcolor: #f3f4f6;
+$btn-secondary-dis-color: #1f2937;
+$btn-secondary-dis-bgcolor: #f3f4f6;
+$sec-btn-bgcolor: #4a90e2;
+$sec-hover-bg-color: #3a7ec7;
+$tag-color: #1a73e8;
+
+// error
+$error-color: red;
+$red-dark-color: #dc2626;
+$red-bright-color: #ef4444;
+
+// json-display
+$json-bg-color: #f9f9f9;
+$json-border-color: #eee;
+
+// Effects
+$light-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+$small-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+$normal-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+$wide-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+$widest-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+$sec-light-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+
+
+// Dimension and size parameters
+// AppBar
+$appbar-width: 238px;
+$appbar-sml-width: 92px;
+
+// $manager
+$manager-content-mxwidth: 1200px;
+$manager-subcontent-mxwidth: 900px;
+$popup-modal-mxwidth: 500px;
+$manager-subcontent-padding: 2rem;
+
+// @media parameters
+$smallest-width: 480px;
+$small-width: 768px;
+$med-width: 1084px;
+
+
+// Font styles
+$med-weight: 400;
+$med-thick: 600;
+$main-font: Avenir, Helvetica, Arial, sans-serif;
+$book-form-font: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+$auth-font: 'Arial', sans-serif;

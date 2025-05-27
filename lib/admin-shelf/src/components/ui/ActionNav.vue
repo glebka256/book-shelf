@@ -52,13 +52,15 @@ const selectTab = (tabId: string) => {
 </template>
 
 <style scoped lang="scss">
+@import "@/styles/variables.scss";
+
 .action-nav {
-  color: #ffffff;
+  color: $main-darker-bgcolor;
   background-color: #918ff1;
   padding: 0.5rem 1rem;
   margin-bottom: 1rem;
   border-radius: 6px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: $light-shadow;
 
   .nav-container {
     display: flex;
@@ -67,8 +69,8 @@ const selectTab = (tabId: string) => {
 
     .title {
       font-size: 1.25rem;
-      font-weight: 600;
-      color: #333;
+      font-weight: $med-thick;
+      color: $main-thick-font;
     }
 
     .nav-list {
@@ -83,7 +85,7 @@ const selectTab = (tabId: string) => {
       padding: 0.5rem 1rem;
       cursor: pointer;
       border-radius: 4px;
-      font-weight: 500;
+      font-weight: $med-weight;
       transition: all 0.2s ease;
       
       &:hover {

@@ -17,11 +17,13 @@ const isActive = () => props.tabId === props.activeTab;
 </template>
 
 <style scoped lang="scss">
+@import "@/styles/variables.scss";
+
 .action-tab {
-  background-color: white;
+  background-color: $main-bgcolor;
   border-radius: 6px;
   padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: $small-shadow;
   min-height: 200px;
 }
 </style>

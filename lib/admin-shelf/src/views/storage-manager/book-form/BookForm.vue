@@ -227,15 +227,17 @@ const resetForm = () => {
 </template>
 
 <style lang="scss" scoped>
+@import "@/styles/variables.scss";
+
 .book-form {
-  max-width: 800px;
+  max-width: $manager-subcontent-mxwidth;
   margin: 0 auto;
-  padding: 2rem;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  padding: $manager-subcontent-padding;
+  font-family: $book-form-font;
   
   h2 {
     margin-bottom: 1.5rem;
-    color: #333;
+    color: $main-font;
     font-weight: 600;
   }
   

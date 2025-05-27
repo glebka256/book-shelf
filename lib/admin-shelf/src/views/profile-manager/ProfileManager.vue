@@ -75,14 +75,11 @@ onMounted(async () => {
 </template>
 
 <style scoped lang="scss">
+@import '@/styles/auth.scss';
+@import "@/styles/variables.scss";
+
 .profile-manager {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-  font-family: 'Arial', sans-serif;
+  @extend %auth-base;
 }
 
 .button-group {
@@ -93,10 +90,10 @@ onMounted(async () => {
 }
 
 .credentials, .not-signed-in, .error {
-  background: #fff;
+  background: $main-darker-bgcolor;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: $light-shadow;
   text-align: center;
 }
 
@@ -105,6 +102,6 @@ onMounted(async () => {
 }
 
 .error {
-  color: red;
+  color: $error-color;
 }
 </style>

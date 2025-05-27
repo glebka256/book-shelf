@@ -87,10 +87,12 @@ onMounted(async () => {
 </template>
 
 <style scoped lang="scss">
+@import "@/styles/variables.scss";
+
 .books-view {
   padding: 1rem;
   width: 100%;
-  max-width: 1200px;
+  max-width: $manager-content-mxwidth;
   margin: 0 auto;
 }
 
@@ -100,14 +102,14 @@ onMounted(async () => {
   gap: 1.5rem;
 }
 
-@media (max-width: 768px) {
+@media (max-width: $small-width) {
   .books-container {
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 1rem;
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: $smallest-width) {
   .books-container {
     grid-template-columns: 1fr;
   }

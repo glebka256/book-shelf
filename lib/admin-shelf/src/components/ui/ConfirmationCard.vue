@@ -96,13 +96,15 @@ const handleCancel = () => {
 </template>
 
 <style scoped lang="scss">
+@import "@/styles/variables.scss";
+
 .confirmation-card {
-  border: 1px solid #e0e0e0;
+  border: 1px solid $main-border-color;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
+  box-shadow: $small-shadow;
+  background-color: $main-darker-bgcolor;
   padding: 1.5rem;
-  max-width: 500px;
+  max-width: $popup-modal-mxwidth;
   margin: 0 auto;
 }
 
@@ -114,8 +116,8 @@ const handleCancel = () => {
 
 .prompt-message {
   font-size: 1.125rem;
-  font-weight: 500;
-  color: #333;
+  font-weight: $med-weight;
+  color: $main-thick-font;
   margin: 0;
 }
 

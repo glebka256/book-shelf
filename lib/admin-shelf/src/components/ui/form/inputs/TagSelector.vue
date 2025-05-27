@@ -60,6 +60,8 @@ const removeTag = (index: number): void => {
 
 <style scoped lang="scss">
 // TODO: Import global form-group styling - NOTE: Imorting styles as it is breaks scoped styles
+@import "@/styles/variables.scss";
+
 .form-group {
   margin-bottom: 1rem;
   
@@ -76,16 +78,16 @@ const removeTag = (index: number): void => {
   select {
     width: 100%;
     padding: 0.75rem;
-    border: 1px solid #ddd;
+    border: 1px solid $main-border-color;
     border-radius: 4px;
     font-size: 1rem;
-    background-color: white;
+    background-color: $main-bgcolor;
     transition: border-color 0.2s;
     
     &:focus {
       outline: none;
-      border-color: #4a90e2;
-      box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+      border-color: $sec-btn-bgcolor;
+      box-shadow: $sec-light-shadow;
     }
   }
 }
@@ -95,9 +97,9 @@ const removeTag = (index: number): void => {
   flex-wrap: wrap;
   align-items: center;
   padding: 0.5rem;
-  border: 1px solid #ddd;
+  border: 1px solid $main-border-color;
   border-radius: 4px;
-  background-color: white;
+  background-color: $main-bgcolor;
   min-height: 3rem;
  
   input {
@@ -115,8 +117,8 @@ const removeTag = (index: number): void => {
   .tag {
     display: inline-flex;
     align-items: center;
-    background-color: #e8f0fe;
-    color: #1a73e8;
+    background-color: $main-darker-bgcolor;
+    color: $tag-color;
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
     margin: 0.25rem;
@@ -125,7 +127,7 @@ const removeTag = (index: number): void => {
     .tag-remove {
       background: none;
       border: none;
-      color: #5f6368;
+      color: $sec-thick-font;
       cursor: pointer;
       font-size: 1rem;
       line-height: 1;
@@ -133,7 +135,7 @@ const removeTag = (index: number): void => {
       padding: 0 0.15rem;
      
       &:hover {
-        color: #d93025;
+        color: $red-dark-color;
       }
     }
   }

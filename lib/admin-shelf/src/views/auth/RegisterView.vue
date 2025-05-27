@@ -35,13 +35,9 @@ async function handleRegister(formData: Record<string, string>) {
 </template>
 
 <style scoped lang="scss">
+@import '@/styles/auth.scss';
+
 .register-view {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-  font-family: 'Arial', sans-serif;
+  @extend %auth-base;
 }
 </style>

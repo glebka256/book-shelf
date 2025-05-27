@@ -37,9 +37,11 @@ const copyToClipboard = () => {
 </template>
 
 <style scoped lang="scss">
+@import "@/styles/variables.scss";
+
 .json-display {
-  background-color: #f9f9f9;
-  border: 1px solid #eee;
+  background-color: $json-bg-color;
+  border: 1px solid $json-border-color;
   border-radius: 4px;
   overflow: hidden;
   text-align: left;
@@ -49,19 +51,19 @@ const copyToClipboard = () => {
     justify-content: space-between;
     align-items: center;
     padding: 0.75rem 1rem;
-    background-color: #eee;
+    background-color: $json-border-color;
   }
   
   &__title {
     margin: 0;
     font-size: 1.2rem;
-    color: #333;
+    color: $main-thick-font;
   }
 
   .json-content {
     margin: 0;
     padding: 1rem;
-    background-color: #f9f9f9;
+    background-color: $json-bg-color;
     overflow-x: auto;
     font-family: monospace;
     font-size: 0.9rem;

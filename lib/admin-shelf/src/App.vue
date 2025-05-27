@@ -1,35 +1,38 @@
 <script setup lang="ts">
-import NavBar from './views/NavBar.vue';
+import NavigationView from './views/NavigationView.vue';
 </script>
 
 <template>
-  <NavBar />
+  <NavigationView />
   <div class="main-content">
     <router-view />
   </div>
 </template>
 
 <style lang="scss">
+@import "@/styles/variables.scss";
+
 html, body {
   height: 100%;
   margin: 0;
+  background-color: $main-bgcolor;
 }
 
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: $main-font;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: $main-color;
 }
 
 .main-content {
-  margin-left: 238px; // Match with AppBar width
+  margin-left: $appbar-width;
 }
 
-@media (max-width: 1084px) {
+@media (max-width: $med-width) {
   .main-content {
-    margin-left: 92px; // Match with AppBar media-width
+    margin-left: $appbar-sml-width;
   }
 }
 </style>

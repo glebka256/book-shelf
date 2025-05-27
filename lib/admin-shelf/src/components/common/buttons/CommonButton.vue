@@ -29,11 +29,13 @@ const emit = defineEmits<{
 </template>
 
 <style scoped lang="scss">
+@import "@/styles/variables.scss";
+
 .button {
   padding: 0.625rem 1rem;
   border-radius: 4px;
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: $med-weight;
   cursor: pointer;
   transition: background-color 0.2s, border-color 0.2s;
   border: 1px solid transparent;
@@ -49,35 +51,35 @@ const emit = defineEmits<{
 }
 
 .btn-primary {
-  background-color: #4f46e5;
-  color: white;
-  border-color: #4f46e5;
+  background-color: $btn-bgcolor;
+  color: $btn-color;
+  border-color: $btn-bgcolor;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: #4338ca;
-  border-color: #4338ca;
+  background-color: $btn-primary-bgcolor;
+  border-color: $btn-primary-bgcolor;
 }
 
 .btn-secondary {
-  background-color: #f3f4f6;
-  color: #1f2937;
-  border-color: #d1d5db;
+  background-color: $btn-secondary-bgcolor;
+  color: $btn-secondary-color;
+  border-color: $btn-secondary-bgcolor;
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background-color: #e5e7eb;
-  border-color: #9ca3af;
+  background-color: $btn-secondary-bgcolor;
+  border-color: $main-gray-bgcolor;
 }
 
 .btn-danger {
-  background-color: #ef4444;
-  color: white;
-  border-color: #ef4444;
+  background-color: $red-bright-color;
+  color: $btn-color;
+  border-color: $red-bright-color;
 }
 
 .btn-danger:hover:not(:disabled) {
-  background-color: #dc2626;
-  border-color: #dc2626;
+  background-color: $red-dark-color;
+  border-color: $red-dark-color;
 }
 </style>

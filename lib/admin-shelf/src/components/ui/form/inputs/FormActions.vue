@@ -14,6 +14,8 @@ defineProps<{
 </template>
 
 <style lang="scss" scoped>
+@import "@/styles/variables.scss";
+
 .form-actions {
   display: flex;
   justify-content: flex-end;
@@ -29,22 +31,22 @@ defineProps<{
     transition: all 0.2s;
     
     &.btn-primary {
-      background-color: #4a90e2;
-      color: white;
+      background-color: $sec-btn-bgcolor;
+      color: $main-bgcolor;
       border: none;
       
       &:hover {
-        background-color: #3a7ec7;
+        background-color: $sec-hover-bg-color;
       }
     }
     
     &.btn-secondary {
-      background-color: white;
+      background-color: $main-bgcolor;
       color: #333;
-      border: 1px solid #ddd;
+      border: 1px solid $main-border-color;
       
       &:hover {
-        background-color: #f5f5f5;
+        background-color: $main-darker-bgcolor;
       }
     }
   }

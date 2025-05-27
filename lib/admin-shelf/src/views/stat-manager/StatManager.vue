@@ -199,6 +199,7 @@ onMounted(() => {
 
 <style scoped lang="scss">
 @import '@/styles/manager.scss';
+@import "@/styles/variables.scss";
 
 .stat-manager-container {
   display: flex;
@@ -206,25 +207,25 @@ onMounted(() => {
   align-items: flex-start;
   min-height: 100vh;
   padding: 2rem 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, $initial-gradient-bg-color 0%, $transition-gradient-bg-color 100%);
 }
 
 .stat-manager {
   @extend %manager-base;
   
   width: 70%;
-  max-width: 1200px;
+  max-width: $manager-content-mxwidth;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: $widest-shadow;
   padding: 3rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 3rem;
 
-  @media (max-width: 768px) {
+  @media (max-width: $small-width) {
     width: 95%;
     padding: 2rem 1.5rem;
   }
@@ -241,9 +242,9 @@ onMounted(() => {
 
 h2 {
   text-align: center;
-  color: #4a5568;
+  color: $main-color;
   font-size: 2rem;
-  font-weight: 600;
+  font-weight: $med-thick;
   margin: 0;
   position: relative;
   
@@ -255,7 +256,7 @@ h2 {
     transform: translateX(-50%);
     width: 60px;
     height: 3px;
-    background: linear-gradient(90deg, #667eea, #764ba2);
+    background: linear-gradient(90deg, $initial-gradient-bg-color, $transition-gradient-bg-color);
     border-radius: 2px;
   }
 }
@@ -267,7 +268,7 @@ h2 {
   gap: 1.5rem;
   width: 100%;
   
-  @media (max-width: 768px) {
+  @media (max-width: $small-width) {
     flex-direction: column;
     align-items: center;
   }
@@ -295,7 +296,7 @@ h2 {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
-@media (max-width: 1024px) {
+@media (max-width: $med-width) {
   .stat-manager-container {
     padding: 1rem 0.5rem;
   }
