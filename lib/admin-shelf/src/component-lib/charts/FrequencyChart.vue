@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { defineProps, PropType, ref, onMounted, watch } from 'vue'
+import { defineProps, PropType, ref, onMounted, watch, computed } from 'vue'
 import { Chart, ChartConfiguration, registerables } from 'chart.js'
 
 Chart.register(...registerables)
 
 export interface ChartFrequency {
-  param: number
+  time: number
   count: number
 }
 
@@ -27,10 +27,18 @@ const props = defineProps({
   config: {
     type: Object as PropType<ChartConfig>,
     default: () => ({})
+  },
+  maxWidth: {
+    type: [String, Number],
+    default: '100%'
+  },
+  height: {
+    type: [String, Number],
+    default: 500
   }
 });
 
-/** Default configuration */
+// Default configuration
 const defaultConfig: ChartConfig = {
   title: 'Frequency Timeline',
   datasetLabel: 'Count',
@@ -43,18 +51,24 @@ const defaultConfig: ChartConfig = {
 // Merge user config with defaults
 const chartConfig = { ...defaultConfig, ...props.config }
 
+/** Computed style for container */
+const containerStyle = computed(() => ({
+  maxWidth: typeof props.maxWidth === 'number' ? `${props.maxWidth}px` : props.maxWidth,
+  height: typeof props.height === 'number' ? `${props.height}px` : props.height
+}))
+
 const chartRef = ref<HTMLCanvasElement | null>(null)
 let chartInstance: Chart | null = null
 
 const createChart = () => {
   if (!chartRef.value) return
   
-  const sortedData = [...props.data].sort((a, b) => a.param - b.param)
+  const sortedData = [...props.data].sort((a, b) => a.time - b.time)
  
   const config: ChartConfiguration = {
     type: 'line',
     data: {
-      labels: sortedData.map(item => item.param.toString()),
+      labels: sortedData.map(item => item.time.toString()),
       datasets: [{
         label: chartConfig.datasetLabel,
         data: sortedData.map(item => item.count),
@@ -124,9 +138,9 @@ const createChart = () => {
 const updateChart = () => {
   if (!chartInstance) return
   
-  const sortedData = [...props.data].sort((a, b) => a.param - b.param)
+  const sortedData = [...props.data].sort((a, b) => a.time - b.time)
  
-  chartInstance.data.labels = sortedData.map(item => item.param.toString())
+  chartInstance.data.labels = sortedData.map(item => item.time.toString())
   chartInstance.data.datasets[0].data = sortedData.map(item => item.count)
   chartInstance.update()
 }
@@ -151,15 +165,16 @@ watch(() => props.config, () => {
 
 <template>
   <div class="frequency-chart">
-    <h3>{{ chartConfig.title }}</h3>
-    <canvas ref="chartRef" width="800" height="400"></canvas>
+    <h2>Publication Frequency Timeline</h2>
+    <div class="chart-container" :style="containerStyle">
+      <canvas ref="chartRef"></canvas>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .frequency-chart {
   width: 100%;
-  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
 }
@@ -172,8 +187,15 @@ watch(() => props.config, () => {
   font-weight: 600;
 }
 
+.chart-container {
+  position: relative;
+  height: 100%;
+}
+
 canvas {
-  width: 100% !important;
-  height: 400px !important;
+  max-width: 100%;
+  max-height: 100%;
+  width: 100%;
+  height: 100%;
 }
 </style>

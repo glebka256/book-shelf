@@ -86,7 +86,7 @@ const publicationChartData = ref<ChartFrequency[] | null>(null);
 
 const formPublicationData = (data: PublicationFrequency[]): void => {
   publicationChartData.value = data.map(item => ({
-    param: item.year,
+    time: item.year,
     count: item.books
   }));
 }
@@ -133,7 +133,8 @@ onMounted(() => {
     </div>
     <FrequencyChart v-if="publicationChartData" 
       :data="publicationChartData" 
-      :config="publicationChartConfig" 
+      :config="publicationChartConfig"
+      :maxWidth="1200"
     />
   </div>
 
