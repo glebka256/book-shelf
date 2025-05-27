@@ -132,6 +132,7 @@ onMounted(() => {
       <StatCard label="Total Authors" :value="stats.total.authors" />
     </div>
     <FrequencyChart v-if="publicationChartData" 
+      title="Publication Frequency Timeline"
       :data="publicationChartData" 
       :config="publicationChartConfig"
       :maxWidth="1200"

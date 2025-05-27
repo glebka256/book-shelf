@@ -20,6 +20,10 @@ export interface ChartConfig {
 }
 
 const props = defineProps({
+  title: {
+    type: String,
+    default: undefined
+  },
   data: {
     type: Array as PropType<ChartFrequency[]>,
     required: true
@@ -165,7 +169,7 @@ watch(() => props.config, () => {
 
 <template>
   <div class="frequency-chart">
-    <h2>Publication Frequency Timeline</h2>
+    <h2 v-if="props.title">{{ props.title }}</h2>
     <div class="chart-container" :style="containerStyle">
       <canvas ref="chartRef"></canvas>
     </div>
