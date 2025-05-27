@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { formStats, Stats } from "./statManager";
+import { PublicationFrequency } from "./stat.api";
+import type { ChartFrequency, ChartConfig } from "@/component-lib/charts/FrequencyChart.vue";
 import StatCard from "@/component-lib/StatCard.vue";
 import TextLoader from "@/component-lib/loaders/TextLoader.vue";
 import DataTable from "@/component-lib/layout/DataTable.vue";
 import ToolTip from "@/component-lib/common/ToolTip.vue";
+import FrequencyChart from "@/component-lib/charts/FrequencyChart.vue";
 
 const loading      = ref<boolean>(false);
 const errorMessage = ref<string | null>(null);
@@ -18,6 +21,7 @@ const loadStats = async () => {
   try {
     stats.value = await formStats();
     formActivityDataCell();
+    formPublicationData(stats.value.publicationTimeline);
   } catch (error) {
     errorMessage.value = error instanceof Error ? error.message : 'An error occurred'; 
   } finally {
@@ -78,6 +82,24 @@ const formActivityDataCell = (): void => {
   }
 }
 
+const publicationChartData = ref<ChartFrequency[] | null>(null);
+
+const formPublicationData = (data: PublicationFrequency[]): void => {
+  publicationChartData.value = data.map(item => ({
+    param: item.year,
+    count: item.books
+  }));
+}
+
+const publicationChartConfig: ChartConfig = {
+  title: 'Publication Frequency Timeline',
+  datasetLabel: 'Books Published',
+  yAxisLabel: 'Number of Books',
+  xAxisLabel: 'Year',
+  color: 'rgb(99, 102, 241)',
+  backgroundColor: 'rgba(99, 102, 241, 0.1)'
+}
+
 const tipText = {
   statCard: {
     totalSubjects: "Number of unique subject keywords in the database",
@@ -109,6 +131,10 @@ onMounted(() => {
       </StatCard>
       <StatCard label="Total Authors" :value="stats.total.authors" />
     </div>
+    <FrequencyChart v-if="publicationChartData" 
+      :data="publicationChartData" 
+      :config="publicationChartConfig" 
+    />
   </div>
 
   <div class="activity-stats" v-if="stats">
