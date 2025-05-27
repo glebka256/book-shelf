@@ -3,6 +3,7 @@ import { defineProps, PropType, ref, onMounted, watch, computed } from 'vue'
 import { Chart, ChartConfiguration, registerables } from 'chart.js'
 import { ChartDistribution, PieChartConfig, defaultPieConfig } from './pieChart.types';
 import { generateColors, adjustBrightness } from '@/util/color';
+import { calculatePercentage } from '@/util';
 
 Chart.register(...registerables)
 
@@ -47,6 +48,9 @@ const createChart = () => {
   // Sort data by value in descending order for better visual hierarchy
   const sortedData = [...props.data].sort((a, b) => b.value - a.value)
   
+  // Generate totalValue once for reuse
+  const totalValue = sortedData.reduce((sum, item) => sum + item.value, 0)
+  
   // Generate colors if not provided
   const colors = chartConfig.colors && chartConfig.colors.length >= sortedData.length 
     ? chartConfig.colors 
@@ -78,6 +82,26 @@ const createChart = () => {
             usePointStyle: true,
             font: {
               size: 12
+            },
+            generateLabels: (chart) => {
+              const data = chart.data
+              if (data.labels && data.datasets.length > 0) {
+                return data.labels.map((label, i) => {
+                  const value = data.datasets[0].data[i] as number
+                  const percentage = calculatePercentage(value, totalValue, 1)
+                  
+                  return {
+                    text: `${label}: ${percentage}%`,
+                    fillStyle: data.datasets[0].backgroundColor[i] as string,
+                    strokeStyle: data.datasets[0].borderColor as string,
+                    lineWidth: data.datasets[0].borderWidth as number,
+                    pointStyle: 'circle',
+                    hidden: false,
+                    index: i
+                  }
+                })
+              }
+              return []
             }
           }
         },

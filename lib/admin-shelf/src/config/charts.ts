@@ -82,3 +82,18 @@ export const minimalistNeatConfig: PieChartConfig = {
     animateRotate: false,
     animateScale: false
 }
+
+export const richLeftConfig: PieChartConfig = {
+    colors: [
+        '#333333', '#666666', '#999999', '#CCCCCC',
+        '#E8E8E8', '#F5F5F5', '#555555', '#777777'
+    ],
+    borderColor: '#ffffff',
+    borderWidth: 1,
+    hoverBorderColor: '#000000',
+    hoverBorderWidth: 2,
+    showLegend: true,
+    legendPosition: 'left',
+    animateRotate: true,
+    animateScale: true
+}

@@ -10,7 +10,7 @@ import ToolTip from "@/component-lib/common/ToolTip.vue";
 import FrequencyChart from "@/component-lib/charts/FrequencyChart.vue";
 import PieChart from "@/component-lib/charts/PieChart.vue";
 import { ChartDistribution, PieChartConfig } from "@/component-lib/charts/pieChart.types";
-import { ChartColors, minimalistNeatConfig } from "@/config/charts";
+import { ChartColors, richLeftConfig } from "@/config/charts";
 
 const loading      = ref<boolean>(false);
 const errorMessage = ref<string | null>(null);
@@ -62,7 +62,7 @@ const activityTableColumns = ref([
 ])
 
 const genreDistributionChartData = ref<ChartDistribution[] | null>(null);
-const genreDistributionChartConfig: PieChartConfig = minimalistNeatConfig;
+const genreDistributionChartConfig: PieChartConfig = richLeftConfig;
 
 const publicationChartData = ref<ChartFrequency[] | null>(null);
 const publicationChartConfig: ChartConfig = {
