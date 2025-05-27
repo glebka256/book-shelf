@@ -18,7 +18,7 @@ export const getStat = async <T>(route: StatRoutes): Promise<T> => {
 
 export interface UsersActivity {
     totalUsers: number,
-    totaFavorites: number,
+    totalFavorites: number,
     totalInteractions: number,
     avgFavoritesPerUser: number,
     avgInteractionsPerUser: number,
