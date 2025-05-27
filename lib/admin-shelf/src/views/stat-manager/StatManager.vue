@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { formStats, formActivityDataCell } from "./statManager";
+import { formStats, formActivityDataCell, formPublicationData } from "./statManager";
 import type { Stats, ActivityDataCell } from "./statManager";
-import type { PublicationFrequency } from "./stat.api";
-import type { ChartFrequency, ChartConfig } from "@/component-lib/charts/FrequencyChart.vue";
+import type { ChartFrequency, ChartConfig } from "@/component-lib/charts/frequencyChart.types";
 import StatCard from "@/component-lib/StatCard.vue";
 import TextLoader from "@/component-lib/loaders/TextLoader.vue";
 import DataTable from "@/component-lib/layout/DataTable.vue";
@@ -22,7 +21,7 @@ const loadStats = async () => {
   try {
     stats.value = await formStats();
     activityTableData.value = formActivityDataCell(stats.value.activity.users);
-    formPublicationData(stats.value.publicationTimeline);
+    publicationChartData.value = formPublicationData(stats.value.publicationTimeline);
   } catch (error) {
     errorMessage.value = error instanceof Error ? error.message : 'An error occurred'; 
   } finally {
@@ -58,14 +57,6 @@ const activityTableColumns = ref([
 ])
 
 const publicationChartData = ref<ChartFrequency[] | null>(null);
-
-const formPublicationData = (data: PublicationFrequency[]): void => {
-  publicationChartData.value = data.map(item => ({
-    time: item.year,
-    count: item.books
-  }));
-}
-
 const publicationChartConfig: ChartConfig = {
   title: 'Publication Frequency Timeline',
   datasetLabel: 'Books Published',

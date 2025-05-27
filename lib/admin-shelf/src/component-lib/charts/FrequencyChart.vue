@@ -1,23 +1,9 @@
 <script setup lang="ts">
 import { defineProps, PropType, ref, onMounted, watch, computed } from 'vue'
 import { Chart, ChartConfiguration, registerables } from 'chart.js'
+import { ChartFrequency, ChartConfig, defaultConfig } from './frequencyChart.types';
 
 Chart.register(...registerables)
-
-export interface ChartFrequency {
-  time: number
-  count: number
-}
-
-/** Configuration interface for customizing the chart */
-export interface ChartConfig {
-  title?: string
-  datasetLabel?: string
-  yAxisLabel?: string
-  xAxisLabel?: string
-  color?: string
-  backgroundColor?: string
-}
 
 const props = defineProps({
   title: {
@@ -41,16 +27,6 @@ const props = defineProps({
     default: 500
   }
 });
-
-// Default configuration
-const defaultConfig: ChartConfig = {
-  title: 'Frequency Timeline',
-  datasetLabel: 'Count',
-  yAxisLabel: 'Count',
-  xAxisLabel: 'Time',
-  color: 'rgb(99, 102, 241)',
-  backgroundColor: 'rgba(99, 102, 241, 0.1)'
-}
 
 // Merge user config with defaults
 const chartConfig = { ...defaultConfig, ...props.config }
