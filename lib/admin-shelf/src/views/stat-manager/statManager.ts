@@ -1,3 +1,4 @@
+import { ChartDistribution } from "@/component-lib/charts/pieChart.types";
 import {
     getStat,
     PublicationFrequency,
@@ -69,6 +70,13 @@ export const formActivityDataCell = (data: UsersActivity): ActivityDataCell[] =>
             max: data.maxInteractions,
         }
     ];
+}
+
+export const formGenreDistributionData = (data: SubjectDivision[]): ChartDistribution[] => {
+    return data.map(item => ({
+        label: item.genre,
+        value: item.count
+    }));
 }
 
 export const formPublicationData = (data: PublicationFrequency[]): ChartFrequency[] => {

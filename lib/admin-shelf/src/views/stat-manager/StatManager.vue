@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { formStats, formActivityDataCell, formPublicationData, formActivityData } from "./statManager";
+import { formStats, formActivityDataCell, formPublicationData, formActivityData, formGenreDistributionData } from "./statManager";
 import type { Stats, ActivityDataCell } from "./statManager";
 import type { ChartFrequency, ChartConfig } from "@/component-lib/charts/frequencyChart.types";
 import StatCard from "@/component-lib/StatCard.vue";
@@ -8,6 +8,8 @@ import TextLoader from "@/component-lib/loaders/TextLoader.vue";
 import DataTable from "@/component-lib/layout/DataTable.vue";
 import ToolTip from "@/component-lib/common/ToolTip.vue";
 import FrequencyChart from "@/component-lib/charts/FrequencyChart.vue";
+import PieChart from "@/component-lib/charts/PieChart.vue";
+import { ChartDistribution, PieChartConfig } from "@/component-lib/charts/pieChart.types";
 
 const loading      = ref<boolean>(false);
 const errorMessage = ref<string | null>(null);
@@ -21,6 +23,7 @@ const loadStats = async () => {
   try {
     stats.value = await formStats();
     activityTableData.value = formActivityDataCell(stats.value.activity.users);
+    genreDistributionChartData.value = formGenreDistributionData(stats.value.subjectDistribution);
     publicationChartData.value = formPublicationData(stats.value.publicationTimeline);
     activityChartData.value = formActivityData(stats.value.activity.weekly);
   } catch (error) {
@@ -56,6 +59,22 @@ const activityTableColumns = ref([
     cellClass: 'text-center'
   }
 ])
+
+const genreDistributionChartData = ref<ChartDistribution[] | null>(null);
+const genreDistributionChartConfig: PieChartConfig = {
+  colors: [
+    '#27AE60', '#2ECC71', '#F39C12', '#E67E22',
+    '#8E44AD', '#9B59B6', '#34495E', '#16A085'
+  ],
+  borderColor: '#ffffff',
+  borderWidth: 2,
+  hoverBorderColor: '#ecf0f1',
+  hoverBorderWidth: 3,
+  showLegend: true,
+  legendPosition: 'left',
+  animateRotate: true,
+  animateScale: true
+}
 
 const publicationChartData = ref<ChartFrequency[] | null>(null);
 const publicationChartConfig: ChartConfig = {
@@ -108,6 +127,12 @@ onMounted(() => {
       </StatCard>
       <StatCard label="Total Authors" :value="stats.total.authors" />
     </div>
+    <PieChart v-if="genreDistributionChartData" 
+      title="Library Genre Distribution"
+      :data="genreDistributionChartData"
+      :config="genreDistributionChartConfig"
+      :maxWidth="1200"
+    />
     <FrequencyChart v-if="publicationChartData" 
       title="Publication Frequency Timeline"
       :data="publicationChartData" 
