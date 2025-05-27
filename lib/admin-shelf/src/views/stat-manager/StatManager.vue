@@ -165,8 +165,8 @@ onMounted(() => {
   </div>
  </div>
 
-  <div v-if="loading">
-    <TextLoader loaderText="Loading books statistics..." />
+  <div class="loading" v-if="loading">
+    <TextLoader loaderText="Loading book statistics..." />
   </div>
 </template>
 
@@ -190,5 +190,9 @@ onMounted(() => {
   display: flex;
   gap: 20px;
   margin-bottom: 24px;
+}
+
+.loading {
+  margin-top: 2rem;
 }
 </style>
