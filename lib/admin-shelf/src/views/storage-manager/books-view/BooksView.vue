@@ -3,7 +3,7 @@ import { ref, onMounted, defineEmits } from "vue";
 import { BookData } from "@/types/Book.types";
 import BookCard from "./components/BookCard.vue";
 import { getBooks } from "./booksView";
-import PaginationBox from "@/components/ui/PaginationBox.vue";
+import PaginationBox from "@/component-lib/ui/PaginationBox.vue";
 
 const emit = defineEmits(['edit', 'remove']);
 

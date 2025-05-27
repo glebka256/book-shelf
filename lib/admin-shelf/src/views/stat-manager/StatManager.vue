@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { formStats, Stats } from "./statManager";
-import StatCard from "@/components/common/buttons/StatCard.vue";
+import StatCard from "@/component-lib/StatCard.vue";
 import TextLoader from "@/component-lib/loaders/TextLoader.vue";
 
 const loading      = ref<boolean>(false);

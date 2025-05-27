@@ -2,12 +2,12 @@
 import { onMounted, ref, computed, watch } from 'vue';
 import { UserStats } from '@/types/User.types';
 import { getUserStats } from './usersManager';
-import StatCard from '@/components/common/buttons/StatCard.vue';
+import StatCard from '@/component-lib/StatCard.vue';
 import IconButton from '@/component-lib/buttons/IconButton.vue';
 import DataTable from '@/component-lib/layout/DataTable.vue';
 import ToolTip from '@/component-lib/common/ToolTip.vue';
 import LoadSpinner from '@/component-lib/loaders/LoadSpinner.vue';
-import PaginationBox from '@/components/ui/PaginationBox.vue';
+import PaginationBox from '@/component-lib/ui/PaginationBox.vue';
 
 const loading = ref<boolean>(false);
 

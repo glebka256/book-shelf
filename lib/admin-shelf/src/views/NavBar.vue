@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { NavigationRoute } from "@/component-lib/layout/appBar.types";
-import AppBar from "@/components/layout/AppBar.vue";
+import AppBar from "@/component-lib/AppBar.vue";
 
 const navigationRoutes: NavigationRoute[] = [
   { link: '/',                faIcon: "fas fa-home",        text: "Home"                 },
