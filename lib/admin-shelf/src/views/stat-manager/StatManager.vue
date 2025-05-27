@@ -101,111 +101,213 @@ onMounted(() => {
 </script>
 
 <template>
- <div class="stat-manager" v-if="stats">
-  <div class="content-stats">
-    <h2>Content Stats</h2>
-    <div class="total-stats">
-      <StatCard label="Total Books" :value="stats.total.books" />
-      <StatCard label="Total Subjects" :value="stats.total.subjects" >
-        <ToolTip 
-          :text="tipText.statCard.totalSubjects"
-          position="bottom"
-          :dark="true"
-        />
-      </StatCard>
-      <StatCard label="Total Authors" :value="stats.total.authors" />
-    </div>
-    <PieChart v-if="genreDistributionChartData" 
-      title="Library Genre Distribution"
-      :data="genreDistributionChartData"
-      :config="genreDistributionChartConfig"
-      :maxWidth="1200"
-    />
-    <FrequencyChart v-if="publicationChartData" 
-      title="Publication Frequency Timeline"
-      :data="publicationChartData" 
-      :config="publicationChartConfig"
-      :maxWidth="1200"
-    />
-  </div>
-
-  <div class="activity-stats" v-if="stats">
-    <h2>Activity Stats</h2>
-    <div class="total-stats">
-      <StatCard label="Total Users" :value="stats.activity.users.totalUsers" />
-      <StatCard 
-        label="Total Interactions" 
-        :value="stats.activity.users.totalFavorites + stats.activity.users.totalInteractions" 
-      >
-        <ToolTip 
-          :text="tipText.statCard.totalInteractions"
-          position="top"
-          :dark="true"
-        />
-      </StatCard>
-      <DataTable
-        v-if="activityTableData"
-        :data="activityTableData" 
-        :columns="activityTableColumns"
-        row-key="param"
-      >
-        <!-- Use custom rendering for param column to add ToolTip -->
-        <template #param="{ item, value }">
-          <span>
-            {{ value }}
-            <ToolTip
-              v-if="item.param === 'Favorites'"
-              :text="tipText.dataTable.favorites"
-              position="top"
-              :dark="true"
-            />
-            <ToolTip
-              v-else-if="item.param === 'Other Interactions'"
-              :text="tipText.dataTable.interactions"
+  <div class="stat-manager-container">
+    <div class="stat-manager" v-if="stats">
+      <div class="content-stats">
+        <h2>Content Statistics</h2>
+        <div class="total-stats">
+          <StatCard label="Total Books" :value="stats.total.books" />
+          <StatCard label="Total Subjects" :value="stats.total.subjects" >
+            <ToolTip 
+              :text="tipText.statCard.totalSubjects"
               position="bottom"
               :dark="true"
             />
-          </span>
-        </template>
-      </DataTable>
-    </div>
-    <FrequencyChart v-if="activityChartData" 
-      title="Weekly User Activity"
-      :data="activityChartData" 
-      :config="activityChartConfig"
-      :maxWidth="1200"
-    />
-  </div>
- </div>
+          </StatCard>
+          <StatCard label="Total Authors" :value="stats.total.authors" />
+        </div>
+        
+        <div class="chart-container">
+          <PieChart v-if="genreDistributionChartData" 
+            title="Library Genre Distribution"
+            :data="genreDistributionChartData"
+            :config="genreDistributionChartConfig"
+            :maxWidth="1200"
+          />
+        </div>
+        
+        <div class="chart-container">
+          <FrequencyChart v-if="publicationChartData" 
+            title="Publication Frequency Timeline"
+            :data="publicationChartData" 
+            :config="publicationChartConfig"
+            :maxWidth="1200"
+          />
+        </div>
+      </div>
 
-  <div class="loading" v-if="loading">
-    <TextLoader loaderText="Loading book statistics..." />
+      <div class="activity-stats" v-if="stats">
+        <h2>Activity Statistics</h2>
+        <div class="total-stats">
+          <StatCard label="Total Users" :value="stats.activity.users.totalUsers" />
+          <StatCard 
+            label="Total Interactions" 
+            :value="stats.activity.users.totalFavorites + stats.activity.users.totalInteractions" 
+          >
+            <ToolTip 
+              :text="tipText.statCard.totalInteractions"
+              position="top"
+              :dark="true"
+            />
+          </StatCard>
+        </div>
+        
+        <div class="table-container">
+          <DataTable
+            v-if="activityTableData"
+            :data="activityTableData" 
+            :columns="activityTableColumns"
+            row-key="param"
+          >
+            <!-- Use custom rendering for param column to add ToolTip -->
+            <template #param="{ item, value }">
+              <span>
+                {{ value }}
+                <ToolTip
+                  v-if="item.param === 'Favorites'"
+                  :text="tipText.dataTable.favorites"
+                  position="top"
+                  :dark="true"
+                />
+                <ToolTip
+                  v-else-if="item.param === 'Other Interactions'"
+                  :text="tipText.dataTable.interactions"
+                  position="bottom"
+                  :dark="true"
+                />
+              </span>
+            </template>
+          </DataTable>
+        </div>
+        
+        <div class="chart-container">
+          <FrequencyChart v-if="activityChartData" 
+            title="Weekly User Activity"
+            :data="activityChartData" 
+            :config="activityChartConfig"
+            :maxWidth="1200"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="loading" v-if="loading">
+      <TextLoader loaderText="Loading book statistics..." />
+    </div>
   </div>
 </template>
 
 <style scoped lang="scss">
 @import '@/styles/manager.scss';
 
+.stat-manager-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
 .stat-manager {
   @extend %manager-base;
-
+  
+  width: 70%;
+  max-width: 1200px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  padding: 3rem;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  gap: 3rem;
 
-  h2 {
-    text-align: left;
-    margin-left: 3rem;
+  @media (max-width: 768px) {
+    width: 95%;
+    padding: 2rem 1.5rem;
+  }
+}
+
+.content-stats,
+.activity-stats {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+h2 {
+  text-align: center;
+  color: #4a5568;
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0;
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 2px;
   }
 }
 
 .total-stats {
   display: flex;
-  gap: 20px;
-  margin-bottom: 24px;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  width: 100%;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.chart-container,
+.table-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .loading {
-  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 1024px) {
+  .stat-manager-container {
+    padding: 1rem 0.5rem;
+  }
+  
+  .stat-manager {
+    width: 85%;
+    padding: 2rem 1rem;
+    gap: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
 }
 </style>
