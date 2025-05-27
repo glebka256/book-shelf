@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { formStats, Stats } from "./statManager";
-import { PublicationFrequency } from "./stat.api";
+import { formStats, formActivityDataCell } from "./statManager";
+import type { Stats, ActivityDataCell } from "./statManager";
+import type { PublicationFrequency } from "./stat.api";
 import type { ChartFrequency, ChartConfig } from "@/component-lib/charts/FrequencyChart.vue";
 import StatCard from "@/component-lib/StatCard.vue";
 import TextLoader from "@/component-lib/loaders/TextLoader.vue";
@@ -20,7 +21,7 @@ const loadStats = async () => {
 
   try {
     stats.value = await formStats();
-    formActivityDataCell();
+    activityTableData.value = formActivityDataCell(stats.value.activity.users);
     formPublicationData(stats.value.publicationTimeline);
   } catch (error) {
     errorMessage.value = error instanceof Error ? error.message : 'An error occurred'; 
@@ -29,13 +30,7 @@ const loadStats = async () => {
   }
 }
 
-interface ActivityDataCell {
-  param: string,
-  total: number,
-  avg: number,
-  max: number
-}
-
+const activityTableData = ref<ActivityDataCell[] | null>(null);
 const activityTableColumns = ref([
   {
     key: 'param',
@@ -61,26 +56,6 @@ const activityTableColumns = ref([
     cellClass: 'text-center'
   }
 ])
-const activityTableData = ref<ActivityDataCell[] | null>(null);
-
-const formActivityDataCell = (): void => {
-  if (stats.value) {
-    activityTableData.value = [
-      {
-        param: "Favorites",
-        total: stats.value.activity.users.totalFavorites,
-        avg: Number(stats.value.activity.users.avgFavoritesPerUser.toFixed(4)),
-        max: stats.value.activity.users.maxFavorites,
-      },
-      {
-        param: "Other Interactions",
-        total: stats.value.activity.users.totalInteractions,
-        avg: Number(stats.value.activity.users.avgInteractionsPerUser.toFixed(4)),
-        max: stats.value.activity.users.maxInteractions,
-      }
-    ];
-  }
-}
 
 const publicationChartData = ref<ChartFrequency[] | null>(null);
 

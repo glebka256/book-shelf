@@ -1,4 +1,12 @@
-import { getStat, PublicationFrequency, StatRoutes, SubjectDivision, UsersActivity, WeeklyFrequency } from "./stat.api";
+import { 
+    getStat, 
+    PublicationFrequency, 
+    StatRoutes, 
+    SubjectDivision, 
+    UsersActivity, 
+    WeeklyFrequency 
+} from "./stat.api";
+
 
 export interface Stats {
     total: {
@@ -37,4 +45,28 @@ export const formStats = async (): Promise<Stats> => {
         subjectDistribution: subjectDist,
         publicationTimeline: pubTimeline
     };
+}
+
+export interface ActivityDataCell {
+  param: string,
+  total: number,
+  avg: number,
+  max: number
+}
+
+export const formActivityDataCell = (data: UsersActivity): ActivityDataCell[] => {
+    return [
+      {
+        param: "Favorites",
+        total: data.totalFavorites,
+        avg: Number(data.avgFavoritesPerUser.toFixed(4)),
+        max: data.maxFavorites,
+      },
+      {
+        param: "Other Interactions",
+        total: data.totalInteractions,
+        avg: Number(data.avgInteractionsPerUser.toFixed(4)),
+        max: data.maxInteractions,
+      }
+    ];
 }
