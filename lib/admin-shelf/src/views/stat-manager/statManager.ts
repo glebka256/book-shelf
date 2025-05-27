@@ -77,3 +77,10 @@ export const formPublicationData = (data: PublicationFrequency[]): ChartFrequenc
         count: item.books
     }));
 }
+
+export const formActivityData = (data: WeeklyFrequency[]): ChartFrequency[] => {
+    return data.map(item => ({
+        time: item._id.week,
+        count: item.count
+    }));
+}

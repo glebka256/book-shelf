@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { formStats, formActivityDataCell, formPublicationData } from "./statManager";
+import { formStats, formActivityDataCell, formPublicationData, formActivityData } from "./statManager";
 import type { Stats, ActivityDataCell } from "./statManager";
 import type { ChartFrequency, ChartConfig } from "@/component-lib/charts/frequencyChart.types";
 import StatCard from "@/component-lib/StatCard.vue";
@@ -22,6 +22,7 @@ const loadStats = async () => {
     stats.value = await formStats();
     activityTableData.value = formActivityDataCell(stats.value.activity.users);
     publicationChartData.value = formPublicationData(stats.value.publicationTimeline);
+    activityChartData.value = formActivityData(stats.value.activity.weekly);
   } catch (error) {
     errorMessage.value = error instanceof Error ? error.message : 'An error occurred'; 
   } finally {
@@ -62,6 +63,16 @@ const publicationChartConfig: ChartConfig = {
   datasetLabel: 'Books Published',
   yAxisLabel: 'Number of Books',
   xAxisLabel: 'Year',
+  color: 'rgb(99, 102, 241)',
+  backgroundColor: 'rgba(99, 102, 241, 0.1)'
+}
+
+const activityChartData = ref<ChartFrequency[] | null>(null);
+const activityChartConfig: ChartConfig = {
+  title: 'Weekly User Activity',
+  datasetLabel: 'Interaction Count',
+  yAxisLabel: 'Number of Interactions',
+  xAxisLabel: 'Week',
   color: 'rgb(99, 102, 241)',
   backgroundColor: 'rgba(99, 102, 241, 0.1)'
 }
@@ -145,6 +156,12 @@ onMounted(() => {
         </template>
       </DataTable>
     </div>
+    <FrequencyChart v-if="activityChartData" 
+      title="Weekly User Activity"
+      :data="activityChartData" 
+      :config="activityChartConfig"
+      :maxWidth="1200"
+    />
   </div>
  </div>
 

@@ -29,7 +29,7 @@ export interface UsersActivity {
 export interface WeeklyFrequency {
     _id: {
         year: number,
-        weak: number
+        week: number
     },
     count: number,
     startOfWeek: string
