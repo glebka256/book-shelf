@@ -59,38 +59,8 @@ const removeTag = (index: number): void => {
 </template>
 
 <style scoped lang="scss">
-// TODO: Import global form-group styling - NOTE: Imorting styles as it is breaks scoped styles
+@import "@/styles/form.module";
 @import "@/styles/variables.scss";
-
-.form-group {
-  margin-bottom: 1rem;
-  
-  label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    font-size: 0.9rem;
-  }
-  
-  input[type="text"],
-  input[type="number"],
-  input[type="url"],
-  select {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid $main-border-color;
-    border-radius: 4px;
-    font-size: 1rem;
-    background-color: $main-bgcolor;
-    transition: border-color 0.2s;
-    
-    &:focus {
-      outline: none;
-      border-color: $sec-btn-bgcolor;
-      box-shadow: $sec-light-shadow;
-    }
-  }
-}
 
 .tag-input {
   display: flex;
