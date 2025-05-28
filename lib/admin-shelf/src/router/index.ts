@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import HomeView from '@/views/HomeView.vue'
+import HomeView from '@/views/home-page/HomeView.vue'
 import AboutView from '@/views/AboutView.vue'
 import StorageManager from '@/views/storage-manager/StorageManager.vue'
 import SourcesManager from '@/views/sources-manager/SourcesManager.vue'
