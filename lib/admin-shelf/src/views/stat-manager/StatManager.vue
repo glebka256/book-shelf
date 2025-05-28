@@ -198,7 +198,6 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
-@import '@/styles/manager.scss';
 @import "@/styles/variables.scss";
 
 .stat-manager-container {
@@ -211,8 +210,6 @@ onMounted(() => {
 }
 
 .stat-manager {
-  @extend %manager-base;
-  
   width: 70%;
   max-width: $manager-content-mxwidth;
   background: rgba(255, 255, 255, 0.95);
