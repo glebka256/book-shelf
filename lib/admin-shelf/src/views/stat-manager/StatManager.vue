@@ -213,13 +213,11 @@ onMounted(() => {
   width: 70%;
   max-width: $manager-content-mxwidth;
   background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
   border-radius: 20px;
   box-shadow: $widest-shadow;
   padding: 3rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 3rem;
 
   @media (max-width: $small-width) {
