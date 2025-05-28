@@ -87,13 +87,14 @@ onMounted(async () => {
 
 <template>
   <div class="users-manager">
-    <div v-if="userStats" class="stats-summary">
+    <div class="users-content" v-if="userStats">
+      <div class="stats-summary">
       <StatCard label="Total Interactions" :value="userStats.totalInteraction" />
       <StatCard label="Total Favorites" :value="userStats.totalFavorites" />
       <IconButton iconType="reset" @click="fetchUserStats"/>
     </div>
 
-    <DataTable v-if="userStats" 
+    <DataTable 
       :data="paginatedUsers" 
       :columns="columns"
       row-key="username"
@@ -125,6 +126,7 @@ onMounted(async () => {
       :currentPage="page"
       :totalPages="totalPages"
     />
+    </div>
 
     <div v-if="loading">
       <LoadSpinner />
