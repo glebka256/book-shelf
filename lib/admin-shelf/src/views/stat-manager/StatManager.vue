@@ -128,7 +128,7 @@ onMounted(() => {
         
         <div class="chart-container">
           <FrequencyChart v-if="publicationChartData" 
-            title="Publication Frequency Timeline"
+            :title="publicationChartConfig.title"
             :data="publicationChartData" 
             :config="publicationChartConfig"
             :maxWidth="1200"
@@ -182,7 +182,7 @@ onMounted(() => {
         
         <div class="chart-container">
           <FrequencyChart v-if="activityChartData" 
-            title="Weekly User Activity"
+            :title="activityChartConfig.title"
             :data="activityChartData" 
             :config="activityChartConfig"
             :maxWidth="1200"
