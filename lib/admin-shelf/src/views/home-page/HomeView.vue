@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import HomeHeader from './components/HomeHeader.vue';
+import SectionTitle from './components/SectionTitle.vue';
+import StatGrid from './components/StatGrid.vue';
+import type { SystemStat } from './components/StatGrid.vue';
 
+const overviewStats: SystemStat[] = [
+  { icon: '📖', label: "Total Books",  value: "4800"     },
+  { icon: '👤', label: "Active Users", value: "20"       },
+  { icon: '🗄️', label: "DB Size",      value: "141.9 MB" },
+]
 </script>
 
 <template>
@@ -14,7 +22,10 @@ import HomeHeader from './components/HomeHeader.vue';
 
       <!-- Main Content -->
       <main>
-        <p>This is main content</p>
+        <section class="stats-overview">
+          <SectionTitle>System Overview</SectionTitle>
+          <StatGrid :stats="overviewStats" />
+        </section>
       </main>
     </div>
   </div>
@@ -39,5 +50,9 @@ main {
   max-width: $manager-content-mxwidth;
   margin: 0 auto;
   padding: 3rem 2rem;
+
+  .stats-overview {
+    margin-bottom: 4rem;
+  }
 }
 </style>
