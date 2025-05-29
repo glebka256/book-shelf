@@ -1,101 +1,23 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import auth from "@/config/auth";
+import { createRouter, createWebHistory } from 'vue-router'
+import { authRoutes } from './routes/auth'
+import { homeRoutes } from './routes/home'
+import { aboutRoutes } from './routes/about'
+import { storageRoutes } from './routes/storage'
+import { sourcesRoutes } from './routes/sources'
+import { usersRoutes } from './routes/users'
+import { statRoutes } from './routes/stat'
+import { profileRoutes } from './routes/profile'
+import { authGuard } from './guards'
 
-import HomeView from '@/views/home-page/HomeView.vue'
-import AboutView from '@/views/AboutView.vue'
-import StorageManager from '@/views/storage-manager/StorageManager.vue'
-import SourcesManager from '@/views/sources-manager/SourcesManager.vue'
-import UsersManager from '@/views/users-manager/UsersManager.vue'
-import ProfileManager from '@/views/profile-manager/ProfileManager.vue'
-import LoginView from '@/views/auth/LoginView.vue'
-import LogoutView from '@/views/auth/LogoutView.vue'
-import RegisterView from '@/views/auth/RegisterView.vue'
-import StatManager from '@/views/stat-manager/StatManager.vue'
-
-const routes: Array<RouteRecordRaw> = [
-  {
-    path: '/',
-    name: 'home',
-    component: HomeView
-  },
-  {
-    path: '/profile',
-    name: 'profile',
-    component: ProfileManager
-  },
-  {
-    path: "/storage-manager",
-    component: StorageManager,
-    children: [
-      {
-        path: '',
-        name: 'storage-manager',
-        redirect: '/storage-manager/books'
-      },
-      {
-        path: 'books',
-        name: 'storage-manager-books',
-        component: StorageManager
-      },
-      {
-        path: 'create',
-        name: 'storage-manager-create',
-        component: StorageManager
-      },
-      {
-        path: 'stats',
-        name: 'storage-manager-stats',
-        component: StorageManager
-      },
-      {
-        path: 'edit/:bookId',
-        name: 'storage-manager-edit',
-        component: StorageManager,
-        props: true
-      },
-      {
-        path: 'remove/:bookId',
-        name: 'storage-manager-remove',
-        component: StorageManager,
-        props: true
-      }
-    ]
-  },
-  {
-    path: "/sources-manager",
-    name: 'sources-manager',
-    component: SourcesManager
-  },
-  {
-    path: "/users-manager",
-    name: 'users-manager',
-    component: UsersManager
-  },
-  {
-    path: "/stat-manager",
-    name: 'stat-manager',
-    component: StatManager
-  },
-  {
-    path: '/about',
-    name: 'about',
-    component: AboutView
-  },
-  {
-    path: '/auth/login',
-    name: 'login',
-    component: LoginView
-  },
-  {
-    path: '/auth/logout',
-    name: 'logout',
-    component: LogoutView
-  },
-  {
-    path: '/auth/register',
-    name: 'register',
-    component: RegisterView
-  }
+const routes = [
+  ...homeRoutes,
+  ...aboutRoutes,
+  ...authRoutes,
+  ...profileRoutes,
+  ...storageRoutes,
+  ...sourcesRoutes,
+  ...usersRoutes,
+  ...statRoutes
 ]
 
 const router = createRouter({
@@ -103,19 +25,6 @@ const router = createRouter({
   routes
 })
 
-const protectedRoutes = ["users-manager"];
-
-router.beforeEach(async (to, from, next) => {
-  if (protectedRoutes.includes(to.name as string)) {
-    const isAuthorized = await auth.api.getLoginStatus();
-    if (isAuthorized) {
-      next();
-    } else {
-      next({ name: 'login', query: { redirect: to.fullPath } });
-    }
-  } else {
-    next();
-  }
-})
+router.beforeEach(authGuard)
 
 export default router
