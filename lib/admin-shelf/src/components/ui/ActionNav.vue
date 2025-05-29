@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, PropType, defineEmits, ref } from "vue";
+import { defineProps, PropType, defineEmits, computed } from "vue";
 
 interface NavigationTab {
   id: string,
@@ -24,10 +24,9 @@ const props = defineProps({
 
 const emit = defineEmits(['select-tab']);
 
-const currentTab = ref<string>(props.activeTab);
+const currentTab = computed(() => props.activeTab);
 
 const selectTab = (tabId: string) => {
-  currentTab.value = tabId;
   emit("select-tab", tabId);
 }
 </script>

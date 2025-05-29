@@ -1,15 +1,52 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { BookFormDTO } from './book-form/bookForm.types';
+import { populateFormById } from './storageManager';
+import { deleteBook, postBookEdit, postNewBook } from './book-form/bookForm';
+
 import ActionNav from '@/components/ui/ActionNav.vue';
 import ActionTab from '@/components/ui/ActionTab.vue';
 import ConfirmationCard from '@/components/ui/ConfirmationCard.vue';
 import BooksView from './books-view/BooksView.vue';
 import BookForm from './book-form/BookForm.vue';
-import { BookFormDTO } from './book-form/bookForm.types';
-import { populateFormById } from './storageManager';
-import { deleteBook, postBookEdit, postNewBook } from './book-form/bookForm';
 
-const activeTab = ref('books');
+const route = useRoute();
+const router = useRouter();
+
+/** Map of route paths to tab IDs */
+const routeToTabMap: { [key: string]: string } = {
+  'books': 'books',
+  'create': 'create',
+  'stats': 'stats',
+  'edit': 'edit',
+  'remove': 'remove'
+};
+
+/** Map of tab IDs to route names */
+const tabToRouteMap: { [key: string]: string } = {
+  'books': 'storage-manager-books',
+  'create': 'storage-manager-create',
+  'stats': 'storage-manager-stats',
+  'edit': 'storage-manager-edit',
+  'remove': 'storage-manager-remove'
+};
+
+// activeTab is recieved from route
+const activeTab = computed(() => {
+  const currentPath = route.path.split('/').pop();
+  
+  if (currentPath && routeToTabMap[currentPath]) {
+    return routeToTabMap[currentPath];
+  }
+
+  // Handle edit/remove routes that have bookId parameter
+  if (route.name === 'storage-manager-edit') return 'edit';
+  
+  if (route.name === 'storage-manager-remove') return 'remove';
+  
+  return 'books';
+});
 
 /** Tabs displayed on ActionNav. Not all tabs are visible */
 const visibleTabs = [
@@ -18,26 +55,37 @@ const visibleTabs = [
   { id: "stats",  name: "Statistics" },
 ]
 
-// Handle tab changes from ActionNav
-const handleTabChange = (tab: string) => {
-  activeTab.value = tab;
+/** Handles tab changes from ActionNav */
+const handleTabChange = (tab: string): void => {
+  const routeName = tabToRouteMap[tab];
+  if (routeName && route.name !== routeName) {
+    router.push({ name: routeName });
+  }
 };
 
 // Edit actions
-const editedBookId = ref<string | null>(null);
+const editedBookId = computed(() => route.params.bookId as string || null);
+
 const initialEditFormDTO = ref<BookFormDTO | null>(null);
 
-const goToEditTab = async (bookId: string) => {
-  editedBookId.value = bookId;
-  initialEditFormDTO.value = await populateFormById(editedBookId.value);
-  handleTabChange('edit');
+const goToEditTab = (bookId: string): void => {
+  router.push({ 
+    name: 'storage-manager-edit', 
+    params: { bookId } 
+  });
 }
 
-const submitEditedBook = async (book: BookFormDTO) => {
+const goToDefaultTab = (): void => {
+  // books tab is default to navigate after successful edit
+  router.push({ name: 'storage-manager-books' });
+}
+
+const submitEditedBook = async (book: BookFormDTO): Promise<void> => {
   if (editedBookId.value) {
     const responseStatus = await postBookEdit(editedBookId.value, book);
     if (responseStatus) {
       alert("Edited book with id: " + editedBookId.value);
+      goToDefaultTab();
     } else {
       alert("Could not edit book with id: " + editedBookId.value);
     }
@@ -45,10 +93,11 @@ const submitEditedBook = async (book: BookFormDTO) => {
 }
 
 // Create new actions
-const submitNewBook = async (book: BookFormDTO) => {
+const submitNewBook = async (book: BookFormDTO): Promise<void> => {
   const responseStatus = await postNewBook(book);
   if (responseStatus) {
     alert("Successfully created new book");
+    goToDefaultTab();
   }
   else {
     alert("Could not create new book");
@@ -56,16 +105,16 @@ const submitNewBook = async (book: BookFormDTO) => {
 }
 
 // Delete actions
-const deletedBookId = ref<string | null>(null);
+const deletedBookId = computed(() => route.params.bookId as string || null);
 
 const removeBook = async (bookId: string) => {
-  deletedBookId.value = bookId;
-  if (deletedBookId.value) {
-    handleTabChange('remove');
-  }
+  router.push({ 
+    name: 'storage-manager-remove', 
+    params: { bookId } 
+  });
 }
 
-const handleBookDelete = async () => {
+const handleBookDelete = async (): Promise<void> => {
   if (deletedBookId.value) {
     const responseStatus = await deleteBook(deletedBookId.value)
     if (responseStatus) {
@@ -74,13 +123,33 @@ const handleBookDelete = async () => {
     else {
       alert(`Could delete book with id: ${deletedBookId.value}`);
     }
+    goToDefaultTab();
   }
 }
 
-const handleBookDeleteCancel = () => {
+const handleBookDeleteCancel = (): void => {
   alert(`'Delete' operation canceled for book with id: ${deletedBookId.value}`);
-  deletedBookId.value = null;
+  goToDefaultTab();
 }
+
+// Load edit form data when we are on the edit route
+const loadEditData = async () => {
+  if (activeTab.value === 'edit' && editedBookId.value) {
+    initialEditFormDTO.value = await populateFormById(editedBookId.value);
+  }
+};
+
+watch(() => [activeTab.value, editedBookId.value], async () => {
+  if (activeTab.value === 'edit') {
+    await loadEditData();
+  }
+}, { immediate: true });
+
+onMounted(async () => {
+  if (activeTab.value === 'edit') {
+    await loadEditData();
+  }
+});
 </script>
 
 <template>

@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import auth from "@/config/auth";
+
 import HomeView from '@/views/home-page/HomeView.vue'
 import AboutView from '@/views/AboutView.vue'
 import StorageManager from '@/views/storage-manager/StorageManager.vue'
@@ -8,7 +10,6 @@ import ProfileManager from '@/views/profile-manager/ProfileManager.vue'
 import LoginView from '@/views/auth/LoginView.vue'
 import LogoutView from '@/views/auth/LogoutView.vue'
 import RegisterView from '@/views/auth/RegisterView.vue'
-import auth from "@/config/auth";
 import StatManager from '@/views/stat-manager/StatManager.vue'
 
 const routes: Array<RouteRecordRaw> = [
@@ -24,8 +25,41 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/storage-manager",
-    name: 'storage-manager',
-    component: StorageManager
+    component: StorageManager,
+    children: [
+      {
+        path: '',
+        name: 'storage-manager',
+        redirect: '/storage-manager/books'
+      },
+      {
+        path: 'books',
+        name: 'storage-manager-books',
+        component: StorageManager
+      },
+      {
+        path: 'create',
+        name: 'storage-manager-create',
+        component: StorageManager
+      },
+      {
+        path: 'stats',
+        name: 'storage-manager-stats',
+        component: StorageManager
+      },
+      {
+        path: 'edit/:bookId',
+        name: 'storage-manager-edit',
+        component: StorageManager,
+        props: true
+      },
+      {
+        path: 'remove/:bookId',
+        name: 'storage-manager-remove',
+        component: StorageManager,
+        props: true
+      }
+    ]
   },
   {
     path: "/sources-manager",
