@@ -163,7 +163,7 @@ const resetForm = () => {
           type="number"
           :min="0"
           :max="5"
-          step="0.1"
+          step="0.000000001"
           placeholder="Book rating (0-5)"
         />
         
