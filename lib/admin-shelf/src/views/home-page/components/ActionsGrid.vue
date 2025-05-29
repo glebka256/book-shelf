@@ -40,6 +40,8 @@ const navigateToRoute = (route: string): void => {
 </template>
 
 <style scoped lang="scss">
+@import "@/styles/variables.scss";
+
 .actions-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -47,13 +49,13 @@ const navigateToRoute = (route: string): void => {
 }
 
 .action-card {
-  background: rgba(255, 255, 255, 0.95);
+  background: $main-bgcolor;
   backdrop-filter: blur(10px);
   border-radius: 16px;
   padding: 2rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid $sec-thick-font;
   position: relative;
   overflow: hidden;
 
@@ -97,13 +99,13 @@ const navigateToRoute = (route: string): void => {
 
   .action-title {
     font-size: 1.3rem;
-    font-weight: 600;
-    color: #333;
+    font-weight: $med-thick;
+    color: $main-thick-font;
     margin: 0;
   }
 
   .action-description {
-    color: #666;
+    color: $sec-thick-font;
     line-height: 1.5;
     margin: 0 0 1rem 0;
   }

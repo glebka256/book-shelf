@@ -38,7 +38,7 @@ const props = defineProps({
   margin-bottom: 2rem;
 
   .stat-card {
-    background: rgba(255, 255, 255, 0.95);
+    background: $main-bgcolor;
     backdrop-filter: blur(10px);
     border-radius: 16px;
     padding: 2rem;
@@ -46,12 +46,12 @@ const props = defineProps({
     align-items: center;
     gap: 1rem;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid $sec-thick-font;
     transition: all 0.3s ease;
 
     &:hover {
       transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      box-shadow: $widest-shadow;
     }
 
     .stat-icon {
