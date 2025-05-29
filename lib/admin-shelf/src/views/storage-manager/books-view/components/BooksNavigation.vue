@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { withDefaults, defineProps, defineEmits } from 'vue';
+import type { SortOption } from '@/component-lib/ui/SortDropdown.vue';
 
 import BooksCount from './BooksCount.vue';
 import SearchInput from '@/component-lib/ui/SearchInput.vue';
@@ -18,15 +19,15 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['search', 'sort']);
 
-const sortOptions = [
-  { value: 'title-asc', label: 'Title A-Z' },
-  { value: 'title-desc', label: 'Title Z-A' },
-  { value: 'author-asc', label: 'Author A-Z' },
-  { value: 'author-desc', label: 'Author Z-A' },
-  { value: 'date-newest', label: 'Newest First' },
-  { value: 'date-oldest', label: 'Oldest First' },
-  { value: 'pages-asc', label: 'Pages (Low to High)' },
-  { value: 'pages-desc', label: 'Pages (High to Low)' }
+const sortOptions: SortOption[] = [
+  { sortBy: 'title',         order: 'asc',  label: 'Title A-Z'      },
+  { sortBy: 'title',         order: 'desc', label: 'Title Z-A'      },
+  { sortBy: 'author',        order: 'asc',  label: 'Author A-Z'     },
+  { sortBy: 'author',        order: 'desc', label: 'Author Z-A'     },
+  { sortBy: 'rating',        order: 'asc',  label: 'Lower-Highest'  },
+  { sortBy: 'rating',        order: 'desc', label: 'Highest-Lowest' },
+  { sortBy: 'publishedYear', order: 'desc', label: 'Newest First'   },
+  { sortBy: 'publishedYear', order: 'asc',  label: 'Oldest First'   },
 ];
 
 const handleSearchInput = (searchQuery: string): void => {
@@ -53,7 +54,7 @@ const handleSortInput = (sortBy: string): void => {
         <div class="sort-container">
           <SortDropdown 
             :sortOptions="sortOptions"
-            :defaultSort="sortOptions[0].value"
+            :defaultSort="sortOptions[0]"
             @sort="handleSortInput"
           />
         </div>
