@@ -1,6 +1,7 @@
 import baseInstance from "@/config/axios";
 
 export enum StatRoutes {
+    DBSize = '/stats/db/size',
     BooksTotal = '/stats/books/total',
     SubjectsTotal = '/stats/books/subjects/total',
     AuthorsTotal = '/stats/books/authors/total',

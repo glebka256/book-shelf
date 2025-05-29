@@ -1,17 +1,21 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import type { SystemStat } from './components/StatGrid.vue';
+import type { QuickAction } from './components/ActionsGrid.vue';
+import { formStats } from './homeService';
+
 import HomeHeader from './components/HomeHeader.vue';
 import SectionTitle from './components/SectionTitle.vue';
 import StatGrid from './components/StatGrid.vue';
-import type { SystemStat } from './components/StatGrid.vue';
 import ActionsGrid from './components/ActionsGrid.vue';
-import type { QuickAction } from './components/ActionsGrid.vue';
 
+// Values are loaded on fetch
 const overviewStats = ref<SystemStat[]>([
-  { icon: '📖', label: "Total Books",  value: "4800"     },
-  { icon: '👤', label: "Active Users", value: "20"       },
-  { icon: '🗄️', label: "DB Size",      value: "141.9 MB" },
+  { icon: '📖', label: "Total Books",   value: "..." },
+  { icon: '✏️', label: "Total Authors", value: "..." },
+  { icon: '👤', label: "Active Users",  value: "..." },
+  { icon: '🗄️', label: "DB Size",       value: "..." },
 ]);
 
 const quickActions = ref<QuickAction[]>([
@@ -64,6 +68,19 @@ const router = useRouter();
 const navigateToRoute = (route: string): void => {
   router.push(route);
 }
+
+const loadStats = async (): Promise<void> => {
+  const stats = await formStats();
+
+  overviewStats.value[0].value = stats.totalBooks.toString();
+  overviewStats.value[1].value = stats.totalAuthors.toString();
+  overviewStats.value[2].value = stats.totalUsers.toString();
+  overviewStats.value[3].value = `${stats.dbSize.value.toFixed(2)} ${stats.dbSize.metric}`;
+}
+
+onMounted(() => {
+  loadStats()
+});
 </script>
 
 <template>

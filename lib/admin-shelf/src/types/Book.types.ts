@@ -1,10 +1,7 @@
-interface BookSize {
-    value: number;
-    metric: 'KB' | 'MB' | 'GB';
-}
+import { DataSize } from ".";
 
 export interface BookLink {
-    size: BookSize;
+    size: DataSize;
     readUrl: string;
     downloadUrl: string;
     format: string;
