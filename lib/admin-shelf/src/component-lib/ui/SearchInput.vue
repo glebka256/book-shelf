@@ -14,12 +14,12 @@ const emit = defineEmits(["input:submit"]);
 const searchQuery = ref(props.currentSearch);
 
 const handleSearchInput = (): void => {
-  emit("input:submit", searchQuery);
+  emit("input:submit", searchQuery.value);
 }
 
 const clearSearch = (): void => {
   searchQuery.value = '';
-  emit("input:submit", searchQuery);
+  emit("input:submit", searchQuery.value);
 }
 </script>
 
