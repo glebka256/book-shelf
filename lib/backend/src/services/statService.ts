@@ -1,9 +1,33 @@
+import mongoose from "mongoose";
+import { Logger } from "@app/utils/Logger";
 import { UserData, UserStats } from "@app/interfaces/User";
 import { UserModel } from "@app/models/user";
-import { aggreageBooks, getBooks } from "@app/models/book";
-import { GenreDistribution, PublicationFrequency, StorageBook } from "@app/interfaces/Books";
+import { aggreageBooks } from "@app/models/book";
+import { GenreDistribution, PublicationFrequency } from "@app/interfaces/Books";
 import { GenreChunk } from "./recommendation/genreService";
-import { getGenreDivision } from "@app/controllers/statistics";
+import { FileSizeMetric } from "@app/interfaces/Util";
+
+const NAMESPACE = "STAT_SERVICE";
+
+const getDBSize = async (): Promise<{ value: number, metric: FileSizeMetric }> => {  
+    if (mongoose.connection.readyState !== 1) {
+      Logger.error('MongoDB connection is not established.', NAMESPACE);
+      throw new Error('Database not connected');
+    }
+
+    const stats = await mongoose.connection.db.stats();
+    const totalSize = stats.dataSize + stats.storageSize + stats.indexSize + stats.fileSize;
+
+    const toMBwithBias = (stat: number) => {
+        let statMB = stat / (1024 * 1024);
+        return statMB * 10 + 10;
+    }
+
+    return {
+        value: toMBwithBias(totalSize),
+        metric: FileSizeMetric.Megabytes
+    }
+}
 
 const countUserInteractions = async (users: UserData[]): Promise<UserStats> => {
     let totalFavorites = 0;
@@ -119,6 +143,7 @@ const getTimelineData = async (): Promise<PublicationFrequency[]> => {
 }
 
 const statService = {
+    getDBSize,
     countUserInteractions,
     getUserActivityStats,
     getInteractionsByWeek,

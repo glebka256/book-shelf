@@ -9,6 +9,11 @@ import { divideBooksByGenre, GenreChunk } from "@app/services/recommendation/gen
 const NAMESPACE = "STATISTICS-REQUEST";
 const controllerHandler = createControllerHandler(NAMESPACE);
 
+export const getDBSize = controllerHandler(async (req, res) => {
+    const dataSizeMB = await statService.getDBSize();
+    res.status(200).json(dataSizeMB);
+});
+
 export const getTotalBooks = controllerHandler(async (req, res) => {
     const total: number = await bookModel.getTotalEntries();
     res.status(200).json(total);
