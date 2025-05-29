@@ -11,3 +11,5 @@ export interface SearchResponse {
     searchComplete: boolean,
     books: BookData[]
 }
+
+export type SortOrder = 'asc' | 'desc';

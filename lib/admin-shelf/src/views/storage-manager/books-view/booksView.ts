@@ -1,5 +1,5 @@
 import baseInstance from "@/config/axios"
-import { BooksResponseData, SearchResponse } from "./booksView.types";
+import { BooksResponseData, SearchResponse, SortOrder } from "./booksView.types";
 
 export const getPaginatedBooks = async (page: number, limit: number): Promise<BooksResponseData> => {
     const response = await baseInstance.get<BooksResponseData>(
@@ -22,7 +22,7 @@ export const getSortedBooks = async (
     page: number, 
     limit: number, 
     sortBy: string, 
-    order: 'asc' | 'desc'
+    order: SortOrder
 ): Promise<BooksResponseData> => {
     const response = await baseInstance.post<BooksResponseData>(
         `/books/sorted/${page}/${limit}`,
