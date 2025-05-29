@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { withDefaults, ref, defineEmits, defineProps, onMounted, onUnmounted } from 'vue';
+import BooksCount from './BooksCount.vue';
 
 interface Props {
   totalBooks: number;
@@ -74,7 +75,9 @@ onUnmounted(() => {
 
 <template>
   <div class="books-navigation">
-    <!-- empty -->
+    <div class="nav-header">
+      <BooksCount :totalBooks="props.totalBooks"/>
+    </div>
   </div>
 </template>
 
@@ -83,5 +86,13 @@ onUnmounted(() => {
 
 .books-navigation {
   margin-bottom: 2rem;
+
+  .nav-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
 }
 </style>
