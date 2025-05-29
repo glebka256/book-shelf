@@ -1,11 +1,19 @@
 import baseInstance from "@/config/axios"
-import { BooksResponseData } from "./booksView.types";
+import { BooksResponseData, SearchResponse } from "./booksView.types";
 
-export const getBooks = async (page: number, limit: number): Promise<BooksResponseData> => {
+export const getPaginatedBooks = async (page: number, limit: number): Promise<BooksResponseData> => {
     const response = await baseInstance.get<BooksResponseData>(
         `/books/paginated/${page}/${limit}`
     );
-    console.log(response);
+
+    return response.data;
+}
+
+// For some reason backend search has predefined limit
+export const getBookSearch = async (page: number, query: string): Promise<SearchResponse> => {
+    const response = await baseInstance.get<SearchResponse>(
+        `/books/search/${query}/${page}`
+    );
 
     return response.data;
 }
@@ -23,5 +31,6 @@ export const getSortedBooks = async (
             order: order
         }
     );
+
     return response.data;
 }

@@ -6,3 +6,8 @@ export interface BooksResponseData {
     totalBooks: number,
     books: BookData[]
 }
+
+export interface SearchResponse {
+    searchComplete: boolean,
+    books: BookData[]
+}
