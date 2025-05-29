@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { withDefaults, ref, defineEmits, defineProps, onMounted, onUnmounted } from 'vue';
 import BooksCount from './BooksCount.vue';
+import NavController from '@/component-lib/ui/content-nav/NavController.vue';
 
 interface Props {
   totalBooks: number;
@@ -42,11 +43,6 @@ const handleSearchInput = (): void => {
   // empty
 };
 
-const clearSearch = (): void => {
-  searchQuery.value = '';
-  emit('search', '');
-};
-
 const toggleSortDropdown = (): void => {
   isSortOpen.value = !isSortOpen.value;
 };
@@ -77,6 +73,7 @@ onUnmounted(() => {
   <div class="books-navigation">
     <div class="nav-header">
       <BooksCount :totalBooks="props.totalBooks"/>
+      <NavController />
     </div>
   </div>
 </template>
