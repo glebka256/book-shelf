@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { ref, onMounted, defineEmits } from "vue";
 import { BookData } from "@/types/Book.types";
-import { getBooks } from "./booksView";
+import { getBookSearch, getSortedBooks } from "./booksView";
+import { SortOrder } from "./booksView.types";
+import { SortOption } from "@/component-lib/ui/SortDropdown.vue";
 
-import BooksNavigation from "./components/BooksNavigation.vue";
 import BookCard from "./components/BookCard.vue";
 import PaginationBox from "@/component-lib/ui/PaginationBox.vue";
+import BooksCount from './components/BooksCount.vue';
+import SearchInput from '@/component-lib/ui/SearchInput.vue';
+import SortDropdown from '@/component-lib/ui/SortDropdown.vue';
 
 const emit = defineEmits(['edit', 'remove']);
 
@@ -16,29 +20,77 @@ const page = ref<number>(1);
 const totalPages = ref<number>(1);
 const limit = 50;
 
-const currentSort = ref<string>('title-asc');
+const currentSortBy = ref<string>('title');
+const currentOrder = ref<SortOrder>('asc');
 const currentSearch = ref<string>('');
 
 const handleEdit = (bookId: string) => emit('edit', bookId);
 const handleRemove = (bookId: string) => emit('remove', bookId);
 
-const updateBooks = async (): Promise<void> => {
-  const response = await getBooks(page.value, limit);
+const sortOptions: SortOption[] = [
+  { sortBy: 'title',         order: 'asc',  label: 'Title A-Z'      },
+  { sortBy: 'title',         order: 'desc', label: 'Title Z-A'      },
+  { sortBy: 'author',        order: 'asc',  label: 'Author A-Z'     },
+  { sortBy: 'author',        order: 'desc', label: 'Author Z-A'     },
+  { sortBy: 'rating',        order: 'asc',  label: 'Lowest-Highest' },
+  { sortBy: 'rating',        order: 'desc', label: 'Highest-Lowest' },
+  { sortBy: 'publishedYear', order: 'desc', label: 'Newest First'   },
+  { sortBy: 'publishedYear', order: 'asc',  label: 'Oldest First'   },
+];
+
+const isSearchRelevant = (query: string): boolean => {
+  const RELEVANT_SEARCH_SIZE = 4;
+
+  return query !== undefined && query.length >= RELEVANT_SEARCH_SIZE;
+}
+
+const loadSearchedBooks = async (): Promise<void> => {
+  const response = await getBookSearch(page.value, currentSearch.value);
+
+  // Search response only contains books, keep other values unchanged
+  booksData.value = response.books;
+}
+
+const loadSortedBooks = async (): Promise<void> => {
+  const response = await getSortedBooks(
+    page.value, 
+    limit, 
+    currentSortBy.value, 
+    currentOrder.value
+  );
+
   booksData.value = response.books;
   totalPages.value = response.totalPages;
   totalBooks.value = response.totalBooks;
 }
 
+const updateBooks = async (): Promise<void> => {
+  if (isSearchRelevant(currentSearch.value)) {
+    await loadSearchedBooks();
+  } else {
+    await loadSortedBooks();
+  }
+}
+
 const handleSearch = async (query: string): Promise<void> => {
-  currentSearch.value = query;
-  page.value = 1; // Reset to first page when search changes
-  await updateBooks();
+  if (isSearchRelevant(query)) {
+    console.log("I am relevant: ", query)
+
+    currentSearch.value = query;
+    page.value = 1;
+    updateBooks();
+  }
 };
 
-const handleSort = async (sortBy: string): Promise<void> => {
-  currentSort.value = sortBy;
-  page.value = 1; // Reset to first page when sort changes
-  await updateBooks();
+const handleSort = async (option: SortOption): Promise<void> => {
+  currentSortBy.value = option.sortBy;
+
+  // Should refer to type but SortDropdown doesnt provide any
+  const sortOrder = option.order === 'desc' ? 'desc' : 'asc';
+  currentOrder.value = sortOrder;
+  
+  page.value = 1;
+  updateBooks();
 };
 
 const handleLeftPageClick = async (): Promise<void> => {
@@ -77,13 +129,28 @@ onMounted(async () => {
 
 <template>
   <div class="books-view">
-    <BooksNavigation
-      :totalBooks="totalBooks"
-      :currentSort="currentSort"
-      :currentSearch="currentSearch"
-      @search="handleSearch"
-      @sort="handleSort"
-    />
+    <div class="books-navigation">
+      <div class="nav-header">
+        <BooksCount :totalBooks="totalBooks"/>
+
+        <div class="nav-controls">
+          <div class="search-container">
+            <SearchInput 
+              @input:submit="handleSearch"
+            />
+          </div>
+
+          <div class="sort-container">
+            <SortDropdown 
+              :sortOptions="sortOptions"
+              :defaultSort="sortOptions[0]"
+              @sort="handleSort"
+            />
+          </div>
+        </div>
+
+      </div>
+    </div>
 
     <div class="books-container">
       <div 
@@ -122,6 +189,33 @@ onMounted(async () => {
   margin: 0 auto;
 }
 
+.books-navigation {
+  margin-bottom: 2rem;
+
+  .nav-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+
+    .nav-controls {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 1rem;
+
+      .search-container {
+        min-width: 280px;
+      }
+
+      .sort-container {
+        position: relative;
+      }
+    }
+  }
+}
+
 .books-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -129,6 +223,21 @@ onMounted(async () => {
 }
 
 @media (max-width: $small-width) {
+  .nav-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .nav-controls {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .search-container {
+    min-width: unset;
+  }
+
   .books-container {
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 1rem;
@@ -138,6 +247,10 @@ onMounted(async () => {
 @media (max-width: $smallest-width) {
   .books-container {
     grid-template-columns: 1fr;
+  }
+
+  .nav-controls {
+    gap: 0.5rem;
   }
 }
 </style>
