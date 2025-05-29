@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { QueryField } from "./sourcesManager.types";
+import * as api from "./sourcesManager";
+
 import ActionNav from "@/components/ui/ActionNav.vue";
 import ActionTab from "@/components/ui/ActionTab.vue";
 import HomeCard from "./components/HomeCard.vue";
 import SourceTab from "./components/SourceTab.vue";
 import GoodreadsDoc from "@/views/documentation-card/sources-docs/GoodreadsDoc.vue";
-import { QueryField } from "./sourcesManager.types";
-import * as api from "./sourcesManager";
 import OpenLibDoc from "../documentation-card/sources-docs/OpenLibDoc.vue";
 import GutenbergDoc from "../documentation-card/sources-docs/GutenbergDoc.vue";
 import GutenbergDetailedDoc from "../documentation-card/sources-docs/GutenbergDetailedDoc.vue";
