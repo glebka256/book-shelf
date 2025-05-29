@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { QueryField } from "./sourcesManager.types";
 import * as api from "./sourcesManager";
 
@@ -15,7 +16,38 @@ import AnnasDoc from "../documentation-card/sources-docs/AnnasDoc.vue";
 import BestBookDoc from "../documentation-card/sources-docs/BestBookDoc.vue";
 import BestBookDetailed from "../documentation-card/sources-docs/BestBookDetailed.vue";
 
-const activeTab = ref('home');
+const route = useRoute();
+const router = useRouter();
+
+/** Map of route paths to tab IDs */
+const routeToTabMap: { [key: string]: string } = {
+  'home': 'home',
+  'goodreads': 'goodreads',
+  'open-lib': 'open-lib',
+  'gutenberg-search': 'gutenberg-search',
+  'gutenberg-detailed': 'gutenberg-detailed',
+  'annas-archive': 'annas-archive',
+  'best-all': 'best-all',
+  'best-detailed': 'best-detailed'
+};
+
+/** Map of tab IDs to route names */
+const tabToRouteMap: { [key: string]: string } = {
+  'home': 'sources-manager-home',
+  'goodreads': 'sources-manager-goodreads',
+  'open-lib': 'sources-manager-open-lib',
+  'gutenberg-search': 'sources-manager-gutenberg-search',
+  'gutenberg-detailed': 'sources-manager-gutenberg-detailed',
+  'annas-archive': 'sources-manager-annas-archive',
+  'best-all': 'sources-manager-best-all',
+  'best-detailed': 'sources-manager-best-detailed'
+};
+
+// activeTab is recieved from route
+const activeTab = computed(() => {
+  const currentPath = route.path.split('/').pop() || 'home';
+  return routeToTabMap[currentPath] || 'home';
+});
 
 /** Tabs displayed on ActionNav. Not all tabs are visible */
 const visibleTabs = [
@@ -24,16 +56,17 @@ const visibleTabs = [
   { id: "open-lib",           name: "Open Lib"           },
   { id: "gutenberg-search",   name: "Gutenberg"          },
   { id: "gutenberg-detailed", name: "Gutenberg Detailed" },
-  { id: "annas-archive",      name: "Anna's Archive"     },
-  { id: "best-all",           name: "Best Books"         },
-  { id: "best-detailed",      name: "Best Books Details" },
 ];
 
-// Handle tab changes from ActionNav
-const handleTabChange = (tab: string) => {
-  activeTab.value = tab;
+/** Handles tab changes from ActionNav */
+const handleTabChange = (tab: string): void => {
+  const routeName = tabToRouteMap[tab];
+  if (routeName && route.name !== routeName) {
+    router.push({ name: routeName });
+  }
 };
 
+// Query forms
 const goodreadsFormFields: QueryField[] = [
   {
     id: "query",
