@@ -9,7 +9,7 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(["input:submit", "input:clear"]);
+const emit = defineEmits(["input:submit"]);
 
 const searchQuery = ref(props.currentSearch);
 
@@ -24,7 +24,7 @@ const clearSearch = (): void => {
 </script>
 
 <template>
-  <div class="search-input">
+  <div class="search-input-wrapper">
     <svg class="search-icon" viewBox="0 0 20 20" fill="currentColor">
       <path fill-rule="evenodd"
         d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
@@ -45,7 +45,7 @@ const clearSearch = (): void => {
 <style scoped lang="scss">
 @import "@/styles/variables.scss";
 
-.search-input {
+.search-input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
@@ -106,6 +106,13 @@ const clearSearch = (): void => {
       width: 1rem;
       height: 1rem;
     }
+  }
+}
+
+@media (max-width: $smallest-width) {
+  .search-input {
+    padding: 0.625rem 2.5rem 0.625rem 2.25rem;
+    font-size: 0.9rem;
   }
 }
 </style>
