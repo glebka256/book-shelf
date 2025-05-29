@@ -1,17 +1,23 @@
 <script setup lang="ts">
 import { ref, onMounted, defineEmits } from "vue";
 import { BookData } from "@/types/Book.types";
-import BookCard from "./components/BookCard.vue";
 import { getBooks } from "./booksView";
+
+import BooksNavigation from "./components/BooksNavigation.vue";
+import BookCard from "./components/BookCard.vue";
 import PaginationBox from "@/component-lib/ui/PaginationBox.vue";
 
 const emit = defineEmits(['edit', 'remove']);
 
 const booksData = ref<BookData[]>([]);
 const totalBooks = ref<number>(0);
+
 const page = ref<number>(1);
 const totalPages = ref<number>(1);
 const limit = 50;
+
+const currentSort = ref<string>('title-asc');
+const currentSearch = ref<string>('');
 
 const handleEdit = (bookId: string) => emit('edit', bookId);
 const handleRemove = (bookId: string) => emit('remove', bookId);
@@ -22,6 +28,18 @@ const updateBooks = async (): Promise<void> => {
   totalPages.value = response.totalPages;
   totalBooks.value = response.totalBooks;
 }
+
+const handleSearch = async (query: string): Promise<void> => {
+  currentSearch.value = query;
+  page.value = 1; // Reset to first page when search changes
+  await updateBooks();
+};
+
+const handleSort = async (sortBy: string): Promise<void> => {
+  currentSort.value = sortBy;
+  page.value = 1; // Reset to first page when sort changes
+  await updateBooks();
+};
 
 const handleLeftPageClick = async (): Promise<void> => {
   page.value--;
@@ -59,7 +77,14 @@ onMounted(async () => {
 
 <template>
   <div class="books-view">
-    <h3>Books total: {{ totalBooks }}</h3>
+    <BooksNavigation
+      :totalBooks="totalBooks"
+      :currentSort="currentSort"
+      :currentSearch="currentSearch"
+      @search="handleSearch"
+      @sort="handleSort"
+    />
+
     <div class="books-container">
       <div 
         v-for="book in booksData" 
@@ -76,6 +101,7 @@ onMounted(async () => {
         />
       </div>
     </div>
+
     <PaginationBox 
       :currentPage="page"
       :totalPages="totalPages"
