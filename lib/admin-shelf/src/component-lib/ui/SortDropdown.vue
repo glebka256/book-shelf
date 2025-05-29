@@ -2,8 +2,9 @@
 import { defineProps, PropType, defineEmits, ref, onMounted, onUnmounted } from "vue";
 
 export interface SortOption {
-  value: string,
-  label: string
+  sortBy: string,
+  order: string,
+  label: string // label can be used as key or index
 }
 
 const props = defineProps({
@@ -12,7 +13,7 @@ const props = defineProps({
     required: true
   },
   defaultSort: {
-    type: String,
+    type: Object as PropType<SortOption>,
     required: false,
     default: undefined
   }
@@ -20,8 +21,9 @@ const props = defineProps({
 
 const emit = defineEmits(['sort']);
 
-const currentSort = ref<string>(
-  props.defaultSort || (props.sortOptions.length > 0 ? props.sortOptions[0].value : '')
+const currentSort = ref<SortOption>(
+  // sortOptions should never be less then 1
+  props.defaultSort || (props.sortOptions[0])
 );
 
 const isSortOpen = ref(false);
@@ -31,14 +33,14 @@ const toggleSortDropdown = (): void => {
 };
 
 const getCurrentSortLabel = (): string => {
-  const option = props.sortOptions.find(opt => opt.value === currentSort.value);
+  const option = props.sortOptions.find(opt => opt.label === currentSort.value.label);
   return option ? option.label : 'Sort by';
 };
 
-const handleSortChange = (sortValue: string): void => {
-  currentSort.value = sortValue;
+const handleSortChange = (option: SortOption): void => {
+  currentSort.value = option;
   isSortOpen.value = false;
-  emit('sort', sortValue);
+  emit('sort', option);
 };
 
 const handleClickOutside = (event: Event): void => {
@@ -73,8 +75,8 @@ onUnmounted(() => {
     </button>
 
     <div v-if="isSortOpen" class="sort-options">
-      <button v-for="option in sortOptions" :key="option.value" @click="handleSortChange(option.value)"
-        class="sort-option" :class="{ 'active': currentSort === option.value }" type="button">
+      <button v-for="option in sortOptions" :key="option.label" @click="handleSortChange(option)"
+        class="sort-option" :class="{ 'active': currentSort === option }" type="button">
         {{ option.label }}
       </button>
     </div>
