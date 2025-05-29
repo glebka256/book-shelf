@@ -5,6 +5,7 @@ import { validatePagination, validateSortRequest } from '@app/middlewares/valida
 
 export default (router: Router): void => {
     router.get('/books/', controller.getAllBooks);
+    router.get('/books/sorted/options', controller.getSortOptions);
     router.get('/books/paginated/:page/:limit', validatePagination, controller.getPaginatedBooks);
     router.post('/books/sorted/:page/:limit', validatePagination, validateSortRequest, controller.getSortedBooks);
     router.get('/books/:id', controller.getBook);

@@ -3,7 +3,7 @@ import { CustomError } from "@app/errors/CustomError";
 import mongoose from "mongoose";
 import * as bookModel from "@app/models/book";
 import { ClientBook } from "@app/interfaces/Books";
-import { SortableField, SortQuery } from "@app/interfaces/Sort";
+import { bookFields, SortableField, SortQuery } from "@app/interfaces/Sort";
 
 const NAMESPACE = "STORAGE-BOOK-REQUEST";
 const controllerHandler = createControllerHandler(NAMESPACE);
@@ -42,6 +42,15 @@ export const getPaginatedBooks = controllerHandler(async (req, res) => {
         totalBooks: totalItems,
         books: books
     });
+});
+
+export const getSortOptions = controllerHandler(async (req, res) => {
+    const options = {
+        sortBy: bookFields,
+        order: ['asc', 'desc']
+    };
+
+    res.status(200).json(options);
 });
 
 export const getSortedBooks = controllerHandler(async (req, res) => {
