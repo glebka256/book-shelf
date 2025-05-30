@@ -7,13 +7,5 @@
 </template>
 
 <style scoped lang="scss">
-@import "@/styles/variables.scss";
-
-.section-title {
-  font-size: 1.8rem;
-  font-weight: $med-thick;
-  color: $main-bgcolor;
-  margin-bottom: 1.5rem;
-  text-align: center;
-}
+@import "@/styles/home_grid.module.scss";
 </style>

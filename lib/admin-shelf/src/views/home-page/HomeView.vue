@@ -31,14 +31,14 @@ const quickActions = ref<QuickAction[]>([
     descr: 'Edit books, add new content, manage metadata and more',
     route: '/storage-manager',
     icon: '📚',
-    colorCode: '#3b82f6'
+    colorCode: '#0049bf'
   },
   {
     title: 'Create Book',
     descr: 'Add new book to library',
     route: '/storage-manager',
     icon: '💾',
-    colorCode: '#06b6d4'
+    colorCode: '#eb3474'
   },
   {
     title: 'External Sources',
@@ -52,7 +52,7 @@ const quickActions = ref<QuickAction[]>([
     descr: 'View registered profiles, user activity',
     route: '/users-manager',
     icon: '👥',
-    colorCode: '#10b981'
+    colorCode: '#a534eb'
   },
   {
     title: 'System Statistics',
@@ -117,7 +117,7 @@ onMounted(() => {
 
 .bg-wrapper {
   min-height: 100vh;
-  background: linear-gradient(135deg, $initial-gradient-bg-color 0%, $transition-gradient-bg-color 100%);
+  background: linear-gradient(135deg, $home-initial-gradient-bgcolor 0%, $home-transition-gradient-bgcolor 100%);
 }
 
 .admin-home {

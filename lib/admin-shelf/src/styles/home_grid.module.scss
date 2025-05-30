@@ -1,0 +1,258 @@
+// shared-grid.scss - Shared styles for StatGrid and ActionsGrid components
+@import "variables.scss";
+
+// Base grid layout
+%grid-base {
+  display: grid;
+  gap: 1.5rem;
+  
+  @media (max-width: $small-width) {
+    gap: 1rem;
+  }
+}
+
+// Base card styling with glassmorphism
+%card-base {
+  position: relative;
+  background: rgba(121, 181, 255, 0.18);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.15),
+    0 2px 16px rgba(255, 255, 255, 0.1) inset,
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  
+  // Subtle animated background
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.15) 0%,
+      rgba(255, 255, 255, 0.05) 50%,
+      rgba(255, 255, 255, 0.12) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  
+  // Hover effects
+  &:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 
+      0 20px 60px rgba(0, 0, 0, 0.25),
+      0 4px 20px rgba(255, 255, 255, 0.15) inset,
+      0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+    border-color: rgba(255, 255, 255, 0.35);
+    
+    &::before {
+      opacity: 1;
+    }
+  }
+  
+  @media (max-width: $small-width) {
+    border-radius: 16px;
+    
+    &:hover {
+      transform: translateY(-2px) scale(1.01);
+    }
+  }
+}
+
+// Floating animation for icons
+%floating-icon {
+  animation: gentleFloat 6s ease-in-out infinite;
+  transform-origin: center;
+}
+
+// Shimmer effect for loading states
+%shimmer-effect {
+  position: relative;
+  overflow: hidden;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.15),
+      transparent
+    );
+    animation: shimmer 2s infinite;
+  }
+}
+
+// Gradient text effect
+%gradient-text {
+  background: linear-gradient(
+    135deg,
+    $main-thick-font 0%,
+    $sec-thick-font 50%,
+    $main-thick-font 100%
+  );
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: subtleTextGradient 8s ease-in-out infinite;
+}
+
+// Pulse animation for important elements
+%pulse-glow {
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, var(--accent-color, #{$initial-gradient-bg-color}), transparent);
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+    border-radius: inherit;
+    animation: pulseGlow 3s ease-in-out infinite;
+    pointer-events: none;
+    z-index: -1;
+  }
+}
+
+// Keyframe animations
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes subtleTextGradient {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  50% {
+    opacity: 0.1;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+}
+
+// Component-specific mixins
+@mixin stats-grid-layout {
+  @extend %grid-base;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  
+  @media (max-width: $smallest-width) {
+    grid-template-columns: 1fr;
+  }
+}
+
+@mixin actions-grid-layout {
+  @extend %grid-base;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  
+  @media (max-width: $small-width) {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+  
+  @media (max-width: $smallest-width) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Card padding variations
+@mixin card-padding-compact {
+  padding: 1.5rem;
+  
+  @media (max-width: $small-width) {
+    padding: 1.25rem;
+  }
+}
+
+@mixin card-padding-comfortable {
+  padding: 2rem;
+  
+  @media (max-width: $small-width) {
+    padding: 1.5rem;
+  }
+}
+
+// Icon styling
+@mixin icon-base($size: 2.5rem) {
+  font-size: $size;
+  opacity: 0.85;
+  @extend %floating-icon;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  
+  @media (max-width: $small-width) {
+    font-size: calc(#{$size} * 0.85);
+  }
+}
+
+// Typography enhancements
+@mixin card-title {
+  font-weight: 700;
+  @extend %gradient-text;
+  margin: 0;
+  line-height: 1.2;
+}
+
+@mixin card-subtitle {
+  color: rgba(0, 0, 0, 1);
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.4;
+}
+
+// Interactive elements
+@mixin interactive-element {
+  cursor: pointer;
+  user-select: none;
+  
+  &:active {
+    transform: translateY(-4px) scale(0.98);
+  }
+  
+  &:focus-visible {
+    outline: 2px solid $initial-gradient-bg-color;
+    outline-offset: 2px;
+  }
+}
+
+// Loading state
+@mixin loading-state {
+  @extend %shimmer-effect;
+  
+  .stat-number, .action-title {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+    color: transparent;
+  }
+}
