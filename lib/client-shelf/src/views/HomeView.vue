@@ -88,7 +88,14 @@ async function handleRecommendedEnd() {
 // Recommended has no pagination, it is displayed in slider of 50 elements max
 async function loadRecommended(page = 1, pageSize = 50): Promise<Book[]> {
   try {
-    return await getRecommendedBooks(page);
+    const recommendedBooks = await getRecommendedBooks(page);
+
+    if (recommendedBooks.length === 0) {
+      const popularBooks = await loadPopular(page, pageSize);
+      if (popularBooks.length > 1) return popularBooks;
+    }
+
+    return recommendedBooks;
   } catch (error) {
     const popularBooks = await loadPopular(page, pageSize);
     if (popularBooks.length > 1) return popularBooks;
