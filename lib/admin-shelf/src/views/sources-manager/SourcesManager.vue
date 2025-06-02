@@ -58,6 +58,12 @@ const visibleTabs = [
   { id: "gutenberg-detailed", name: "Gutenberg Detailed" },
 ];
 
+/** inactiveTabs are displayed, just with different color and styling */
+const inactiveTabs = [
+  { id: "annas-archive", name: "Anna's Archive" },
+  { id: "best-all",      name: "Best Books"     },
+]
+
 /** Handles tab changes from ActionNav */
 const handleTabChange = (tab: string): void => {
   const routeName = tabToRouteMap[tab];
@@ -192,7 +198,11 @@ const gutenbergDetailsFormFields: QueryField[] = [
     
     <!-- Tab content containers -->
     <ActionTab tabId="home" :activeTab="activeTab">
-      <HomeCard :tabs="visibleTabs" @select-tab="handleTabChange" />
+      <HomeCard 
+        :tabs="visibleTabs" 
+        :tabs-secondary="inactiveTabs" 
+        @select-tab="handleTabChange" 
+      />
     </ActionTab>
 
     <ActionTab tabId="goodreads" :activeTab="activeTab">

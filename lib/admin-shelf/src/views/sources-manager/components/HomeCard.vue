@@ -5,6 +5,11 @@ const props = defineProps({
   tabs: {
     type: Array as PropType<{ id: string, name: string }[]>,
     required: true
+  },
+  tabsSecondary: {
+    type: Array as PropType<{ id: string, name: string }[]>,
+    required: false,
+    default: undefined
   }
 });
 
@@ -25,13 +30,29 @@ const handleSelectTab = (tabId: string) => {
       </p>
     </div>
 
+    <!-- Supported sources -->
     <div class="sources-section">
-      <h2>Available Sources</h2>
+      <h2>Active Sources</h2>
       <div class="sources-grid">
         <button
           v-for="tab in props.tabs.filter(tab => tab.id !== 'home')"
           :key="tab.id"
           class="source-button"
+          @click="handleSelectTab(tab.id)"
+        >
+          <span>{{ tab.name }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Supported sources with different styling-->
+    <div class="sources-section" v-if="props.tabsSecondary">
+      <h2>Unmaintained sources</h2>
+      <div class="sources-grid">
+        <button
+          v-for="tab in props.tabsSecondary.filter(tab => tab.id !== 'home')"
+          :key="tab.id"
+          class="inactive-source-button"
           @click="handleSelectTab(tab.id)"
         >
           <span>{{ tab.name }}</span>
@@ -94,7 +115,7 @@ const handleSelectTab = (tabId: string) => {
     }
   }
 
-  .source-button {
+  .source-button, .inactive-source-button {
     background-color: #e6f0fd;
     color: #1a56db;
     padding: 0.75rem 1rem;
@@ -107,9 +128,23 @@ const handleSelectTab = (tabId: string) => {
     text-align: center;
     border: 1px solid rgba(0, 0, 0, 0.05);
     font-weight: 500;
-    
+  }
+
+  .source-button {
+    background-color: $active-source-bgcolor;
+    color: $active-source-color;
+
     &:hover {
-      background-color: #d1e3fa;
+      background-color: $active-source-hover-bgcolor;
+    }
+  }
+
+  .inactive-source-button {
+    background-color: $inactive-source-bgcolor;
+    color: $inactive-source-color;
+
+    &:hover {
+      background-color: $inactive-source-hover-bgcolor;
     }
   }
 
