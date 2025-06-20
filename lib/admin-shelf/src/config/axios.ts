@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 
 const baseInstance = axios.create({
-    baseURL: process.env.VITE_API_URL || 'http://localhost:8080/api/',
+    baseURL: process.env.VITE_API_URL || 'https://book-shelf-5ah9.onrender.com/api/',
     withCredentials: true
 });
 
