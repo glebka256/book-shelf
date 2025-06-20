@@ -30,7 +30,12 @@ const app = express();
 
 
 // CORS
-const allowedOrigins = ['http://localhost:8080', 'http://localhost:8081', 'http://localhost:8085'];
+const allowedOrigins = [
+    'http://localhost:8080', 
+    'http://localhost:8081', 
+    'http://localhost:8085', 
+    'https://book-shelf-5ah9.onrender.com'
+];
 app.use(cors({
     origin: function (origin, callback) {
         if (!origin || allowedOrigins.includes(origin)) {
