@@ -4,8 +4,9 @@
   "description": "Backend for personalized library website",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon",
+    "start": "node -r tsconfig-paths/register dist/index.js",
     "dev": "nodemon",
+    "build": "tsc",
     "scraper": "ts-node -r tsconfig-paths/register src/services/scraper/scraperHandler.ts",
     "score": "ts-node -r tsconfig-paths/register src/services/score/main.ts",
     "index-schema": "ts-node -r tsconfig-paths/register src/models/scripts/indexSchema.ts",

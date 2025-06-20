@@ -5,8 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "concurrently \"npm run dev --prefix lib/backend\" \"npm run dev --prefix lib/client-shelf\" \"npm run dev --prefix lib/admin-shelf\"",
-    "build-auth-util": "npm run build --prefix lib/auth-util"
+    "dev": "concurrently \"npm run dev --prefix lib/backend\" \"npm run dev --prefix lib/client-shelf\" \"npm run dev --prefix lib/admin-shelf\"",
+    "build-auth-util": "npm run build --prefix lib/auth-util",
+    "build": "npm run build-auth-util && npm run build --prefix lib/client-shelf && npm run build --prefix lib/admin-shelf && npm run build --prefix lib/backend",
+    "start": "npm run start --prefix lib/backend"
   },
   "keywords": [
     "library",
@@ -20,5 +22,8 @@
   "license": "MIT",
   "devDependencies": {
     "concurrently": "^9.1.2"
+  },
+  "dependencies": {
+    "tsconfig-paths": "^4.2.0"
   }
 }
