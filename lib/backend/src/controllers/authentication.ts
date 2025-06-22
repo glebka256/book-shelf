@@ -29,7 +29,7 @@ export const login = controllerHandler(async (req, res) => {
         process.env.COOKIE_HOST, 
         user.authentication.sessionToken, 
         { 
-            domain: 'localhost', 
+            domain: process.env.AUTH_DOMAIN || 'localhost', 
             path: '/',
             maxAge: 15 * 60 * 1000
         },
