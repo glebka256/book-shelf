@@ -41,7 +41,7 @@ export const getFiltered = controllerHandler(async (req, res) => {
         throw new CustomError(400, "Request missing 'page' field from request body", false, NAMESPACE);
 
     const beginPage = endPage - 1;
-    const pageSize = 50;
+    const pageSize = 25;
 
     const filtered = await BookFilter.getBooks(query, pageSize * endPage);
     // Results with all required params are good to return

@@ -1,5 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, reactive } from 'vue';
+import { Book } from '@/types/Book';
+import { FilterFormInstance, FilterQuery } from '@/types/Filter';
+import { InteractionTypes } from '@/types/User';
+import { useInteractionStore } from '@/store/interactionStore';
+import { getFilteredBooks, getPopularBooks, getRecommendedBooks } from '@/api/book';
+
 import SearchBar from '@/components/common/SearchBar.vue';
 import BookSidebar from '@/components/book/BookSidebar.vue';
 import BookSkeleton from '@/components/book/BookSkeleton.vue';
@@ -9,11 +15,6 @@ import IconButton from '@/../../component-lib/src/components/buttons/IconButton.
 import FilterForm from '@/components/layout/FilterForm.vue';
 import BookGrid from '@/components/book/BookGrid.vue';
 import TextLoader from '@/../../component-lib/src/components/loaders/TextLoader.vue';
-import { Book } from '@/types/Book';
-import { FilterFormInstance, FilterQuery } from '@/types/Filter';
-import { InteractionTypes } from '@/types/User';
-import { useInteractionStore } from '@/store/interactionStore';
-import { getFilteredBooks, getPopularBooks, getRecommendedBooks } from '@/api/book';
 
 const recommendedBooks = ref<Book[]>([]);
 const filteredBooks = ref<Book[]>([]);
