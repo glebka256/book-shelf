@@ -7,14 +7,14 @@ import { TextLoader } from '@app/utils/TextLoader';
 dotenv.config({
     path: [
         '.env.local',
-        `.env.${process.env.NODE_ENV || 'dev'}`,
+        `.env.${process.env.NODE_ENV || 'development'}`,
         '.env'
     ]
 });
 
 const configSchema = z.object({
     // App global
-    NODE_ENV: z.enum(['dev', 'stage', 'prod']).default('dev'),
+    NODE_ENV: z.enum(['development', 'stage', 'production']).default('development'),
     APP_NAME: z.string(),
     PORT: z.coerce.number(),
     HOST: z.string().url(),
@@ -89,8 +89,8 @@ Logger.info('Environment configuration loaded successfully', "APP");
 export const config = {
     env: rawConfig.NODE_ENV,
     appName: rawConfig.APP_NAME,
-    isDev: rawConfig.NODE_ENV === 'dev',
-    isProd: rawConfig.NODE_ENV === 'prod',
+    isDev: rawConfig.NODE_ENV === 'development',
+    isProd: rawConfig.NODE_ENV === 'production',
 
     server: {
         port: rawConfig.PORT,
@@ -153,8 +153,8 @@ export const config = {
 export const clientConfig = {
     env: rawConfig.NODE_ENV,
     appName: rawConfig.APP_NAME,
-    isDev: rawConfig.NODE_ENV === 'dev',
-    isProd: rawConfig.NODE_ENV === 'prod',
+    isDev: rawConfig.NODE_ENV === 'development',
+    isProd: rawConfig.NODE_ENV === 'production',
     api: {
         baseUrl: rawConfig.API_BASE_URL
     }
