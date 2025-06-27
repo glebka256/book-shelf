@@ -1,5 +1,5 @@
 import { MongoClient } from "mongodb";
-import { dynamicLoader } from "@app/utils";
+import { TextLoader } from "@app/utils/TextLoader";
 
 // For some reason reading from .env fails, so try replacing directly with string.
 const MONGO_URI = process.env.MONGO_URI;
@@ -38,9 +38,12 @@ async function createIndex() {
 }
 
 async function main() {
-    const stopLoader = dynamicLoader("Indexing database");
+    const dynamicLoader = new TextLoader("Indexing database");
+    dynamicLoader.start();
     await createIndex();
-    stopLoader();
+    dynamicLoader.stop();
+    console.log("Indexing completed successfully.");
+    process.exit(0);
 }
 
 main();

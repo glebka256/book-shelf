@@ -1,4 +1,3 @@
-import * as readline from 'readline';
 import { StorageBook } from '@app/interfaces/Books';
 import { FileSizeMetric } from '@app/interfaces/Util';
 
@@ -21,48 +20,6 @@ export const getUrlSearchParams = (query: Object):string  => {
 
     return params.toString();
 }
-
-/**
- * Displays message with ascii loading animation next to it.
- */
-export const dynamicLoader = (message: string, delay: number = 100) => {
-    const spinnerFrames = ['|', '/', '-', '\\'];
-    let currentFrame = 0;
-
-    const interval = setInterval(() => {
-        process.stdout.write(`\r${message} ${spinnerFrames[currentFrame]}`);
-        currentFrame = (currentFrame + 1) % spinnerFrames.length;
-    }, delay);
-
-    return () => {
-        clearInterval(interval);
-        process.stdout.write('\r');
-    }
-}
-
-/**
- * Displays message with static and dynamic parts.
- */
-export const dynamicLog = (() => {
-    let lastLines: number = 0;
-
-    if (!process.stdout.isTTY) {
-        console.warn("Dynamic logging is not supported in this environment!");
-    }
-
-    return (staticMessage: string, dynamicMessage: string, overwrite=false): void => {
-        readline.cursorTo(process.stdout, 0);
-        readline.clearLine(process.stdout, 0);
-
-        if (overwrite) {
-            process.stdout.write(staticMessage + dynamicMessage + '\n');
-        } else {
-            process.stdout.write(staticMessage + dynamicMessage);
-        }
-
-        lastLines++;
-    };
-})();
 
 export const extractDocs = <T>(docs: any[]): T[] => {
     return docs.map((doc) => doc._doc as T);
