@@ -11,34 +11,30 @@ register({
   paths: tsConfig.compilerOptions.paths as any
 });
 
-import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
-import cookieParser from 'cookie-parser';
-import compression from 'compression';
+import { config } from '@app/config';
 import cors from 'cors';
 
-import { connectDB } from '@app/config/db';
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import compression from 'compression';
+
 import router from '@app/router';
+import { connectDB } from '@app/config/db';
 import { Logger } from './utils/Logger';
 import { errorHandler } from './middlewares/errors';
 
 dotenv.config();
 
-Logger.enableDebug();
+if (config.isDev) {
+    Logger.enableDebug();
+}
 
 const app = express();
 
-
-// CORS
-const allowedOrigins = [
-    'http://localhost:8080', 
-    'http://localhost:8081', 
-    'http://localhost:8085', 
-    'https://book-shelf-5ah9.onrender.com'
-];
 app.use(cors({
     origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
+        if (!origin || config.server.allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
             callback(new Error('Origin not allowed by CORS: ' + origin));
@@ -47,18 +43,16 @@ app.use(cors({
     credentials: true,
 }));
 
-
 app.use(compression());
 app.use(cookieParser());
 app.use(bodyParser.json());
 
-
 // Serve client Vue app
-const clientPath = path.join(__dirname, '../../client-shelf/dist');
+const clientPath = path.join(__dirname, config.paths.clientDistPath);
 app.use('/', express.static(clientPath));
 
 // Serve admin Vue app
-const adminPath = path.join(__dirname, '../../admin-shelf/dist');
+const adminPath = path.join(__dirname, config.paths.adminDistPath);
 app.use('/admin', express.static(adminPath));
 
 // Serve webAPI app
@@ -78,10 +72,7 @@ app.use(errorHandler as ErrorRequestHandler);
 
 connectDB();
 
-const port = process.env.PORT;
-const host = process.env.HOST;
-
 const server = https.createServer(app);
-server.listen(port, () => {
-    Logger.info(`Server running on ${host}`, "APP");
+server.listen(config.server.port, () => {
+    Logger.info(`Server running on ${config.server.host}`, "APP");
 });

@@ -59,6 +59,7 @@
     "mongoose": "^8.8.3",
     "string-similarity": "^4.0.4",
     "string-similarity-js": "^2.1.4",
-    "tsconfig-paths": "^4.2.0"
+    "tsconfig-paths": "^4.2.0",
+    "zod": "^3.25.67"
   }
 }
