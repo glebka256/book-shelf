@@ -2,6 +2,9 @@ import { Logger } from '@app/utils/Logger';
 import dotenv from 'dotenv';
 import { z } from 'zod';
 import path from 'path';
+import { dynamicLoader } from '@app/utils';
+import { TextLoader } from '@app/utils/TextLoader';
+import { TIMEOUT } from 'dns';
 
 dotenv.config({
     path: [
@@ -76,7 +79,14 @@ const parseConfig = () => {
     }
 };
 
+// logging
+const configLoader = new TextLoader('Loading environment configuration', 100);
+configLoader.start();
+
 const rawConfig = parseConfig();
+
+configLoader.stop();
+Logger.info('Environment configuration loaded successfully', "APP");
 
 export const config = {
     env: rawConfig.NODE_ENV,
