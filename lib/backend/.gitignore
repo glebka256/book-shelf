@@ -14,10 +14,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # Environment files
-.env
-.env.dev
-.env.stage
-.env.prod
+.env.*
 sshkey
 sshkey.pub
 
