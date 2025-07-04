@@ -47,26 +47,27 @@ app.use(compression());
 app.use(cookieParser());
 app.use(bodyParser.json());
 
-// Serve client Vue app
-const clientPath = path.join(__dirname, config.paths.clientDistPath);
-app.use('/', express.static(clientPath));
+if (config.isProd) {
+    // Serve client Vue app
+    const clientPath = path.join(__dirname, config.paths.clientDistPath);
+    app.use('/', express.static(clientPath));
 
-// Serve admin Vue app
-const adminPath = path.join(__dirname, config.paths.adminDistPath);
-app.use('/admin', express.static(adminPath));
+    // Serve admin Vue app
+    const adminPath = path.join(__dirname, config.paths.adminDistPath);
+    app.use('/admin', express.static(adminPath));
+
+    // SPA Fallbacks
+    app.get('/admin/*', (_req, res) => {
+        res.sendFile(path.join(adminPath, 'index.html'));
+    });
+
+    app.get('/*', (_req, res) => {
+        res.sendFile(path.join(clientPath, 'index.html'));
+    });
+}
 
 // Serve webAPI app
 app.use('/api', router());
-
-// SPA Fallbacks
-app.get('/admin/*', (_req, res) => {
-    res.sendFile(path.join(adminPath, 'index.html'));
-});
-
-app.get('/*', (_req, res) => {
-    res.sendFile(path.join(clientPath, 'index.html'));
-});
-
 
 app.use(errorHandler as ErrorRequestHandler);
 
