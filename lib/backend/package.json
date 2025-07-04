@@ -1,5 +1,5 @@
 {
-  "name": "book-shelf-backend",
+  "name": "@book-shelf/backend",
   "version": "1.0.0",
   "description": "Backend for personalized library website",
   "main": "index.js",
