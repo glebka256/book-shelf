@@ -1,6 +1,6 @@
 import { StorageBook } from "@app/interfaces/Books";
 import { aggreageBooks } from "@app/models/book";
-import { Logger } from "@app/utils/Logger";
+import { Logger } from "@book-shelf/gckit";
 
 export async function searchByQuery(query: string, start: number, limit: number): Promise<StorageBook[] | null> {
     try {

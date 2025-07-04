@@ -1,7 +1,8 @@
 import * as stringSimiliarity from 'string-similarity';
 import { countBy, maxBy } from 'lodash';
 import { DataSerializer } from '@app/services/DataSerializer';
-import { extractBookFromDoc, toWhitespace } from '@app/utils';
+import { extractBookFromDoc } from '@app/utils';
+import { toWhitespace } from '@book-shelf/gckit';
 import { StorageBook } from '@app/interfaces/Books';
 import { getBooks } from '@app/models/book';
 

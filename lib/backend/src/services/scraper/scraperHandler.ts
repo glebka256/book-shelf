@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import { BookScraper } from "./BookScraper";
 import { connectDB } from '@app/config/db';
-import { TextLoader } from "@app/utils/TextLoader";
+import { TextLoader } from "@book-shelf/gckit";
 import { DataSerializer } from "../DataSerializer";
 import { ScrapingTypes } from "@app/interfaces/Data";
 

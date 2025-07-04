@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { Logger } from "@app/utils/Logger";
+import { Logger } from "@book-shelf/gckit";
 import { UserData, UserStats } from "@app/interfaces/User";
 import { UserModel } from "@app/models/user";
 import { aggreageBooks } from "@app/models/book";

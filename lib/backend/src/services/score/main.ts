@@ -4,7 +4,7 @@ import * as genreService from '../recommendation/genreService';
 import { connectDB } from '@app/config/db';
 import { getBooks } from '@app/models/book';
 import { saveRelations } from './serialization';
-import { toUnderscore} from '@app/utils';
+import { toUnderscore} from '@book-shelf/gckit';
 import { StorageBook } from '@app/interfaces/Books';
 import { ScoreBook, ScoreBookChunk, ScoreTable, ScoreTableChunk } from './interfaces';
 

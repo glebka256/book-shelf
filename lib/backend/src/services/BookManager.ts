@@ -5,7 +5,7 @@ import { GutenbergAdapter } from "./adapters/GutenbergAdapter";
 import { ClientBook, StorageBook } from "@app/interfaces/Books";
 import { getBookById, addBookLinkProperty, updateBookCompleteStatus } from "@app/models/book";
 import { FileSizeMetric } from "@app/interfaces/Util";
-import { Logger } from "@app/utils/Logger";
+import { Logger } from "@book-shelf/gckit";
 
 const NAMESPACE = "BOOK-MANAGER";
 

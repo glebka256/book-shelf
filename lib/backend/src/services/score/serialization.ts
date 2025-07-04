@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { ScoreTableChunk } from './interfaces';
-import { toUnderscore } from '@app/utils';
+import { toUnderscore } from '@book-shelf/gckit';
 
 const DIRPATH = "../../data/relation/";
 

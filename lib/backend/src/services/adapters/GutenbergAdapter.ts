@@ -2,7 +2,7 @@ import { AxiosInstance, AxiosResponse } from "axios";
 import { projectGutenbergClient } from "../apiClients";
 import { ADAPTER_NAMESPACE, IBookServiceAdapter } from "./IBookServiceAdapter";
 import { BookSources, BooksData, ProjectGutenbergBook } from "@app/interfaces/Books";
-import { Logger } from "@app/utils/Logger";
+import { Logger } from "@book-shelf/gckit";
 
 export class GutenbergAdapter implements IBookServiceAdapter {
     apiClient: AxiosInstance;

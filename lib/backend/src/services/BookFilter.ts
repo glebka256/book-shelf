@@ -9,7 +9,7 @@ import {
 import { queryBooks } from "@app/models/book";
 import { DataSerializer } from "./DataSerializer";
 import { Languages } from "@app/interfaces/Util";
-import { setArrayWhitespace } from "@app/utils";
+import { setArrayWhitespace } from "@book-shelf/gckit";
 import { BookMerger } from "@app/utils/BookMerger";
 
 export class BookFilter {

@@ -1,8 +1,8 @@
 import { UserInteraction, ClientInteraction, interactionTypes, StorageInteraction } from "@app/interfaces/User"
 import { ValidationResponse } from "@app/interfaces/Util"
 import { getUserInteractions, updateUserInteractions } from "@app/models/user"
-import { isISO8601 } from "@app/utils"
-import { Logger } from "@app/utils/Logger";
+import { isISO8601 } from "@book-shelf/gckit";
+import { Logger } from "@book-shelf/gckit";
 
 export class InteractionService {
     private userId: string;

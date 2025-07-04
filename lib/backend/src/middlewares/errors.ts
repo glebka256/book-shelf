@@ -1,7 +1,7 @@
 import { ErrorRequestHandler } from "express";
 import { NextFunction, Request, Response } from "express";
 import { CustomError } from "../errors/CustomError";
-import { Logger } from "@app/utils/Logger";
+import { Logger } from "@book-shelf/gckit";
 
 export const errorHandler: ErrorRequestHandler = (
     err: Error, 

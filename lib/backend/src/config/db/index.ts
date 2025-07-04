@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { Logger } from '@app/utils/Logger';
+import { Logger } from "@book-shelf/gckit";
 
 const NAMESPACE = "DATABASE";
 

@@ -1,5 +1,5 @@
 import { AxiosInstance, AxiosResponse } from "axios";
-import { Logger } from "@app/utils/Logger";
+import { Logger } from "@book-shelf/gckit";
 import { IBookServiceAdapter, ADAPTER_NAMESPACE } from "./IBookServiceAdapter";
 import { annasArchiveClient } from "../apiClients";
 import { BooksData, BookSources, AnnasArchiveBook, DownloadInfo } from "@app/interfaces/Books";

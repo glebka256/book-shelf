@@ -1,5 +1,5 @@
 import { MongoClient } from "mongodb";
-import { TextLoader } from "@app/utils/TextLoader";
+import { TextLoader } from "@book-shelf/gckit";
 
 // For some reason reading from .env fails, so try replacing directly with string.
 const MONGO_URI = process.env.MONGO_URI;
