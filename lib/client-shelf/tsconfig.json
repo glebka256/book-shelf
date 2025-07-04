@@ -20,7 +20,7 @@
       "@/*": [
         "src/*"
       ],
-        "@book-shelf/auth-util": [
+      "@auth-util": [
         "../auth-util/*"
       ]
     },
@@ -32,11 +32,14 @@
     ]
   },
   "include": [
+    "src/**/*",
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
     "tests/**/*.ts",
-    "tests/**/*.tsx"
+    "src/**/*.js",
+    "tests/**/*.tsx",
+     "src/router/**/*"
   ],
   "exclude": [
     "node_modules"

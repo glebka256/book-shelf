@@ -3,28 +3,67 @@
   "version": "0.1.0",
   "description": "Personalized digital library",
   "main": "index.js",
+  "private": true,
+  "packageManager": "pnpm@10.12.4",
+  "engines": {
+    "node": ">=16",
+    "pnpm": ">=8"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently \"npm run dev --prefix lib/backend\" \"npm run dev --prefix lib/client-shelf\" \"npm run dev --prefix lib/admin-shelf\"",
-    "prebuild": "npm install --prefix lib/auth-util && npm install --prefix lib/backend && npm install --prefix lib/client-shelf && npm install --prefix lib/admin-shelf",
-    "build-auth-util": "npm run build --prefix lib/auth-util",
-    "build": "npm run build-auth-util && npm run build --prefix lib/client-shelf && npm run build --prefix lib/admin-shelf && npm run build --prefix lib/backend",
-    "start": "npm run start --prefix lib/backend"
+    "test": "turbo run test",
+    "dev": "turbo run dev --filter=book-shelf-backend --filter=client-shelf --filter=admin-shelf --parallel",
+    "dev:server": "turbo run dev --filter=book-shelf-backend",
+    "dev:frontend": "turbo run dev --filter=client-shelf --filter=admin-shelf --parallel",
+    "build": "turbo run build",
+    "build:libs": "turbo run build --filter=@book-shelf/auth-util --filter=@book-shelf/component-lib",
+    "build:apps": "turbo run build --filter=client-shelf --filter=admin-shelf --filter=book-shelf-backend",
+    "start": "turbo run start --filter=book-shelf-backend"
   },
   "keywords": [
     "library",
     "literature",
     "digital library",
-    "recommendation system",
-    "recommendation engine",
-    "conent based recommendation"
+    "recommender",
+    "recommender system",
+    "recommender engine",
+    "conent based recommendations"
   ],
   "author": "GlebKarpenko/glebkarpenko1@gmail.com",
   "license": "MIT",
-  "devDependencies": {
-    "concurrently": "^9.1.2"
-  },
   "dependencies": {
-    "tsconfig-paths": "^4.2.0"
+    "axios": "^1.9.0",
+    "core-js": "^3.8.3",
+    "pinia": "^2.3.0",
+    "vue": "^3.5.13",
+    "vue-router": "^4.0.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@typescript-eslint/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/parser": "^5.4.0",
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-plugin-eslint": "~5.0.0",
+    "@vue/cli-plugin-router": "~5.0.0",
+    "@vue/cli-plugin-typescript": "~5.0.0",
+    "@vue/cli-plugin-unit-jest": "~5.0.0",
+    "@vue/cli-service": "~5.0.0",
+    "@vue/eslint-config-typescript": "^9.1.0",
+    "@vue/test-utils": "^2.0.0-0",
+    "@vue/vue3-jest": "^27.0.0-alpha.1",
+    "babel-jest": "^27.0.6",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-vue": "^8.0.3",
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.7",
+    "prettier": "^2.4.1",
+    "sass": "^1.32.7",
+    "sass-loader": "^12.0.0",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "turbo": "^2.5.4",
+    "typescript": "^5.8.3"
   }
 }
