@@ -15,7 +15,7 @@
     "dev:server": "turbo run dev --filter=@book-shelf/backend",
     "dev:frontend": "turbo run dev --filter=client-shelf --filter=admin-shelf --parallel",
     "build": "turbo run build",
-    "build:libs": "turbo run build --filter=@book-shelf/auth-util --filter=@book-shelf/component-lib",
+    "build:libs": "turbo run build --filter=@book-shelf/gckit --filter=@book-shelf/auth-util --filter=@book-shelf/component-lib",
     "build:apps": "turbo run build --filter=client-shelf --filter=admin-shelf --filter=book-@book-shelf/backend",
     "start": "turbo run start --filter=@book-shelf/backend"
   },

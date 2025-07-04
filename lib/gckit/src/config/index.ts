@@ -1,8 +1,8 @@
-import { Logger } from '@app/utils/Logger';
 import dotenv from 'dotenv';
-import { z } from 'zod';
 import path from 'path';
-import { TextLoader } from '@app/utils/TextLoader';
+import { z } from 'zod';
+import { Logger } from "../logger/Logger";
+import { TextLoader } from '../logger/TextLoader';
 
 dotenv.config({
     path: [
@@ -84,9 +84,9 @@ configLoader.start();
 const rawConfig = parseConfig();
 
 configLoader.stop();
-Logger.info('Environment configuration loaded successfully', "APP");
+Logger.info('Environment configuration loaded successfully', "GLOBAL");
 
-export const config = {
+export const gconfig = {
     env: rawConfig.NODE_ENV,
     appName: rawConfig.APP_NAME,
     isDev: rawConfig.NODE_ENV === 'development',
@@ -150,7 +150,7 @@ export const config = {
     }
 }
 
-export const clientConfig = {
+export const gclientConfig = {
     env: rawConfig.NODE_ENV,
     appName: rawConfig.APP_NAME,
     isDev: rawConfig.NODE_ENV === 'development',
@@ -160,7 +160,7 @@ export const clientConfig = {
     }
 }
 
-export type Config = typeof config;
-export type ClientConfig = typeof clientConfig;
+export type GConfig = typeof gconfig;
+export type GClientConfig = typeof gclientConfig;
 
-export const { server, db, auth, apis, paths } = config;
+export const { server, db, auth, apis, paths } = gconfig;

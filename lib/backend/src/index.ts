@@ -12,21 +12,20 @@ register({
 });
 
 import dotenv from 'dotenv';
-import { config } from '@app/config';
-import cors from 'cors';
+import { gconfig, Logger } from "@book-shelf/gckit";
 
+import cors from 'cors';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
 
 import router from '@app/router';
 import { connectDB } from '@app/config/db';
-import { Logger } from './utils/Logger';
 import { errorHandler } from './middlewares/errors';
 
 dotenv.config();
 
-if (config.isDev) {
+if (gconfig.isDev) {
     Logger.enableDebug();
 }
 
@@ -34,7 +33,7 @@ const app = express();
 
 app.use(cors({
     origin: function (origin, callback) {
-        if (!origin || config.server.allowedOrigins.includes(origin)) {
+        if (!origin || gconfig.server.allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
             callback(new Error('Origin not allowed by CORS: ' + origin));
@@ -47,13 +46,13 @@ app.use(compression());
 app.use(cookieParser());
 app.use(bodyParser.json());
 
-if (config.isProd) {
+if (gconfig.isProd) {
     // Serve client Vue app
-    const clientPath = path.join(__dirname, config.paths.clientDistPath);
+    const clientPath = path.join(__dirname, gconfig.paths.clientDistPath);
     app.use('/', express.static(clientPath));
 
     // Serve admin Vue app
-    const adminPath = path.join(__dirname, config.paths.adminDistPath);
+    const adminPath = path.join(__dirname, gconfig.paths.adminDistPath);
     app.use('/admin', express.static(adminPath));
 
     // SPA Fallbacks
@@ -74,6 +73,6 @@ app.use(errorHandler as ErrorRequestHandler);
 connectDB();
 
 const server = https.createServer(app);
-server.listen(config.server.port, () => {
-    Logger.info(`Server running on ${config.server.host}`, "APP");
+server.listen(gconfig.server.port, () => {
+    Logger.info(`Server running on ${gconfig.server.host}`, "APP");
 });

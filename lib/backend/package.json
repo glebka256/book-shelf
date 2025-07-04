@@ -25,6 +25,7 @@
   "author": "Gleb Karpenko",
   "license": "MIT",
   "dependencies": {
+    "@book-shelf/gckit": "workspace:*",
     "@book-shelf/auth-util": "workspace:*",
     "bcrypt": "6.0.0",
     "body-parser": "^1.20.3",

@@ -221,6 +221,9 @@ importers:
       '@book-shelf/auth-util':
         specifier: workspace:*
         version: link:../auth-util
+      '@book-shelf/gckit':
+        specifier: workspace:*
+        version: link:../gckit
       bcrypt:
         specifier: 6.0.0
         version: 6.0.0
@@ -431,6 +434,12 @@ importers:
       vue-tsc:
         specifier: ^2.2.10
         version: 2.2.12(typescript@5.8.3)
+
+  lib/gckit:
+    dependencies:
+      zod:
+        specifier: ^3.25.67
+        version: 3.25.73
 
 packages:
 

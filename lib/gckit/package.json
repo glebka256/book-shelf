@@ -1,0 +1,16 @@
+{
+  "name": "@book-shelf/gckit",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "files": ["dist"],
+  "dependencies": {
+    "zod": "^3.25.67"
+  }
+}
