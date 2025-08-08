@@ -56,7 +56,7 @@ const hideTooltip = (): void => {
 @import "@/styles/variables.scss";
 
 .features-section {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .feature-item {

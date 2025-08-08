@@ -4,6 +4,7 @@ import type { LandingFeature } from './components/FeaturesSection.vue';
 import FeaturesSection from './components/FeaturesSection.vue';
 import ModalHeader from './components/ModalHeader.vue';
 import SocialsSection from './components/SocialsSection.vue';
+import StackSection from './components/StackSection.vue';
 
 const props = withDefaults(defineProps<{
   showModal?: boolean;
@@ -20,23 +21,23 @@ const isVisible = ref(props.showModal);
 const features: LandingFeature[] = [
   {
     id: 1,
-    title: "Organize Your Library",
-    description: "Keep track of all your books with our intuitive organization system. Sort by genre, author, or reading status."
+    title: "Personalized recommendations",
+    description: "User recommendations based on activity, preferences and overall popularity"
   },
   {
     id: 2,
-    title: "Track Reading Progress",
-    description: "Monitor your reading journey with progress tracking, reading goals, and detailed statistics."
+    title: "Library of over 4800 books",
+    description: "Access library of over 4800 books and search more via integration with OpenLib and other sources"
   },
   {
     id: 3,
-    title: "Discover New Books",
-    description: "Get personalized recommendations based on your reading history and preferences."
+    title: "Full system support with admin tools",
+    description: "Includes CMS, user activity management, library population from external sources, and general statistics"
   },
   {
     id: 4,
-    title: "Share & Connect",
-    description: "Connect with fellow readers, share reviews, and discover what others are reading."
+    title: "Web API with full controll over the system",
+    description: "RESTful API that provides complete access to all platform's features"
   }
 ];
 
@@ -72,14 +73,16 @@ onMounted(() => {
 
           <div class="description-section">
             <p class="description-text">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor 
-              incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud 
-              exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+              A hobby project of a digital library. Features web app for readers, 
+              admin dashboard and WebAPI with full control over the platform. 
             </p>
           </div>
 
           <!-- Feature bullet points -->
           <FeaturesSection :features="features"/>
+
+          <!-- Tech stack list -->
+          <StackSection />
 
           <!-- Socials links and contacts -->
           <SocialsSection />
@@ -87,7 +90,7 @@ onMounted(() => {
           <!-- Continue button -->
           <div class="action-section">
             <button class="continue-btn" @click="closeModal">
-              Get Started
+              Explore
             </button>
           </div>
         </div>
@@ -203,14 +206,14 @@ onMounted(() => {
 }
 
 .description-section {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 
   .description-text {
     font-size: 1rem;
     color: rgba(16, 18, 61, 0.8);
     line-height: 1.6;
     margin: 0;
-    text-align: left;
+    text-align: center;
   }
 }
 
