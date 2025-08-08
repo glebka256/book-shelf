@@ -3,6 +3,7 @@ import { withDefaults, defineProps, defineEmits, ref, onMounted } from 'vue';
 import type { LandingFeature } from './components/FeaturesSection.vue';
 import FeaturesSection from './components/FeaturesSection.vue';
 import ModalHeader from './components/ModalHeader.vue';
+import SocialsSection from './components/SocialsSection.vue';
 
 const props = withDefaults(defineProps<{
   showModal?: boolean;
@@ -79,6 +80,9 @@ onMounted(() => {
 
           <!-- Feature bullet points -->
           <FeaturesSection :features="features"/>
+
+          <!-- Socials links and contacts -->
+          <SocialsSection />
 
           <!-- Continue button -->
           <div class="action-section">
@@ -218,6 +222,7 @@ onMounted(() => {
     border: none;
     border-radius: 12px;
     padding: 0.75rem 2rem;
+    margin-bottom: 100px;
     font-size: 1rem;
     font-weight: 600;
     color: white;
