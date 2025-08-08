@@ -2,6 +2,7 @@
 import { withDefaults, defineProps, defineEmits, ref, onMounted } from 'vue';
 import type { LandingFeature } from './components/FeaturesSection.vue';
 import FeaturesSection from './components/FeaturesSection.vue';
+import ModalHeader from './components/ModalHeader.vue';
 
 const props = withDefaults(defineProps<{
   showModal?: boolean;
@@ -66,6 +67,8 @@ onMounted(() => {
             </svg>
           </button>
 
+          <ModalHeader title="Welcome to Book Shelf"/>
+
           <!-- Feature bullet points -->
           <FeaturesSection :features="features"/>
 
@@ -101,7 +104,7 @@ onMounted(() => {
 
 .modal-container {
   position: relative;
-  background: rgba(121, 181, 255, 0.18);
+  background: rgba(121, 181, 255, 0.56);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-radius: 24px;

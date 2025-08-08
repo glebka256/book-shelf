@@ -53,6 +53,8 @@ const hideTooltip = (): void => {
 </template>
 
 <style scoped lang="scss">
+@import "@/styles/variables.scss";
+
 .features-section {
   margin-bottom: 2rem;
 }
