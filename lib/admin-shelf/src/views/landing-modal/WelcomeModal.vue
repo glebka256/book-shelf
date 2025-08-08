@@ -69,6 +69,14 @@ onMounted(() => {
 
           <ModalHeader title="Welcome to Book Shelf"/>
 
+          <div class="description-section">
+            <p class="description-text">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor 
+              incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud 
+              exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            </p>
+          </div>
+
           <!-- Feature bullet points -->
           <FeaturesSection :features="features"/>
 
@@ -187,6 +195,18 @@ onMounted(() => {
   svg {
     width: 18px;
     height: 18px;
+  }
+}
+
+.description-section {
+  margin-bottom: 2rem;
+
+  .description-text {
+    font-size: 1rem;
+    color: rgba(16, 18, 61, 0.8);
+    line-height: 1.6;
+    margin: 0;
+    text-align: left;
   }
 }
 
