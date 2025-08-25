@@ -80,7 +80,7 @@ onMounted(() => {
 
         <!-- Tech stack used -->
         <div class="footer-section-container">
-          <StackSection />
+          <StackSection class="stack-icons"/>
         </div>
       </div>
     </div>
@@ -206,7 +206,13 @@ onMounted(() => {
   .footer-section-container {
     display: flex;
     flex-direction: row;
-    align-content: center;
+    align-items: center;
+
+    // For some reason align-items: center doesnt make it centered verticaly
+    .stack-icons {
+      margin-top: auto;
+      margin-bottom: auto;
+    }
 
     h3 {
       align-self: center;

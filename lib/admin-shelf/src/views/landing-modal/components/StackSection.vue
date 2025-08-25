@@ -40,6 +40,7 @@
   margin-bottom: 1rem;
   display: flex;
   justify-content: center;
+  align-items: center;
 
   .stack-row {
     display: flex;
