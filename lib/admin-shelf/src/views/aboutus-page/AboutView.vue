@@ -4,10 +4,10 @@ import { AboutusData, AppSection, MainLink } from './aboutus.types';
 import { getData } from '@/services/dataService';
 import WelcomeModal from '@/views/landing-modal/WelcomeModal.vue';
 import RouteList from './components/RouteList.vue';
-import SocialsSection from '@/views/landing-modal/components/SocialsSection.vue';
+import SocialsContainer from '@/views/landing-modal/components/SocialsContainer.vue';
 import StackSection from '@/views/landing-modal/components/StackSection.vue';
 
-const showWelcome = ref(false);
+const showWelcome = ref(true);
 const isDataLoading = ref(false);
 
 const projectDescription = ref<string>('');
@@ -73,8 +73,9 @@ onMounted(() => {
 
       <div class="footer-container">
         <!-- Social links and contacts -->
-        <div class="fotter-section-container">
-          <SocialsSection />
+        <div class="footer-section-container">
+          <h3 class="socials-title">Contact me</h3>
+          <SocialsContainer />
         </div>
 
         <!-- Tech stack used -->
@@ -203,8 +204,14 @@ onMounted(() => {
   gap: 40px;
 
   .footer-section-container {
-    align-items: center;
+    display: flex;
+    flex-direction: row;
     align-content: center;
+
+    h3 {
+      align-self: center;
+      margin: 0;
+    }
   }
 }
 

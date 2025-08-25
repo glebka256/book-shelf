@@ -3,7 +3,7 @@ import { withDefaults, defineProps, defineEmits, ref, onMounted } from 'vue';
 import type { LandingFeature } from './components/FeaturesSection.vue';
 import FeaturesSection from './components/FeaturesSection.vue';
 import ModalHeader from './components/ModalHeader.vue';
-import SocialsSection from './components/SocialsSection.vue';
+import SocialsContainer from './components/SocialsContainer.vue';
 import StackSection from './components/StackSection.vue';
 
 const props = withDefaults(defineProps<{
@@ -69,23 +69,26 @@ onMounted(() => {
             </svg>
           </button>
 
-          <ModalHeader title="Welcome to Book Shelf"/>
+          <ModalHeader title="Welcome to Book Shelf" />
 
           <div class="description-section">
             <p class="description-text">
-              A hobby project of a digital library. Features web app for readers, 
-              admin dashboard and WebAPI with full control over the platform. 
+              A hobby project of a digital library. Features web app for readers,
+              admin dashboard and WebAPI with full control over the platform.
             </p>
           </div>
 
           <!-- Feature bullet points -->
-          <FeaturesSection :features="features"/>
+          <FeaturesSection :features="features" />
 
           <!-- Tech stack list -->
           <StackSection />
 
           <!-- Socials links and contacts -->
-          <SocialsSection />
+          <div class="socials-section">
+            <h3 class="socials-title">Contact with me</h3>
+            <SocialsContainer />
+          </div>
 
           <!-- Continue button -->
           <div class="action-section">
@@ -93,9 +96,9 @@ onMounted(() => {
               Explore
             </button>
           </div>
+          </div>
         </div>
       </div>
-    </div>
   </Teleport>
 </template>
 
@@ -244,6 +247,17 @@ onMounted(() => {
   }
 }
 
+.socials-section {
+  margin-bottom: 1rem;
+  text-align: center;
+
+  .socials-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: rgba(16, 18, 61, 0.9);
+    margin-bottom: 1rem;
+  }
+}
 // Animations
 @keyframes fadeIn {
   from {
@@ -283,5 +297,4 @@ onMounted(() => {
   .modal-content {
     padding: 2rem 1.5rem;
   }
-}
-</style>
+}</style>
