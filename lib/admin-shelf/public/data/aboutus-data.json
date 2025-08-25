@@ -1,0 +1,84 @@
+{
+  "projectDescription": "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.",
+  "mainLinks": [
+    {
+      "title": "Book Shelf Client App",
+      "url": "/client",
+      "description": "Reader-focused web application for browsing and managing personal library"
+    },
+    {
+      "title": "Book Shelf Admin App",
+      "url": "/admin",
+      "description": "Administrative dashboard for content and user management"
+    },
+    {
+      "title": "Book Shelf Web API",
+      "url": "/api/docs",
+      "description": "RESTful API documentation and endpoints"
+    }
+  ],
+  "sitemap": [
+    {
+      "title": "Book Shelf",
+      "routes": [
+        {
+          "name": "home",
+          "path": "/",
+          "description": "Client app for reading and searching literature",
+          "childRoutes": []
+        }
+      ]
+    },
+    {
+      "title": "Admin Shelf",
+      "routes": [
+        {
+          "name": "home",
+          "path": "/admin/",
+          "description": "Admin app for managing systems library",
+          "childRoutes": []
+        },
+        {
+          "name": "storage-manager",
+          "path": "/admin/storage-manager",
+          "description": "Add and edit library books",
+          "childRoutes": [
+            {
+              "name": "books",
+              "path": "/admin/storage-manager/books",
+              "description": "View, manage and edit books of systems library"
+            },
+            {
+              "name": "create",
+              "path": "/admin/storage-manager/create",
+              "description": "A form to add new book to the library"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Web API Endpoints",
+      "routes": [
+        {
+          "name": "auth",
+          "path": "/api/auth",
+          "childRoutes": [
+            {
+              "name": "login",
+              "path": "/api/auth/login"
+            },
+            {
+              "name": "logut",
+              "path": "/api/auth/logout"
+            },
+            {
+              "name": "register",
+              "path": "/api/auth/register"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

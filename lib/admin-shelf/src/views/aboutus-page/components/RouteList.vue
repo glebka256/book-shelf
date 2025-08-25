@@ -76,6 +76,7 @@ const hasChildren = (route: SectionRoute) => {
     .route-main {
       display: flex;
       align-items: flex-start;
+      text-align: left;
       gap: 0.5rem;
       padding-left: 1rem;
       position: relative;
@@ -161,6 +162,7 @@ const hasChildren = (route: SectionRoute) => {
       padding-left: 1rem;
 
       .child-route-item {
+        text-align: left;
         margin-bottom: 0.5rem;
         position: relative;
         padding-left: 1rem;
