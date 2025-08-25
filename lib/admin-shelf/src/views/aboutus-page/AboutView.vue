@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import WelcomeModal from './landing-modal/WelcomeModal.vue';
+import WelcomeModal from '@/views/landing-modal/WelcomeModal.vue';
 
 const showWelcome = ref(true);
 </script>
