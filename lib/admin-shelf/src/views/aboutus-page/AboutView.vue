@@ -101,18 +101,16 @@ onMounted(() => {
         </div>
       </div>
 
-      <div class="footer-container">
-        <!-- Social links and contacts -->
+      <footer class="footer-container">
         <div class="footer-section-container" v-if="socialLinks.length > 0">
           <h3 class="socials-title">Contact me</h3>
-          <SocialsContainer :socialLinks="socialLinks"/>
+          <SocialsContainer :socialLinks="socialLinks" />
         </div>
 
-        <!-- Tech stack used -->
         <div class="footer-section-container">
-          <StackSection class="stack-icons"/>
+          <StackSection class="stack-icons" />
         </div>
-      </div>
+      </footer>
     </div>
   </div>
 </template>
@@ -132,6 +130,7 @@ onMounted(() => {
   max-width: $manager-content-mxwidth;
   margin: 0 auto;
   padding: $manager-subcontent-padding;
+  padding-bottom: 100px;
 }
 
 .main-title {
@@ -232,6 +231,15 @@ onMounted(() => {
   display: flex;
   flex-direction: row;
   gap: 40px;
+
+  // stick to bottom
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: $initial-gradient-bg-color;
+  padding: 1rem;
+  z-index: 10;
 
   .footer-section-container {
     display: flex;
