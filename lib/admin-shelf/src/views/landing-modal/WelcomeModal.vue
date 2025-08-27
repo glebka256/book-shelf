@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { withDefaults, defineProps, defineEmits, ref, onMounted } from 'vue';
-import { SocialsIconLink } from './components/SocialsContainer.vue';
-import type { LandingFeature } from './components/FeaturesSection.vue';
+import { LandingFeature } from './welcomeModal.types';
+import { SocialsIconLink } from '../aboutus-page/aboutus.types';
+import { LandingData, SocialsData, getData } from '@/services/dataService';
+
 import FeaturesSection from './components/FeaturesSection.vue';
 import ModalHeader from './components/ModalHeader.vue';
 import SocialsContainer from './components/SocialsContainer.vue';
@@ -18,36 +20,11 @@ const emit = defineEmits<{
 }>();
 
 const isVisible = ref(props.showModal);
+const isDataLoading = ref(false);
 
-const features: LandingFeature[] = [
-  {
-    id: 1,
-    title: "Personalized recommendations",
-    description: "User recommendations based on activity, preferences and overall popularity"
-  },
-  {
-    id: 2,
-    title: "Library of over 4800 books",
-    description: "Access library of over 4800 books and search more via integration with OpenLib and other sources"
-  },
-  {
-    id: 3,
-    title: "Full system support with admin tools",
-    description: "Includes CMS, user activity management, library population from external sources, and general statistics"
-  },
-  {
-    id: 4,
-    title: "Web API with full controll over the system",
-    description: "RESTful API that provides complete access to all platform's features"
-  }
-];
-
-const socialLinks = ref<SocialsIconLink[]>([
-  { type: 'github', href: 'https://github.com/glebka256/book-shelf' },
-  { type: 'linkdin', href: 'https://linkedin.com' },
-  { type: 'telegram', href: 'https://t.me/glebka256' },
-  { type: 'email', href: 'mailto:glebkarpenko1@gmail.com' },
-]);
+const projectDescription = ref<string>("");
+const features = ref<LandingFeature[]>([]);
+const socialLinks = ref<SocialsIconLink[]>([]);
 
 const closeModal = () => {
   isVisible.value = false;
@@ -58,8 +35,27 @@ const handleOverlayClick = () => {
   closeModal();
 };
 
+const loadData = async (): Promise<void> => {
+  isDataLoading.value = true;
+
+  try {
+    const landingData = await getData<LandingData>("landing-data.json");
+    projectDescription.value = landingData.projectDescription;
+    features.value = landingData.features;
+
+    const socialsData = await getData<SocialsData>("contacts.json");
+    socialLinks.value = socialsData.socialsLinks;
+  } catch (error) {
+    console.error(error);
+  }
+  finally {
+    isDataLoading.value = false;
+  }
+};
+
 onMounted(() => {
   isVisible.value = props.showModal;
+  loadData();
 });
 </script>
 
@@ -81,8 +77,7 @@ onMounted(() => {
 
           <div class="description-section">
             <p class="description-text">
-              A hobby project of a digital library. Features web app for readers,
-              admin dashboard and WebAPI with full control over the platform.
+              {{ projectDescription }}
             </p>
           </div>
 

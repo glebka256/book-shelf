@@ -19,8 +19,8 @@ export interface MainLink {
 	description: string
 }
 
-export interface AboutusData {
-	projectDescription: string,
-	mainLinks: MainLink[],
-	sitemap: AppSection[]
+export interface SocialsIconLink {
+  type: "github" | "linkdin" | "telegram" | "email";
+  href: string;
+  target?: string;
 }

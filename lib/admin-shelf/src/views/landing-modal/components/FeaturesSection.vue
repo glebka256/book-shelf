@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import { defineProps, PropType, ref } from "vue";
-
-export interface LandingFeature {
-  id: number,
-  title: string,
-  description: string
-}
+import { LandingFeature } from "../welcomeModal.types";
 
 const props = defineProps({
   features: {

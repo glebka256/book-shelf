@@ -1,0 +1,26 @@
+{
+    "projectDescription": "A hobby project of a digital library. Features web app for readers, admin dashboard and WebAPI with full control over the platform.",
+    
+    "features": [
+        {
+            "id": 1,
+            "title": "Personalized recommendations",
+            "description": "User recommendations based on activity, preferences and overall popularity"
+        },
+        {
+            "id": 2,
+            "title": "Library of over 4800 books",
+            "description": "Access library of over 4800 books and search more via integration with OpenLib and other sources"
+                },
+        {
+            "id": 3,
+            "title": "Full system support with admin tools",
+            "description": "Includes CMS, user activity management, library population from external sources, and general statistics"
+        },
+        {
+            "id": 4,
+            "title": "Web API with full controll over the system",
+            "description": "RESTful API that provides complete access to all platform's features"
+        }
+    ]
+}

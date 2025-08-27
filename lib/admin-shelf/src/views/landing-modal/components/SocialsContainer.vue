@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import { defineProps, PropType } from 'vue';
-
-export interface SocialsIconLink {
-  type: 'github' | 'linkdin' | 'telegram' | 'email',
-  href: string,
-  target?: string,
-}
+import { SocialsIconLink } from '@/views/aboutus-page/aboutus.types';
 
 const props = defineProps({
   socialLinks: {

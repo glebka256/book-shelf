@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import type { AboutusData, AppSection, MainLink } from './aboutus.types';
-import type { SocialsIconLink } from '@/views/landing-modal/components/SocialsContainer.vue'
-import { getData } from '@/services/dataService';
+import type { AppSection, MainLink, SocialsIconLink } from './aboutus.types';
+import { AboutusData, SocialsData, getData } from '@/services/dataService';
 import WelcomeModal from '@/views/landing-modal/WelcomeModal.vue';
 import RouteList from './components/RouteList.vue';
 import SocialsContainer from '@/views/landing-modal/components/SocialsContainer.vue';
@@ -15,21 +14,19 @@ const projectDescription = ref<string>('');
 const sitemap = ref<AppSection[]>([]);
 const mainLinks = ref<MainLink[]>([]);
 
-const socialLinks = ref<SocialsIconLink[]>([
-  { type: 'github',   href: 'https://github.com/glebka256/book-shelf' },
-  { type: 'linkdin',  href:  'https://linkedin.com'                   },
-  { type: 'telegram', href: 'https://t.me/glebka256'                  },
-  { type: 'email',    href:    'mailto:glebkarpenko1@gmail.com'       },
-]);
+const socialLinks = ref<SocialsIconLink[]>([]);
 
 const loadData = async (): Promise<void> => {
   isDataLoading.value = true;
 
   try {
-    const data = await getData<AboutusData>("aboutus-data.json");
-    projectDescription.value = data.projectDescription;
-    sitemap.value = data.sitemap;
-    mainLinks.value = data.mainLinks; 
+    const aboutusData = await getData<AboutusData>("aboutus-data.json");
+    projectDescription.value = aboutusData.projectDescription;
+    sitemap.value = aboutusData.sitemap;
+    mainLinks.value = aboutusData.mainLinks;
+
+    const socialsData = await getData<SocialsData>("contacts.json");
+    socialLinks.value = socialsData.socialsLinks;
   } catch (error) {
     console.error(error);
   }
@@ -81,7 +78,7 @@ onMounted(() => {
 
       <div class="footer-container">
         <!-- Social links and contacts -->
-        <div class="footer-section-container">
+        <div class="footer-section-container" v-if="socialLinks.length > 0">
           <h3 class="socials-title">Contact me</h3>
           <SocialsContainer :socialLinks="socialLinks"/>
         </div>

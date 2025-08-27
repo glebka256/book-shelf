@@ -1,0 +1,20 @@
+{
+    "socialsLinks": [
+        {
+            "type": "github",
+            "href": "https://github.com/glebka256/book-shelf"
+        },
+        {
+            "type": "linkdin",
+            "href": "https://linkedin.com"
+        },
+        {
+            "type": "telegram",
+            "href": "https://t.me/glebka256"
+        },
+        {
+            "type": "email",
+            "href": "mailto:glebkarpenko1@gmail.com"
+        }
+    ]
+}
