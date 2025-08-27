@@ -7,7 +7,7 @@ import RouteList from './components/RouteList.vue';
 import SocialsContainer from '@/views/landing-modal/components/SocialsContainer.vue';
 import StackSection from '@/views/landing-modal/components/StackSection.vue';
 
-const showWelcome = ref(true);
+const showWelcome = ref(false);
 const isDataLoading = ref(false);
 
 const projectDescription = ref<string>('');

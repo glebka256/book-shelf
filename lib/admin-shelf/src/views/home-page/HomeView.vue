@@ -9,6 +9,9 @@ import HomeHeader from './components/HomeHeader.vue';
 import SectionTitle from './components/SectionTitle.vue';
 import StatGrid from './components/StatGrid.vue';
 import ActionsGrid from './components/ActionsGrid.vue';
+import WelcomeModal from '../landing-modal/WelcomeModal.vue';
+
+const showWelcome = ref(true);
 
 // Values are loaded on fetch
 const overviewStats = ref<SystemStat[]>([
@@ -85,12 +88,10 @@ onMounted(() => {
 
 <template>
   <div class="bg-wrapper">
+    <WelcomeModal :show-modal="showWelcome" @close="showWelcome=false" />
     <div class="admin-home">
       <!-- Header Section -->
-      <HomeHeader 
-        title="Book Shelf Dashboard"
-        subtitle="Manage and monitor Book Shelf library"
-      />
+      <HomeHeader title="Book Shelf Dashboard" subtitle="Manage and monitor Book Shelf library" />
 
       <!-- Main Content -->
       <main>
@@ -101,10 +102,7 @@ onMounted(() => {
 
         <section class="actions-section">
           <SectionTitle>Quick Actions</SectionTitle>
-          <ActionsGrid 
-            :quickActions="quickActions"
-            @router:navigate="navigateToRoute"
-          />
+          <ActionsGrid :quickActions="quickActions" @router:navigate="navigateToRoute" />
         </section>
       </main>
     </div>
