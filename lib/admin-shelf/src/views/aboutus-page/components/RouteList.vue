@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineProps, PropType, ref } from 'vue';
-import { AppSection, SectionRoute } from '../aboutus.types';
+import { AppSection, RouteLink, SectionRoute } from '../aboutus.types';
 
 const props = defineProps({
   section: {
@@ -27,6 +27,21 @@ const isExpanded = (routePath: string) => {
 const hasChildren = (route: SectionRoute) => {
   return route.childRoutes && route.childRoutes.length > 0;
 };
+
+const hasMethods = (route: RouteLink) => {
+  return route.methods && route.methods.length > 0;
+};
+
+const getMethodColor = (method: string) => {
+  const colors: Record<string, string> = {
+    'GET': '#4CAF50',
+    'POST': '#2196F3',
+    'PUT': '#FF9800',
+    'DELETE': '#F44336',
+    'PATCH': '#9C27B0'
+  };
+  return colors[method.toUpperCase()] || '#757575';
+};
 </script>
 
 <template>
@@ -44,7 +59,16 @@ const hasChildren = (route: SectionRoute) => {
         </button>
 
         <div class="route-content">
-          <a :href="route.path" class="route-link">{{ route.name }}</a>
+          <div class="route-header">
+            <a :href="route.path" class="route-link">{{ route.name }}</a>
+            <!-- HTTP Methods badges -->
+            <div v-if="hasMethods(route)" class="methods-container">
+              <span v-for="method in route.methods" :key="method" class="method-badge"
+                :style="{ backgroundColor: getMethodColor(method) }">
+                {{ method }}
+              </span>
+            </div>
+          </div>
           <span v-if="route.description" class="route-description">{{ route.description }}</span>
         </div>
       </div>
@@ -52,9 +76,17 @@ const hasChildren = (route: SectionRoute) => {
       <!-- Child routes -->
       <ul v-if="hasChildren(route) && isExpanded(route.path)" class="child-route-list">
         <li v-for="childRoute in route.childRoutes" :key="childRoute.path" class="child-route-item">
-          <a :href="childRoute.path" class="child-route-link">{{ childRoute.name }}</a>
-          <span v-if="childRoute.description" class="child-route-description">{{ childRoute.description
-          }}</span>
+          <div class="child-route-header">
+            <a :href="childRoute.path" class="child-route-link">{{ childRoute.name }}</a>
+            <!-- HTTP Methods badges for child routes -->
+            <div v-if="hasMethods(childRoute)" class="methods-container child-methods">
+              <span v-for="method in childRoute.methods" :key="method" class="method-badge method-badge-small"
+                :style="{ backgroundColor: getMethodColor(method) }">
+                {{ method }}
+              </span>
+            </div>
+          </div>
+          <span v-if="childRoute.description" class="child-route-description">{{ childRoute.description }}</span>
         </li>
       </ul>
     </li>
@@ -131,17 +163,41 @@ const hasChildren = (route: SectionRoute) => {
         flex: 1;
         min-width: 0;
 
-        .route-link {
-          color: $tag-color;
-          text-decoration: none;
-          font-weight: $med-weight;
-          font-size: 0.95rem;
-          display: block;
+        .route-header {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
           margin-bottom: 0.2rem;
+          flex-wrap: wrap;
 
-          &:hover {
-            color: $btn-bgcolor;
-            text-decoration: underline;
+          .route-link {
+            color: $tag-color;
+            text-decoration: none;
+            font-weight: $med-weight;
+            font-size: 0.95rem;
+
+            &:hover {
+              color: $btn-bgcolor;
+              text-decoration: underline;
+            }
+          }
+
+          .methods-container {
+            display: flex;
+            gap: 0.25rem;
+            flex-wrap: wrap;
+
+            .method-badge {
+              display: inline-block;
+              padding: 0.15rem 0.4rem;
+              font-size: 0.7rem;
+              font-weight: 600;
+              color: white;
+              border-radius: 3px;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+              line-height: 1;
+            }
           }
         }
 
@@ -178,17 +234,30 @@ const hasChildren = (route: SectionRoute) => {
           line-height: 1.2;
         }
 
-        .child-route-link {
-          color: $tag-color;
-          text-decoration: none;
-          font-weight: $med-weight;
-          font-size: 0.9rem;
-          display: block;
+        .child-route-header {
+          display: flex;
+          align-items: center;
+          gap: 0.4rem;
           margin-bottom: 0.1rem;
+          flex-wrap: wrap;
 
-          &:hover {
-            color: $btn-bgcolor;
-            text-decoration: underline;
+          .child-route-link {
+            color: $tag-color;
+            text-decoration: none;
+            font-weight: $med-weight;
+            font-size: 0.9rem;
+
+            &:hover {
+              color: $btn-bgcolor;
+              text-decoration: underline;
+            }
+          }
+
+          .methods-container.child-methods {
+            .method-badge-small {
+              padding: 0.1rem 0.3rem;
+              font-size: 0.65rem;
+            }
           }
         }
 
@@ -200,6 +269,28 @@ const hasChildren = (route: SectionRoute) => {
         }
       }
     }
+  }
+}
+
+// Dark mode support for method badges
+@media (prefers-color-scheme: dark) {
+  .method-badge {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+
+  .route-header,
+  .child-route-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+  }
+
+  .methods-container {
+    margin-top: 0.1rem;
   }
 }
 </style>

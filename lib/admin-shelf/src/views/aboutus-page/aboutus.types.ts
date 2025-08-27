@@ -2,6 +2,7 @@ export interface RouteLink {
 	name: string;
 	path: string;
 	description?: string;
+	methods?: string[]
 }
 
 export interface SectionRoute extends RouteLink {

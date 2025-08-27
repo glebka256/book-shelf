@@ -63,18 +63,361 @@
         {
           "name": "auth",
           "path": "/api/auth",
+          "description": "Authentication and user management endpoints",
           "childRoutes": [
             {
-              "name": "login",
-              "path": "/api/auth/login"
-            },
-            {
-              "name": "logut",
-              "path": "/api/auth/logout"
-            },
-            {
               "name": "register",
-              "path": "/api/auth/register"
+              "path": "/api/auth/register",
+              "description": "Register new user account",
+              "methods": [
+                "POST"
+              ]
+            },
+            {
+              "name": "login",
+              "path": "/api/auth/login",
+              "description": "Authenticate user login",
+              "methods": [
+                "POST"
+              ]
+            },
+            {
+              "name": "logout",
+              "path": "/api/auth/logout",
+              "description": "End user session",
+              "methods": [
+                "POST"
+              ]
+            },
+            {
+              "name": "user",
+              "path": "/api/auth/user",
+              "description": "Get or delete current user",
+              "methods": [
+                "GET",
+                "DELETE"
+              ]
+            },
+            {
+              "name": "user-id",
+              "path": "/api/auth/user/id",
+              "description": "Get current user ID",
+              "methods": [
+                "GET"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "users",
+          "path": "/api/users",
+          "description": "User management and user data endpoints",
+          "childRoutes": [
+            {
+              "name": "all-users",
+              "path": "/api/users/",
+              "description": "Get all users",
+              "methods": [
+                "GET"
+              ]
+            },
+            {
+              "name": "user-by-id",
+              "path": "/api/users/{id}",
+              "description": "Delete specific user by ID",
+              "methods": [
+                "DELETE"
+              ]
+            },
+            {
+              "name": "favorites",
+              "path": "/api/users/favorites",
+              "description": "Manage user favorite books",
+              "methods": [
+                "GET",
+                "PUT",
+                "POST"
+              ]
+            },
+            {
+              "name": "favorites-populated",
+              "path": "/api/users/favorites/populated",
+              "description": "Get user favorites with full book details",
+              "methods": [
+                "GET"
+              ]
+            },
+            {
+              "name": "interactions",
+              "path": "/api/users/interactions",
+              "description": "Track user interactions with books",
+              "methods": [
+                "POST"
+              ]
+            },
+            {
+              "name": "stats",
+              "path": "/api/users/stats",
+              "description": "Get user statistics",
+              "methods": [
+                "GET"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "books",
+          "path": "/api/books",
+          "description": "Book catalog and management endpoints",
+          "childRoutes": [
+            {
+              "name": "all-books",
+              "path": "/api/books/",
+              "description": "Get all books or create new book",
+              "methods": [
+                "GET",
+                "POST"
+              ]
+            },
+            {
+              "name": "book-by-id",
+              "path": "/api/books/{id}",
+              "description": "Get, update or delete specific book",
+              "methods": [
+                "GET",
+                "PUT",
+                "DELETE"
+              ]
+            },
+            {
+              "name": "batch",
+              "path": "/api/books/batch",
+              "description": "Get multiple books by IDs",
+              "methods": [
+                "POST"
+              ]
+            },
+            {
+              "name": "paginated",
+              "path": "/api/books/paginated/{page}/{limit}",
+              "description": "Get paginated list of books",
+              "methods": [
+                "GET"
+              ]
+            },
+            {
+              "name": "sorted",
+              "path": "/api/books/sorted/{page}/{limit}",
+              "description": "Get sorted books with pagination",
+              "methods": [
+                "POST"
+              ]
+            },
+            {
+              "name": "sort-options",
+              "path": "/api/books/sorted/options",
+              "description": "Get available sorting options",
+              "methods": [
+                "GET"
+              ]
+            },
+            {
+              "name": "popular",
+              "path": "/api/books/popular/{page}/{limit}",
+              "description": "Get most popular books",
+              "methods": [
+                "GET"
+              ]
+            },
+            {
+              "name": "detailed",
+              "path": "/api/books/detailed/{id}",
+              "description": "Get detailed book information",
+              "methods": [
+                "GET"
+              ]
+            },
+            {
+              "name": "filter-options",
+              "path": "/api/books/filter/options",
+              "description": "Get available filter options",
+              "methods": [
+                "GET"
+              ]
+            },
+            {
+              "name": "filter",
+              "path": "/api/books/filter/",
+              "description": "Filter books by criteria",
+              "methods": [
+                "POST"
+              ]
+            },
+            {
+              "name": "search",
+              "path": "/api/books/search/{query}/{page}",
+              "description": "Search books by query",
+              "methods": [
+                "GET"
+              ]
+            },
+            {
+              "name": "search-downloadable",
+              "path": "/api/books/search/downloadable/{query}/{page}",
+              "description": "Search downloadable books",
+              "methods": [
+                "GET"
+              ]
+            },
+            {
+              "name": "recommended",
+              "path": "/api/books/user/recommended/{page}",
+              "description": "Get personalized book recommendations",
+              "methods": [
+                "GET"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "external-sources",
+          "path": "/api/books/external",
+          "description": "Third-party book data integration endpoints",
+          "childRoutes": [
+            {
+              "name": "goodreads",
+              "path": "/api/books/goodreads/{query}/{page}",
+              "description": "Search books from Goodreads",
+              "methods": [
+                "GET"
+              ]
+            },
+            {
+              "name": "annas-archive",
+              "path": "/api/books/annas/{query}/{author}/{cat}",
+              "description": "Search books from Anna's Archive",
+              "methods": [
+                "GET"
+              ]
+            },
+            {
+              "name": "bestbook-all",
+              "path": "/api/books/best/all/{genre}",
+              "description": "Get best books by genre",
+              "methods": [
+                "GET"
+              ]
+            },
+            {
+              "name": "bestbook-detailed",
+              "path": "/api/books/best/{id}",
+              "description": "Get detailed best book information",
+              "methods": [
+                "GET"
+              ]
+            },
+            {
+              "name": "open-library",
+              "path": "/api/books/open-lib/{q}/{author}/{cat}/{freeEbook}/{lang}",
+              "description": "Search books from Open Library",
+              "methods": [
+                "GET"
+              ]
+            },
+            {
+              "name": "gutenberg-all",
+              "path": "/api/books/gutenberg/all/{page}",
+              "description": "Get books from Project Gutenberg",
+              "methods": [
+                "GET"
+              ]
+            },
+            {
+              "name": "gutenberg-detailed",
+              "path": "/api/books/gutenberg/{id}",
+              "description": "Get detailed Gutenberg book",
+              "methods": [
+                "GET"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "stats",
+          "path": "/api/stats",
+          "description": "System statistics and analytics endpoints",
+          "childRoutes": [
+            {
+              "name": "db-size",
+              "path": "/api/stats/db/size",
+              "description": "Get database size statistics",
+              "methods": [
+                "GET"
+              ]
+            },
+            {
+              "name": "books-total",
+              "path": "/api/stats/books/total",
+              "description": "Get total number of books",
+              "methods": [
+                "GET"
+              ]
+            },
+            {
+              "name": "subjects-total",
+              "path": "/api/stats/books/subjects/total",
+              "description": "Get total number of subjects",
+              "methods": [
+                "GET"
+              ]
+            },
+            {
+              "name": "authors-total",
+              "path": "/api/stats/books/authors/total",
+              "description": "Get total number of authors",
+              "methods": [
+                "GET"
+              ]
+            },
+            {
+              "name": "users-total",
+              "path": "/api/stats/users/total",
+              "description": "Get total number of users",
+              "methods": [
+                "GET"
+              ]
+            },
+            {
+              "name": "user-activity",
+              "path": "/api/stats/users/activity",
+              "description": "Get user activity statistics",
+              "methods": [
+                "GET"
+              ]
+            },
+            {
+              "name": "user-activity-weekly",
+              "path": "/api/stats/users/activity/weekly",
+              "description": "Get weekly user activity statistics",
+              "methods": [
+                "GET"
+              ]
+            },
+            {
+              "name": "subjects-division",
+              "path": "/api/stats/books/subjects/division",
+              "description": "Get book subjects distribution",
+              "methods": [
+                "GET"
+              ]
+            },
+            {
+              "name": "subjects-timeline",
+              "path": "/api/stats/books/subjects/timeline",
+              "description": "Get book subjects timeline statistics",
+              "methods": [
+                "GET"
+              ]
             }
           ]
         }
