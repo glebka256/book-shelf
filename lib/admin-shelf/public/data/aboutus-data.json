@@ -4,12 +4,12 @@
     {
       "title": "Book Shelf Client App",
       "url": "/client",
-      "description": "Reader-focused web application for browsing and managing personal library"
+      "description": "Reader-focused web application for book recommendations and search"
     },
     {
       "title": "Book Shelf Admin App",
       "url": "/admin",
-      "description": "Administrative dashboard for content and user management"
+      "description": "Administrative dashboard for managing content, users and monitoring system"
     },
     {
       "title": "Book Shelf Web API",

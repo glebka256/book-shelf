@@ -16,6 +16,25 @@ const mainLinks = ref<MainLink[]>([]);
 
 const socialLinks = ref<SocialsIconLink[]>([]);
 
+type RootPath = "/client" | "/admin" | "/api";
+
+const buildRootLink = (path: RootPath): string => {
+  // Get the current origin (protocol + hostname + port)
+  const origin = window.location.origin;
+
+  // Handle different root paths
+  switch (path) {
+    case "/client":
+      return `${origin}/`; // Client is on root
+    case "/admin":
+      return `${origin}/admin`;
+    case "/api":
+      return `${origin}/api`;
+    default:
+      return `${origin}${path}`;
+  }
+};
+
 const loadData = async (): Promise<void> => {
   isDataLoading.value = true;
 
@@ -23,7 +42,13 @@ const loadData = async (): Promise<void> => {
     const aboutusData = await getData<AboutusData>("aboutus-data.json");
     projectDescription.value = aboutusData.projectDescription;
     sitemap.value = aboutusData.sitemap;
-    mainLinks.value = aboutusData.mainLinks;
+
+    // Process global navigation links relative to origin
+    mainLinks.value = aboutusData.mainLinks.map((link) => ({
+      title: link.title,
+      url: buildRootLink(link.url as RootPath),
+      description: link.description
+    }));
 
     const socialsData = await getData<SocialsData>("contacts.json");
     socialLinks.value = socialsData.socialsLinks;
