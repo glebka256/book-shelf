@@ -34,26 +34,134 @@
       "routes": [
         {
           "name": "home",
-          "path": "/admin/",
-          "description": "Admin app for managing systems library",
+          "path": "/",
+          "description": "Administrative dashboard overview and system status",
+          "childRoutes": []
+        },
+        {
+          "name": "aboutus",
+          "path": "/aboutus",
+          "description": "Information about the Book Shelf system and API documentation",
+          "childRoutes": []
+        },
+        {
+          "name": "auth",
+          "path": "/auth",
+          "description": "Authentication management for admin users",
+          "childRoutes": [
+            {
+              "name": "login",
+              "path": "/auth/login",
+              "description": "Administrator login portal"
+            },
+            {
+              "name": "logout",
+              "path": "/auth/logout",
+              "description": "End administrative session"
+            },
+            {
+              "name": "register",
+              "path": "/auth/register",
+              "description": "Register new administrator account"
+            }
+          ]
+        },
+        {
+          "name": "profile",
+          "path": "/profile",
+          "description": "Manage administrator profile and account settings",
           "childRoutes": []
         },
         {
           "name": "storage-manager",
-          "path": "/admin/storage-manager",
-          "description": "Add and edit library books",
+          "path": "/storage-manager",
+          "description": "Comprehensive book catalog management system",
           "childRoutes": [
             {
               "name": "books",
-              "path": "/admin/storage-manager/books",
-              "description": "View, manage and edit books of systems library"
+              "path": "/storage-manager/books",
+              "description": "Browse, search and manage all books in the library database"
             },
             {
               "name": "create",
-              "path": "/admin/storage-manager/create",
-              "description": "A form to add new book to the library"
+              "path": "/storage-manager/create",
+              "description": "Add new books to the library with metadata and file links"
+            },
+            {
+              "name": "stats",
+              "path": "/storage-manager/stats",
+              "description": "View detailed statistics about the book collection"
+            },
+            {
+              "name": "edit",
+              "path": "/storage-manager/edit/:bookId",
+              "description": "Edit existing book details, metadata, and file associations"
+            },
+            {
+              "name": "remove",
+              "path": "/storage-manager/remove/:bookId",
+              "description": "Remove books from the library database"
             }
           ]
+        },
+        {
+          "name": "sources-manager",
+          "path": "/sources-manager",
+          "description": "External book source integration and data import tools",
+          "childRoutes": [
+            {
+              "name": "home",
+              "path": "/sources-manager/home",
+              "description": "Overview of all available external book sources"
+            },
+            {
+              "name": "goodreads",
+              "path": "/sources-manager/goodreads",
+              "description": "Import and sync book data from Goodreads database"
+            },
+            {
+              "name": "open-lib",
+              "path": "/sources-manager/open-lib",
+              "description": "Search and import books from Open Library archive"
+            },
+            {
+              "name": "gutenberg-search",
+              "path": "/sources-manager/gutenberg-search",
+              "description": "Browse and search Project Gutenberg's free ebook collection"
+            },
+            {
+              "name": "gutenberg-detailed",
+              "path": "/sources-manager/gutenberg-detailed",
+              "description": "View detailed information for specific Project Gutenberg books"
+            },
+            {
+              "name": "annas-archive",
+              "path": "/sources-manager/annas-archive",
+              "description": "Access Anna's Archive for rare and hard-to-find books"
+            },
+            {
+              "name": "best-all",
+              "path": "/sources-manager/best-all",
+              "description": "Browse curated lists of best books by genre and category"
+            },
+            {
+              "name": "best-detailed",
+              "path": "/sources-manager/best-detailed",
+              "description": "View detailed information for featured best books"
+            }
+          ]
+        },
+        {
+          "name": "users-manager",
+          "path": "/users-manager",
+          "description": "User account management, activity monitoring, and permissions",
+          "childRoutes": []
+        },
+        {
+          "name": "stat-manager",
+          "path": "/stat-manager",
+          "description": "System analytics, usage statistics, and performance metrics",
+          "childRoutes": []
         }
       ]
     },
