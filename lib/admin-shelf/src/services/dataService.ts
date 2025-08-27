@@ -3,8 +3,6 @@ export const getData = async <T>(filename: string): Promise<T> => {
     const baseUrl = process.env.BASE_URL;
     const response = await fetch(`${baseUrl}/data/${filename}`);
 
-    console.log(`/${baseUrl}/data/${filename}`);
-
     if (!response.ok) {
       throw new Error(`HTTP error ${response.status}`);
     }

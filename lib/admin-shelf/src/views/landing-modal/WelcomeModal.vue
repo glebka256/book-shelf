@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { withDefaults, defineProps, defineEmits, ref, onMounted } from 'vue';
+import { SocialsIconLink } from './components/SocialsContainer.vue';
 import type { LandingFeature } from './components/FeaturesSection.vue';
 import FeaturesSection from './components/FeaturesSection.vue';
 import ModalHeader from './components/ModalHeader.vue';
@@ -40,6 +41,13 @@ const features: LandingFeature[] = [
     description: "RESTful API that provides complete access to all platform's features"
   }
 ];
+
+const socialLinks = ref<SocialsIconLink[]>([
+  { type: 'github', href: 'https://github.com/glebka256/book-shelf' },
+  { type: 'linkdin', href: 'https://linkedin.com' },
+  { type: 'telegram', href: 'https://t.me/glebka256' },
+  { type: 'email', href: 'mailto:glebkarpenko1@gmail.com' },
+]);
 
 const closeModal = () => {
   isVisible.value = false;
@@ -87,7 +95,7 @@ onMounted(() => {
           <!-- Socials links and contacts -->
           <div class="socials-section">
             <h3 class="socials-title">Contact with me</h3>
-            <SocialsContainer />
+            <SocialsContainer :socialLinks="socialLinks" />
           </div>
 
           <!-- Continue button -->

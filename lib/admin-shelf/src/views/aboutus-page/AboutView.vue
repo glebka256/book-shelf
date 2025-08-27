@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { AboutusData, AppSection, MainLink } from './aboutus.types';
+import type { AboutusData, AppSection, MainLink } from './aboutus.types';
+import type { SocialsIconLink } from '@/views/landing-modal/components/SocialsContainer.vue'
 import { getData } from '@/services/dataService';
 import WelcomeModal from '@/views/landing-modal/WelcomeModal.vue';
 import RouteList from './components/RouteList.vue';
@@ -13,6 +14,13 @@ const isDataLoading = ref(false);
 const projectDescription = ref<string>('');
 const sitemap = ref<AppSection[]>([]);
 const mainLinks = ref<MainLink[]>([]);
+
+const socialLinks = ref<SocialsIconLink[]>([
+  { type: 'github',   href: 'https://github.com/glebka256/book-shelf' },
+  { type: 'linkdin',  href:  'https://linkedin.com'                   },
+  { type: 'telegram', href: 'https://t.me/glebka256'                  },
+  { type: 'email',    href:    'mailto:glebkarpenko1@gmail.com'       },
+]);
 
 const loadData = async (): Promise<void> => {
   isDataLoading.value = true;
@@ -75,7 +83,7 @@ onMounted(() => {
         <!-- Social links and contacts -->
         <div class="footer-section-container">
           <h3 class="socials-title">Contact me</h3>
-          <SocialsContainer />
+          <SocialsContainer :socialLinks="socialLinks"/>
         </div>
 
         <!-- Tech stack used -->
@@ -216,7 +224,7 @@ onMounted(() => {
 
     h3 {
       align-self: center;
-      margin: 0;
+      margin-right: 8px;
     }
   }
 }
