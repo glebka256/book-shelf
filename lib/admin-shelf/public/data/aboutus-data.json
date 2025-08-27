@@ -97,28 +97,6 @@
           "childRoutes": []
         },
         {
-          "name": "auth",
-          "path": "/auth",
-          "description": "Authentication management for admin users",
-          "childRoutes": [
-            {
-              "name": "login",
-              "path": "/auth/login",
-              "description": "Administrator login portal"
-            },
-            {
-              "name": "logout",
-              "path": "/auth/logout",
-              "description": "End administrative session"
-            },
-            {
-              "name": "register",
-              "path": "/auth/register",
-              "description": "Register new administrator account"
-            }
-          ]
-        },
-        {
           "name": "profile",
           "path": "/profile",
           "description": "Manage administrator profile and account settings",
@@ -214,60 +192,34 @@
           "path": "/stat-manager",
           "description": "System analytics, usage statistics, and performance metrics",
           "childRoutes": []
+        },
+        {
+          "name": "auth",
+          "path": "/auth",
+          "description": "Authentication management for admin users",
+          "childRoutes": [
+            {
+              "name": "login",
+              "path": "/auth/login",
+              "description": "Administrator login portal"
+            },
+            {
+              "name": "logout",
+              "path": "/auth/logout",
+              "description": "End administrative session"
+            },
+            {
+              "name": "register",
+              "path": "/auth/register",
+              "description": "Register new administrator account"
+            }
+          ]
         }
       ]
     },
     {
       "title": "Web API Endpoints",
       "routes": [
-        {
-          "name": "auth",
-          "path": "/api/auth",
-          "description": "Authentication and user management endpoints",
-          "childRoutes": [
-            {
-              "name": "register",
-              "path": "/api/auth/register",
-              "description": "Register new user account",
-              "methods": [
-                "POST"
-              ]
-            },
-            {
-              "name": "login",
-              "path": "/api/auth/login",
-              "description": "Authenticate user login",
-              "methods": [
-                "POST"
-              ]
-            },
-            {
-              "name": "logout",
-              "path": "/api/auth/logout",
-              "description": "End user session",
-              "methods": [
-                "POST"
-              ]
-            },
-            {
-              "name": "user",
-              "path": "/api/auth/user",
-              "description": "Get or delete current user",
-              "methods": [
-                "GET",
-                "DELETE"
-              ]
-            },
-            {
-              "name": "user-id",
-              "path": "/api/auth/user/id",
-              "description": "Get current user ID",
-              "methods": [
-                "GET"
-              ]
-            }
-          ]
-        },
         {
           "name": "users",
           "path": "/api/users",
@@ -575,6 +527,54 @@
               "name": "subjects-timeline",
               "path": "/api/stats/books/subjects/timeline",
               "description": "Get book subjects timeline statistics",
+              "methods": [
+                "GET"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "auth",
+          "path": "/api/auth",
+          "description": "Authentication and user management endpoints",
+          "childRoutes": [
+            {
+              "name": "register",
+              "path": "/api/auth/register",
+              "description": "Register new user account",
+              "methods": [
+                "POST"
+              ]
+            },
+            {
+              "name": "login",
+              "path": "/api/auth/login",
+              "description": "Authenticate user login",
+              "methods": [
+                "POST"
+              ]
+            },
+            {
+              "name": "logout",
+              "path": "/api/auth/logout",
+              "description": "End user session",
+              "methods": [
+                "POST"
+              ]
+            },
+            {
+              "name": "user",
+              "path": "/api/auth/user",
+              "description": "Get or delete current user",
+              "methods": [
+                "GET",
+                "DELETE"
+              ]
+            },
+            {
+              "name": "user-id",
+              "path": "/api/auth/user/id",
+              "description": "Get current user ID",
               "methods": [
                 "GET"
               ]
