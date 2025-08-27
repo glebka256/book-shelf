@@ -24,8 +24,60 @@
         {
           "name": "home",
           "path": "/",
-          "description": "Client app for reading and searching literature",
+          "description": "Discover new books with personalized recommendations and featured collections",
           "childRoutes": []
+        },
+        {
+          "name": "search",
+          "path": "/search",
+          "description": "Search the entire book catalog by title, author, genre, or keyword",
+          "childRoutes": []
+        },
+        {
+          "name": "downloadable",
+          "path": "/search/downloadable",
+          "description": "Browse and download free ebooks and digital publications",
+          "childRoutes": []
+        },
+        {
+          "name": "favorites",
+          "path": "/favorites",
+          "description": "View and manage your personal collection of favorite books",
+          "childRoutes": []
+        },
+        {
+          "name": "about",
+          "path": "/about",
+          "description": "Learn about the Book Shelf platform and its features",
+          "childRoutes": []
+        },
+        {
+          "name": "account",
+          "path": "/account",
+          "description": "Manage your profile, reading preferences, and account settings",
+          "childRoutes": []
+        },
+        {
+          "name": "auth",
+          "path": "/auth",
+          "description": "User authentication and account management",
+          "childRoutes": [
+            {
+              "name": "login",
+              "path": "/auth/login",
+              "description": "Sign in to access your personal library and recommendations"
+            },
+            {
+              "name": "register",
+              "path": "/auth/register",
+              "description": "Create a new account to start building your digital library"
+            },
+            {
+              "name": "logout",
+              "path": "/auth/logout",
+              "description": "Sign out of your account securely"
+            }
+          ]
         }
       ]
     },
